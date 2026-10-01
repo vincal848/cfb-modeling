@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "common_run_fields": ["run_id", "snapshot_id", "information_cutoff", "model_version", "dependency_lock_hash", "seed", "input_hash", "artifact_hash", "status"],
+  "common_uncertainty_fields": ["outcome_distribution", "parameter_uncertainty_if_available", "scenario_assumptions", "data_quality_flags", "monte_carlo_error_if_simulated"],
+  "stages": [
+    {
+      "name": "snapshot",
+      "inputs": ["versioned_facts", "cutoff", "replay_mode", "availability_evidence"],
+      "outputs": ["immutable_manifest", "eligible_feature_records", "coverage_report", "excluded_records"],
+      "invariants": ["strict_mode_excludes_unknown_or_future_availability", "snapshot_hash_is_reproducible", "no_empty_response_to_zero_conversion"]
+    },
+    {
+      "name": "expected_points",
+      "inputs": ["past_only_preplay_states", "scoring_event_labels", "rules_registry"],
+      "outputs": ["state_value_distribution", "signed_transition_epa", "calibration_report"],
+      "invariants": ["scoring_reward_not_double_counted", "possession_perspective_consistent", "held_forward_labels_use_training_only_ep_model"]
+    },
+    {
+      "name": "players",
+      "inputs": ["attributed_events", "opportunity_categories", "known_roster", "past_recruit_information", "ep_artifact"],
+      "outputs": ["joint_ability_draws", "joint_opportunity_draws", "conditional_performance_draws", "development_draws", "identity_flags"],
+      "invariants": ["shares_conserve_each_category_total", "unknown_opportunity_group_retained", "no_individual_ol_defense_impact_without_participation"]
+    },
+    {
+      "name": "roster_transfers",
+      "inputs": ["player_draws", "membership_history", "reviewed_identity_links", "declared_destination_scenarios", "feasibility_constraints"],
+      "outputs": ["paired_scenario_draws", "position_strength_draws", "opportunity_competition", "extrapolation_flags"],
+      "invariants": ["player_identity_survives_transfer", "scenario_changes_redistribute_opportunity", "conditional_scenario_not_labeled_causal"]
+    },
+    {
+      "name": "teams",
+      "inputs": ["past_games", "roster_draws_if_enabled", "coach_context", "schedule_context"],
+      "outputs": ["joint_filtered_offense_defense_special_teams_pace_draws", "state_diagnostics"],
+      "invariants": ["filter_not_future_smoother", "location_constraints_identified", "roster_and_outcome_evidence_not_double_counted"]
+    },
+    {
+      "name": "game_experts",
+      "inputs": ["team_draws", "matchup_features", "rules_registry", "market_snapshot_only_for_market_informed_product"],
+      "outputs": ["paired_final_score_samples", "expert_id", "draw_weights", "coverage_flags"],
+      "sample_fields": ["draw_id", "shared_scenario_id", "home_score", "away_score", "weight"],
+      "invariants": ["scores_nonnegative_integer", "weights_sum_to_one", "modern_final_game_tie_mass_resolved", "no_double_overtime", "shared_conditions_not_independently_resampled_per_team"]
+    },
+    {
+      "name": "stack",
+      "inputs": ["held_forward_expert_distributions_for_training", "eligible_production_expert_distributions", "frozen_weight_artifact"],
+      "outputs": ["mixture_final_score_samples", "winner_probability", "margin_total_distributions", "intervals", "model_disagreement"],
+      "invariants": ["weights_nonnegative_and_sum_to_one", "all_summaries_use_same_distribution", "calibration_updates_joint_distribution_if_enabled"]
+    },
+    {
+      "name": "decisions",
+      "inputs": ["immutable_unrounded_forecast", "policy_version", "timestamped_prices_if_market", "feasibility_if_roster"],
+      "outputs": ["forced_choice", "recommendation", "reason_codes", "decision_record_hash"],
+      "invariants": ["same_frozen_inputs_same_choice", "push_handling_explicit", "no_decision_from_unavailable_forecast", "winner_threshold_uses_unrounded_probability"]
+    },
+    {
+      "name": "tracking",
+      "enabled_by_default": false,
+      "inputs": ["licensed_frame_coordinates", "player_identity_links", "ball_location", "frame_times", "direction", "event_markers"],
+      "outputs": ["trajectory_distribution", "within_play_outcome_distribution", "conditional_alternative_value", "physical_diagnostics"],
+      "invariants": ["no_future_frame_features", "stationary_angles_handled", "held_game_and_player_validation", "missing_tracking_falls_back_to_core"]
+    }
+  ]
+}

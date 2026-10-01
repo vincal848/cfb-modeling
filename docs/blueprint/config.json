@@ -1,0 +1,103 @@
+{
+  "specification_version": "1.0",
+  "status": "proposed_defaults_not_trained",
+  "prepared_date": "2026-10-01",
+  "display_timezone": "America/New_York",
+  "storage_timezone": "UTC",
+  "scope": {
+    "primary_population": "games_involving_fbs",
+    "retain_fcs_opponents": true,
+    "include_postseason": true,
+    "forecast_products": ["football_only", "market_informed"],
+    "pregame_horizons_minutes": [10080, 1440, 60],
+    "preseason_cutoff_utc": null
+  },
+  "data": {
+    "provider": "CFBD",
+    "subscription_tier_assumption": 3,
+    "credential_environment_variable": "CFBD_API_KEY",
+    "monthly_quota": null,
+    "bulk_backfill_stop_fraction": 0.8,
+    "raw_immutable": true,
+    "default_replay_mode": "strict",
+    "strict_availability_evidence": ["prospective_observation", "archived_publication"],
+    "allow_reconstructed_experiments": true,
+    "missing_values_are_zero": false,
+    "historical_ratings_without_publication_evidence": "exclude",
+    "correction_recheck_days": 7
+  },
+  "validation": {
+    "protocol_status": "freeze_after_coverage_audit_before_candidate_results",
+    "warmup_seasons": [2014, 2015, 2016, 2017, 2018],
+    "development_seasons": [2019, 2020, 2021],
+    "stack_fit_seasons": [2022],
+    "optional_calibration_seasons": [2023],
+    "untouched_historical_test_seasons": [2024, 2025],
+    "prospective_season": 2026,
+    "prospective_start": "first_actual_implementation_forecast",
+    "short_history_modules": "register_separate_cohort_before_results",
+    "fold_unit": "chronological_game_batch",
+    "entire_pipeline_refit_inside_fold": true,
+    "paired_comparison": "chronological_week_block_bootstrap_with_dependence_sensitivity",
+    "primary_joint_metric": "energy_score",
+    "primary_winner_metric": "log_loss",
+    "primary_margin_total_metric": "crps",
+    "interval_levels": [0.5, 0.8, 0.95],
+    "minimum_cohort_size_for_stable_summary": 100,
+    "small_cohorts": "publish_counts_and_uncertainty_without_definitive_gate"
+  },
+  "models": {
+    "initial_champion": "regularized_past_only_baseline",
+    "player_roles_initial": ["QB", "RB", "WR", "TE", "K", "P"],
+    "individual_ol_defense_enabled": false,
+    "ep_fit_per_forward_fold": true,
+    "opportunity_categories": ["dropbacks", "pass_attempts", "carries", "targets", "kicks", "punts"],
+    "opportunity_unknown_group": true,
+    "team_state_estimator": "filtered_not_smoothed",
+    "production_expert_score_type": "final",
+    "maximum_initial_stack_experts": 3,
+    "initial_stack_weight_type": "global_nonnegative_simplex",
+    "tracking_enabled": false,
+    "portal_entry_prediction_enabled": false,
+    "live_enabled": false,
+    "adaptive_conformal_enabled": false,
+    "coherent_calibration_enabled": false
+  },
+  "computation": {
+    "root_seed": 20261001,
+    "initial_independent_game_draws": 20000,
+    "maximum_draws_before_manual_diagnostic": 200000,
+    "probability_monte_carlo_se_target": 0.005,
+    "bayesian_chains": 4,
+    "rhat_max": 1.01,
+    "decision_summary_bulk_ess_min": 400,
+    "decision_summary_tail_ess_min": 400,
+    "unresolved_divergences_allowed": 0,
+    "cache_prediction_samples": true,
+    "dependency_lock_required": true
+  },
+  "policies": {
+    "winner": {
+      "version": "winner_v1",
+      "threshold": 0.5,
+      "exact_tie_break": "lexicographically_smaller_canonical_string_team_id",
+      "use_unrounded_probability": true
+    },
+    "market": {
+      "version": "market_research_v1",
+      "status": "research_default_not_demonstrated_profitable",
+      "minimum_expected_net_return_per_unit": 0.03,
+      "requires_timestamped_decimal_odds": true,
+      "requires_matching_overtime_settlement": true,
+      "push_net_return": 0,
+      "quality_failure_action": "UNAVAILABLE",
+      "no_qualifying_edge_action": "PASS"
+    },
+    "roster": {
+      "version": "roster_v1",
+      "objective": "expected_team_strength_improvement",
+      "requires_declared_feasibility_constraints": true,
+      "exact_tie_break": "canonical_destination_id"
+    }
+  }
+}

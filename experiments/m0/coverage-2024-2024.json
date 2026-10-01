@@ -1,0 +1,35 @@
+{
+  "audit": "D02_coverage_matrix",
+  "generated_at": "2026-10-01T18:36:29+00:00",
+  "provider": "CFBD",
+  "calls_remaining_after": 124933,
+  "seasons": [
+    {
+      "season": 2024,
+      "fbs_teams": 134,
+      "games_fbs_involving": 920,
+      "postseason_games": 46,
+      "fbs_vs_nonfbs": 121,
+      "null_classification": 0,
+      "not_completed_or_unscored": 1,
+      "start_time_tbd": 1,
+      "scored_games": 919,
+      "team_stats_share": 1.0,
+      "drives_share": 1.0,
+      "drive_score_match_share": 0.9608,
+      "plays_share": 1.0,
+      "play_score_match_share": 0.9608,
+      "lines_share": 0.9837,
+      "spread_share": 0.9837,
+      "spread_open_share": 0.9369,
+      "moneyline_share": 0.9032,
+      "books_per_game": {
+        "0": 15,
+        "1": 75,
+        "2": 45,
+        "3": 784
+      },
+      "failed_partitions": []
+    }
+  ]
+}

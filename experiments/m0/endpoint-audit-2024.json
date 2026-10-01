@@ -1,0 +1,2003 @@
+{
+  "audit": "D01_endpoint_contracts",
+  "generated_at": "2026-10-01T18:28:24+00:00",
+  "provider": "CFBD",
+  "sample": {
+    "year": 2024,
+    "week": 5,
+    "team": "Michigan"
+  },
+  "calls_remaining_after": 124981,
+  "results": [
+    {
+      "path": "/info",
+      "family": "account",
+      "role": "ops",
+      "params": {},
+      "http_status": 200,
+      "response_count": 1,
+      "documented_cap": null,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "addb4254c9be679de1fcba5c@2026-10-01T18:28:14.578570Z",
+      "payload_hash": "cfd73acce3a1cf9d2e42f2100b7497b8a77d94664938d58af59188c01430702b",
+      "fields": {
+        "features": {
+          "null_rate": 0.0,
+          "types": [
+            "dict"
+          ]
+        },
+        "monthlyLimit": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "patronLevel": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "products": {
+          "null_rate": 0.0,
+          "types": [
+            "list"
+          ]
+        },
+        "remainingCalls": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "resetAt": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "sharedPool": {
+          "null_rate": 0.0,
+          "types": [
+            "bool"
+          ]
+        },
+        "tierName": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "usedCalls": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/calendar",
+      "family": "schedule",
+      "role": "core",
+      "params": {
+        "year": "2024"
+      },
+      "http_status": 200,
+      "response_count": 17,
+      "documented_cap": null,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "6f17678289ca1eb50a983318@2026-10-01T18:28:14.865503Z",
+      "payload_hash": "22c9861c239f80e8aa20973876921d6a2bf20cd71fcc05e944a2e41a169859b1",
+      "fields": {
+        "endDate": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "firstGameStart": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "lastGameStart": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "season": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "seasonType": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "startDate": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "week": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/teams",
+      "family": "teams",
+      "role": "core",
+      "params": {
+        "year": "2024"
+      },
+      "http_status": 200,
+      "response_count": 677,
+      "documented_cap": null,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "7bdd1ff23bdc07e0be1faa09@2026-10-01T18:28:15.317559Z",
+      "payload_hash": "fd4df1f94fbc68753764d34a52070a91949d2afa50e78dd05b9496454ee341fd",
+      "fields": {
+        "abbreviation": {
+          "null_rate": 0.0015,
+          "types": [
+            "str"
+          ]
+        },
+        "alternateColor": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "alternateNames": {
+          "null_rate": 0.0,
+          "types": [
+            "list"
+          ]
+        },
+        "classification": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "color": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "conference": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "division": {
+          "null_rate": 0.9217,
+          "types": [
+            "str"
+          ]
+        },
+        "id": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "location": {
+          "null_rate": 0.0,
+          "types": [
+            "dict"
+          ]
+        },
+        "logos": {
+          "null_rate": 0.0384,
+          "types": [
+            "list"
+          ]
+        },
+        "mascot": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "school": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "twitter": {
+          "null_rate": 0.6189,
+          "types": [
+            "str"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/teams/fbs",
+      "family": "teams",
+      "role": "core",
+      "params": {
+        "year": "2024"
+      },
+      "http_status": 200,
+      "response_count": 134,
+      "documented_cap": null,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "dfa0e957d5ccecdc73cc384f@2026-10-01T18:28:15.595669Z",
+      "payload_hash": "edf95b175f64557ed6108762fa9d4877e2dc621898ffd91fbaa5a69eff27683b",
+      "fields": {
+        "abbreviation": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "alternateColor": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "alternateNames": {
+          "null_rate": 0.0,
+          "types": [
+            "list"
+          ]
+        },
+        "classification": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "color": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "conference": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "division": {
+          "null_rate": 0.8955,
+          "types": [
+            "str"
+          ]
+        },
+        "id": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "location": {
+          "null_rate": 0.0,
+          "types": [
+            "dict"
+          ]
+        },
+        "logos": {
+          "null_rate": 0.0,
+          "types": [
+            "list"
+          ]
+        },
+        "mascot": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "school": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "twitter": {
+          "null_rate": 0.0075,
+          "types": [
+            "str"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/conferences",
+      "family": "teams",
+      "role": "core",
+      "params": {},
+      "http_status": 200,
+      "response_count": 256,
+      "documented_cap": null,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "6f23f2095ac003c86c001e94@2026-10-01T18:28:15.834666Z",
+      "payload_hash": "6c38575eaa42fd7d6d7510fb22c9caa34da8aff9116f757b1b58820d98fefc40",
+      "fields": {
+        "abbreviation": {
+          "null_rate": 0.4062,
+          "types": [
+            "str"
+          ]
+        },
+        "classification": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "id": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "memberCount": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "name": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "shortName": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/venues",
+      "family": "teams",
+      "role": "core",
+      "params": {},
+      "http_status": 200,
+      "response_count": 852,
+      "documented_cap": null,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "734fc0b2fb6e6d85a3271138@2026-10-01T18:28:16.036141Z",
+      "payload_hash": "ae3ba696c1cc7bc4720289eb940209eb101647317b0bbbd768354c00ef0115a8",
+      "fields": {
+        "capacity": {
+          "null_rate": 0.0293,
+          "types": [
+            "int"
+          ]
+        },
+        "city": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "constructionYear": {
+          "null_rate": 0.5681,
+          "types": [
+            "int"
+          ]
+        },
+        "countryCode": {
+          "null_rate": 0.0023,
+          "types": [
+            "str"
+          ]
+        },
+        "dome": {
+          "null_rate": 0.0023,
+          "types": [
+            "bool"
+          ]
+        },
+        "elevation": {
+          "null_rate": 0.5552,
+          "types": [
+            "str"
+          ]
+        },
+        "grass": {
+          "null_rate": 0.5739,
+          "types": [
+            "bool"
+          ]
+        },
+        "id": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "latitude": {
+          "null_rate": 0.054,
+          "types": [
+            "float"
+          ]
+        },
+        "longitude": {
+          "null_rate": 0.054,
+          "types": [
+            "float"
+          ]
+        },
+        "name": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "state": {
+          "null_rate": 0.0012,
+          "types": [
+            "str"
+          ]
+        },
+        "timezone": {
+          "null_rate": 0.5728,
+          "types": [
+            "str"
+          ]
+        },
+        "zip": {
+          "null_rate": 0.1279,
+          "types": [
+            "str"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/games",
+      "family": "games",
+      "role": "core",
+      "params": {
+        "year": "2024",
+        "week": "5"
+      },
+      "http_status": 200,
+      "response_count": 270,
+      "documented_cap": null,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "afe649e7b3430663631eeb6b@2026-10-01T18:28:16.336208Z",
+      "payload_hash": "30ffc2fc5f0b2a76e3fc9c4ef0a07cdc4bbbbac8ede755c71a69f9e03eb127c3",
+      "fields": {
+        "attendance": {
+          "null_rate": 0.6296,
+          "types": [
+            "int"
+          ]
+        },
+        "awayClassification": {
+          "null_rate": 0.0148,
+          "types": [
+            "str"
+          ]
+        },
+        "awayConference": {
+          "null_rate": 0.0148,
+          "types": [
+            "str"
+          ]
+        },
+        "awayId": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "awayLineScores": {
+          "null_rate": 0.0037,
+          "types": [
+            "list"
+          ]
+        },
+        "awayPoints": {
+          "null_rate": 0.0037,
+          "types": [
+            "int"
+          ]
+        },
+        "awayPostgameElo": {
+          "null_rate": 0.8074,
+          "types": [
+            "int"
+          ]
+        },
+        "awayPostgameWinProbability": {
+          "null_rate": 0.6222,
+          "types": [
+            "float",
+            "int"
+          ]
+        },
+        "awayPregameElo": {
+          "null_rate": 0.8037,
+          "types": [
+            "int"
+          ]
+        },
+        "awayTeam": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "completed": {
+          "null_rate": 0.0,
+          "types": [
+            "bool"
+          ]
+        },
+        "conferenceGame": {
+          "null_rate": 0.0,
+          "types": [
+            "bool"
+          ]
+        },
+        "excitementIndex": {
+          "null_rate": 0.6222,
+          "types": [
+            "float"
+          ]
+        },
+        "highlights": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "homeClassification": {
+          "null_rate": 0.0074,
+          "types": [
+            "str"
+          ]
+        },
+        "homeConference": {
+          "null_rate": 0.0074,
+          "types": [
+            "str"
+          ]
+        },
+        "homeId": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "homeLineScores": {
+          "null_rate": 0.0037,
+          "types": [
+            "list"
+          ]
+        },
+        "homePoints": {
+          "null_rate": 0.0037,
+          "types": [
+            "int"
+          ]
+        },
+        "homePostgameElo": {
+          "null_rate": 0.7963,
+          "types": [
+            "int"
+          ]
+        },
+        "homePostgameWinProbability": {
+          "null_rate": 0.6222,
+          "types": [
+            "float",
+            "int"
+          ]
+        },
+        "homePregameElo": {
+          "null_rate": 0.7926,
+          "types": [
+            "int"
+          ]
+        },
+        "homeTeam": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "id": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "neutralSite": {
+          "null_rate": 0.0,
+          "types": [
+            "bool"
+          ]
+        },
+        "notes": {
+          "null_rate": 1.0,
+          "types": []
+        },
+        "playoff": {
+          "null_rate": 1.0,
+          "types": []
+        },
+        "season": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "seasonType": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "startDate": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "startTimeTBD": {
+          "null_rate": 0.0,
+          "types": [
+            "bool"
+          ]
+        },
+        "venue": {
+          "null_rate": 0.0037,
+          "types": [
+            "str"
+          ]
+        },
+        "venueId": {
+          "null_rate": 0.0037,
+          "types": [
+            "int"
+          ]
+        },
+        "week": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/games/teams",
+      "family": "team_game_stats",
+      "role": "core",
+      "params": {
+        "year": "2024",
+        "week": "5"
+      },
+      "http_status": 200,
+      "response_count": 106,
+      "documented_cap": null,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "eb4e6f834cb9729fa58087d7@2026-10-01T18:28:16.719634Z",
+      "payload_hash": "f9f09be5064f52412bb0a6da9c20a785fb4db6972efa9b294bc2418d7379b3f8",
+      "fields": {
+        "id": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "teams": {
+          "null_rate": 0.0,
+          "types": [
+            "list"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/games/players",
+      "family": "player_game_stats",
+      "role": "core_later",
+      "params": {
+        "year": "2024",
+        "week": "5"
+      },
+      "http_status": 200,
+      "response_count": 106,
+      "documented_cap": null,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "f3ad82fb6e8a2f3f73255e46@2026-10-01T18:28:17.824979Z",
+      "payload_hash": "617a11d254e2ae39d62bb505027e63055112631544fbef8f4203dbede806cff1",
+      "fields": {
+        "id": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "teams": {
+          "null_rate": 0.0,
+          "types": [
+            "list"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/drives",
+      "family": "drives",
+      "role": "core_later",
+      "params": {
+        "year": "2024",
+        "week": "5"
+      },
+      "http_status": 200,
+      "response_count": 2345,
+      "documented_cap": null,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "c4e039fa3fb75bdeeb3d7faf@2026-10-01T18:28:18.786996Z",
+      "payload_hash": "b6cdcbefdc6c4f2f47c3629b843b4d93f4ac16e558e4caa3c5712744f5247b60",
+      "fields": {
+        "defense": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "defenseConference": {
+          "null_rate": 0.0043,
+          "types": [
+            "str"
+          ]
+        },
+        "driveNumber": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "driveResult": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "elapsed": {
+          "null_rate": 0.0,
+          "types": [
+            "dict"
+          ]
+        },
+        "endDefenseScore": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "endOffenseScore": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "endPeriod": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "endTime": {
+          "null_rate": 0.0,
+          "types": [
+            "dict"
+          ]
+        },
+        "endYardline": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "endYardsToGoal": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "gameId": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "id": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "isHomeOffense": {
+          "null_rate": 0.0,
+          "types": [
+            "bool"
+          ]
+        },
+        "offense": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "offenseConference": {
+          "null_rate": 0.0043,
+          "types": [
+            "str"
+          ]
+        },
+        "plays": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "scoring": {
+          "null_rate": 0.0,
+          "types": [
+            "bool"
+          ]
+        },
+        "startDefenseScore": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "startOffenseScore": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "startPeriod": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "startTime": {
+          "null_rate": 0.0,
+          "types": [
+            "dict"
+          ]
+        },
+        "startYardline": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "startYardsToGoal": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "yards": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/plays",
+      "family": "plays",
+      "role": "core_later",
+      "params": {
+        "year": "2024",
+        "week": "5"
+      },
+      "http_status": 200,
+      "response_count": 17323,
+      "documented_cap": null,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "ab0fc4fb0e1cc015e7880738@2026-10-01T18:28:20.377960Z",
+      "payload_hash": "11bd6b7667b99ddd77475aefb7301b7350c525cf78fa4b0f302a2fdff3ccba0a",
+      "fields": {
+        "away": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "clock": {
+          "null_rate": 0.0,
+          "types": [
+            "dict"
+          ]
+        },
+        "defense": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "defenseConference": {
+          "null_rate": 0.0046,
+          "types": [
+            "str"
+          ]
+        },
+        "defenseScore": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "defenseTimeouts": {
+          "null_rate": 0.0001,
+          "types": [
+            "int"
+          ]
+        },
+        "distance": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "down": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "driveId": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "driveNumber": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "gameId": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "home": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "id": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "offense": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "offenseConference": {
+          "null_rate": 0.0029,
+          "types": [
+            "str"
+          ]
+        },
+        "offenseScore": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "offenseTimeouts": {
+          "null_rate": 0.0001,
+          "types": [
+            "int"
+          ]
+        },
+        "period": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "playNumber": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "playText": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "playType": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "ppa": {
+          "null_rate": 0.2449,
+          "types": [
+            "float"
+          ]
+        },
+        "scoring": {
+          "null_rate": 0.0,
+          "types": [
+            "bool"
+          ]
+        },
+        "wallclock": {
+          "null_rate": 0.0104,
+          "types": [
+            "str"
+          ]
+        },
+        "yardline": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "yardsGained": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "yardsToGoal": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/plays/stats",
+      "family": "player_play_stats",
+      "role": "core_later",
+      "params": {
+        "year": "2024",
+        "week": "5",
+        "team": "Michigan"
+      },
+      "http_status": 200,
+      "response_count": 87,
+      "documented_cap": 2000,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "82b86ebea01fb35d0c182336@2026-10-01T18:28:21.343051Z",
+      "payload_hash": "3c6e41ad2a34dce4b7d313cb97029e9bd299ae3e4ad6c0b528e45c2b698711f2",
+      "fields": {
+        "athleteId": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "athleteName": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "clock": {
+          "null_rate": 0.0,
+          "types": [
+            "dict"
+          ]
+        },
+        "conference": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "distance": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "down": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "driveId": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "gameId": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "opponent": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "opponentScore": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "period": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "playId": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "season": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "stat": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "statType": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "team": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "teamScore": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "week": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "yardsToGoal": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/roster",
+      "family": "rosters",
+      "role": "core_later",
+      "params": {
+        "year": "2024",
+        "team": "Michigan"
+      },
+      "http_status": 200,
+      "response_count": 139,
+      "documented_cap": null,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "ebe12f16dd418595a36fb634@2026-10-01T18:28:21.547879Z",
+      "payload_hash": "5e7814ec33c8cd3d6e110a4ef4f27ae1fb64970bc878616b929d2c3e4c7e20ad",
+      "fields": {
+        "firstName": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "height": {
+          "null_rate": 0.0072,
+          "types": [
+            "int"
+          ]
+        },
+        "homeCity": {
+          "null_rate": 0.0072,
+          "types": [
+            "str"
+          ]
+        },
+        "homeCountry": {
+          "null_rate": 0.0072,
+          "types": [
+            "str"
+          ]
+        },
+        "homeCountyFIPS": {
+          "null_rate": 0.036,
+          "types": [
+            "str"
+          ]
+        },
+        "homeLatitude": {
+          "null_rate": 0.036,
+          "types": [
+            "float"
+          ]
+        },
+        "homeLongitude": {
+          "null_rate": 0.036,
+          "types": [
+            "float"
+          ]
+        },
+        "homeState": {
+          "null_rate": 0.0216,
+          "types": [
+            "str"
+          ]
+        },
+        "id": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "jersey": {
+          "null_rate": 0.0144,
+          "types": [
+            "int"
+          ]
+        },
+        "lastName": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "position": {
+          "null_rate": 0.0072,
+          "types": [
+            "str"
+          ]
+        },
+        "recruitIds": {
+          "null_rate": 0.0,
+          "types": [
+            "list"
+          ]
+        },
+        "team": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "weight": {
+          "null_rate": 0.0072,
+          "types": [
+            "int"
+          ]
+        },
+        "year": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/recruiting/players",
+      "family": "recruiting",
+      "role": "core_later",
+      "params": {
+        "year": "2024"
+      },
+      "http_status": 200,
+      "response_count": 4236,
+      "documented_cap": null,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "87c6fc4c64c3126a23c3bc3c@2026-10-01T18:28:22.226657Z",
+      "payload_hash": "98bc452f0ce54af1ac15798e3cb776c8b0d236d93ef8bd4666034dfb397d68e4",
+      "fields": {
+        "athleteId": {
+          "null_rate": 0.3702,
+          "types": [
+            "str"
+          ]
+        },
+        "city": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "committedTo": {
+          "null_rate": 0.1716,
+          "types": [
+            "str"
+          ]
+        },
+        "country": {
+          "null_rate": 0.0026,
+          "types": [
+            "str"
+          ]
+        },
+        "height": {
+          "null_rate": 0.0002,
+          "types": [
+            "float",
+            "int"
+          ]
+        },
+        "hometownInfo": {
+          "null_rate": 0.0,
+          "types": [
+            "dict"
+          ]
+        },
+        "id": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "name": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "position": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "ranking": {
+          "null_rate": 0.1277,
+          "types": [
+            "int"
+          ]
+        },
+        "rating": {
+          "null_rate": 0.1277,
+          "types": [
+            "float"
+          ]
+        },
+        "recruitType": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "school": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "stars": {
+          "null_rate": 0.1277,
+          "types": [
+            "int"
+          ]
+        },
+        "stateProvince": {
+          "null_rate": 0.0042,
+          "types": [
+            "str"
+          ]
+        },
+        "weight": {
+          "null_rate": 0.0009,
+          "types": [
+            "int"
+          ]
+        },
+        "year": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/coaches",
+      "family": "coaches",
+      "role": "core_later",
+      "params": {
+        "year": "2024"
+      },
+      "http_status": 200,
+      "response_count": 152,
+      "documented_cap": null,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "ad9f7c3d8ffa75ac5929796c@2026-10-01T18:28:22.555348Z",
+      "payload_hash": "c9d052b5ef1bc05e3d33b5568c16ccce7d66c19a8001ecf891a28daeebdd4280",
+      "fields": {
+        "firstName": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "hireDate": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "id": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "lastName": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "seasons": {
+          "null_rate": 0.0,
+          "types": [
+            "list"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/player/portal",
+      "family": "transfers",
+      "role": "core_later",
+      "params": {
+        "year": "2024"
+      },
+      "http_status": 200,
+      "response_count": 3378,
+      "documented_cap": null,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "67233f7b37c75b8923d181b4@2026-10-01T18:28:22.906939Z",
+      "payload_hash": "ce7e540c2e153cb9fdab6e9834eddbbbf9be27fab71ac726026d244236865029",
+      "fields": {
+        "destination": {
+          "null_rate": 0.2143,
+          "types": [
+            "str"
+          ]
+        },
+        "eligibility": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "firstName": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "lastName": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "origin": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "position": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "rating": {
+          "null_rate": 0.4517,
+          "types": [
+            "float"
+          ]
+        },
+        "season": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "stars": {
+          "null_rate": 0.1131,
+          "types": [
+            "int"
+          ]
+        },
+        "transferDate": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/lines",
+      "family": "market",
+      "role": "market",
+      "params": {
+        "year": "2024",
+        "week": "5"
+      },
+      "http_status": 200,
+      "response_count": 104,
+      "documented_cap": null,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "a1336a70ef0d1a2bf3f9e4d9@2026-10-01T18:28:23.241535Z",
+      "payload_hash": "6ed0af023b522303e9ae0f5a9ab5cb5126708325a27f59214e44e725e674c849",
+      "fields": {
+        "awayClassification": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "awayConference": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "awayScore": {
+          "null_rate": 0.0096,
+          "types": [
+            "int"
+          ]
+        },
+        "awayTeam": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "awayTeamId": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "homeClassification": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "homeConference": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "homeScore": {
+          "null_rate": 0.0096,
+          "types": [
+            "int"
+          ]
+        },
+        "homeTeam": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "homeTeamId": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "id": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "lines": {
+          "null_rate": 0.0,
+          "types": [
+            "list"
+          ]
+        },
+        "season": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "seasonType": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "startDate": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "week": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/games/weather",
+      "family": "weather",
+      "role": "comparison_only",
+      "params": {
+        "year": "2024",
+        "week": "5"
+      },
+      "http_status": 200,
+      "response_count": 225,
+      "documented_cap": null,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "259d762f86963d501ede992f@2026-10-01T18:28:23.583788Z",
+      "payload_hash": "bffc327270767262ad0e2f8742c0f49b7efb61ab6fca09d33522d9c509719969",
+      "fields": {
+        "awayConference": {
+          "null_rate": 0.0133,
+          "types": [
+            "str"
+          ]
+        },
+        "awayTeam": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "dewPoint": {
+          "null_rate": 0.0,
+          "types": [
+            "float",
+            "int"
+          ]
+        },
+        "gameIndoors": {
+          "null_rate": 0.0,
+          "types": [
+            "bool"
+          ]
+        },
+        "homeConference": {
+          "null_rate": 0.0044,
+          "types": [
+            "str"
+          ]
+        },
+        "homeTeam": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "humidity": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "id": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "precipitation": {
+          "null_rate": 0.0,
+          "types": [
+            "float",
+            "int"
+          ]
+        },
+        "pressure": {
+          "null_rate": 0.0,
+          "types": [
+            "float",
+            "int"
+          ]
+        },
+        "season": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "seasonType": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "snowfall": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "startTime": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "temperature": {
+          "null_rate": 0.0,
+          "types": [
+            "float",
+            "int"
+          ]
+        },
+        "venue": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "venueId": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "weatherCondition": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "weatherConditionCode": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "week": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "windDirection": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "windSpeed": {
+          "null_rate": 0.0,
+          "types": [
+            "float",
+            "int"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/player/usage",
+      "family": "usage",
+      "role": "comparison_only",
+      "params": {
+        "year": "2024",
+        "team": "Michigan"
+      },
+      "http_status": 200,
+      "response_count": 20,
+      "documented_cap": null,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "2ed1f0779a805a31d4b24bbc@2026-10-01T18:28:23.950935Z",
+      "payload_hash": "6e19b934e4a870a59d972cc93f9b7be07ffe621ce6b6f485d43e80988f187528",
+      "fields": {
+        "conference": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "id": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "name": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "position": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "season": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        },
+        "team": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "usage": {
+          "null_rate": 0.0,
+          "types": [
+            "dict"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/ratings/sp",
+      "family": "ratings",
+      "role": "comparison_only",
+      "params": {
+        "year": "2024"
+      },
+      "http_status": 200,
+      "response_count": 135,
+      "documented_cap": null,
+      "suspected_truncation": false,
+      "from_cache": false,
+      "request_id": "6fdf5e06d6518b2e127d153b@2026-10-01T18:28:24.231538Z",
+      "payload_hash": "e3d5d85d85aee7b36e094a58e5e67ce902ff56d4b42bfc44dad20be4e803c909",
+      "fields": {
+        "conference": {
+          "null_rate": 0.0074,
+          "types": [
+            "str"
+          ]
+        },
+        "defense": {
+          "null_rate": 0.0,
+          "types": [
+            "dict"
+          ]
+        },
+        "offense": {
+          "null_rate": 0.0,
+          "types": [
+            "dict"
+          ]
+        },
+        "ranking": {
+          "null_rate": 0.0074,
+          "types": [
+            "int"
+          ]
+        },
+        "rating": {
+          "null_rate": 0.0,
+          "types": [
+            "float",
+            "int"
+          ]
+        },
+        "secondOrderWins": {
+          "null_rate": 1.0,
+          "types": []
+        },
+        "sos": {
+          "null_rate": 1.0,
+          "types": []
+        },
+        "specialTeams": {
+          "null_rate": 0.0,
+          "types": [
+            "dict"
+          ]
+        },
+        "team": {
+          "null_rate": 0.0,
+          "types": [
+            "str"
+          ]
+        },
+        "year": {
+          "null_rate": 0.0,
+          "types": [
+            "int"
+          ]
+        }
+      }
+    }
+  ]
+}

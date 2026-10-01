@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# Secrets
+.env
+
+# Local data and build outputs (never versioned)
+data/*
+!data/.gitkeep
+artifacts/*
+!artifacts/.gitkeep
+*.duckdb
+*.duckdb.wal
+*.sqlite
+*.parquet

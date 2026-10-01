@@ -1,0 +1,28 @@
+{
+  "version": "0.1",
+  "status": "registered_unverified",
+  "notes": "Required params and caps are taken from CFBD docs and are confirmed or corrected by the D01 audit (experiments/m0/). role: core = needed for M1-M2; core_later = needed for M3+; comparison_only = retrospective or provider-derived output, never a predictor without publication evidence; market = timestamped market observations; ops = account/metadata.",
+  "audit_sample": {"year": 2024, "week": 5, "team": "Michigan"},
+  "endpoints": [
+    {"path": "/info", "family": "account", "role": "ops", "params": {}, "documented_cap": null},
+    {"path": "/calendar", "family": "schedule", "role": "core", "params": {"year": "{year}"}, "documented_cap": null},
+    {"path": "/teams", "family": "teams", "role": "core", "params": {"year": "{year}"}, "documented_cap": null},
+    {"path": "/teams/fbs", "family": "teams", "role": "core", "params": {"year": "{year}"}, "documented_cap": null},
+    {"path": "/conferences", "family": "teams", "role": "core", "params": {}, "documented_cap": null},
+    {"path": "/venues", "family": "teams", "role": "core", "params": {}, "documented_cap": null},
+    {"path": "/games", "family": "games", "role": "core", "params": {"year": "{year}", "week": "{week}"}, "documented_cap": null},
+    {"path": "/games/teams", "family": "team_game_stats", "role": "core", "params": {"year": "{year}", "week": "{week}"}, "documented_cap": null},
+    {"path": "/games/players", "family": "player_game_stats", "role": "core_later", "params": {"year": "{year}", "week": "{week}"}, "documented_cap": null},
+    {"path": "/drives", "family": "drives", "role": "core_later", "params": {"year": "{year}", "week": "{week}"}, "documented_cap": null},
+    {"path": "/plays", "family": "plays", "role": "core_later", "params": {"year": "{year}", "week": "{week}"}, "documented_cap": null},
+    {"path": "/plays/stats", "family": "player_play_stats", "role": "core_later", "params": {"year": "{year}", "week": "{week}", "team": "{team}"}, "documented_cap": 2000},
+    {"path": "/roster", "family": "rosters", "role": "core_later", "params": {"year": "{year}", "team": "{team}"}, "documented_cap": null},
+    {"path": "/recruiting/players", "family": "recruiting", "role": "core_later", "params": {"year": "{year}"}, "documented_cap": null},
+    {"path": "/coaches", "family": "coaches", "role": "core_later", "params": {"year": "{year}"}, "documented_cap": null},
+    {"path": "/player/portal", "family": "transfers", "role": "core_later", "params": {"year": "{year}"}, "documented_cap": null},
+    {"path": "/lines", "family": "market", "role": "market", "params": {"year": "{year}", "week": "{week}"}, "documented_cap": null},
+    {"path": "/games/weather", "family": "weather", "role": "comparison_only", "params": {"year": "{year}", "week": "{week}"}, "documented_cap": null},
+    {"path": "/player/usage", "family": "usage", "role": "comparison_only", "params": {"year": "{year}", "team": "{team}"}, "documented_cap": null},
+    {"path": "/ratings/sp", "family": "ratings", "role": "comparison_only", "params": {"year": "{year}"}, "documented_cap": null}
+  ]
+}

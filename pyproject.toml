@@ -1,0 +1,39 @@
+[project]
+name = "cfb-modeling"
+version = "0.0.1"
+description = "Cutoff-aware college football forecasting: immutable CFBD ingestion, coherent score distributions, deterministic picks"
+requires-python = ">=3.12"
+dependencies = [
+    "httpx>=0.27",
+    "numpy>=2.0",
+    "pandas>=2.2",
+    "pyarrow>=17",
+    "duckdb>=1.1",
+    "scipy>=1.13",
+    "typer>=0.12",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[project.scripts]
+cfb = "cfb.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cfb"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "--import-mode=importlib"
+markers = [
+    "live: requires CFBD_API_KEY and network access; skipped otherwise",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
