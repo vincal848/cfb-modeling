@@ -238,6 +238,45 @@ def reconcile_plays(start: int = typer.Option(2014), end: int = typer.Option(202
     typer.echo("\n".join(lines[4:]))
 
 
+@app.command("build-states")
+def build_states(start: int = typer.Option(2014), end: int = typer.Option(2025),
+                 workers: int = typer.Option(0, help="Worker processes (0 = CPU count - 1)")) -> None:
+    """P01: per-play preplay states and next-score labels for exact-tier games."""
+    import pandas as pd
+
+    from cfb.evaluation.backtest import parallel_map
+    from cfb.state.table import LABELS, season_states
+
+    results = parallel_map(season_states, list(range(start, end + 1)), workers or None)
+    df = pd.concat([r[0] for r in results if len(r[0])], ignore_index=True)
+    out = REPO_ROOT / "artifacts" / "plays"
+    out.mkdir(parents=True, exist_ok=True)
+    df.to_parquet(out / "states.parquet", index=False)
+
+    def rate(t: dict, ok: str, n: str) -> str:
+        return f"{t[ok] / t[n]:.1%}" if t.get(n) else "n/a"
+
+    lines = ["# P01 preplay states and transition checks", "",
+             ("Scrimmage plays in regulation of games whose scoring reconciles exactly. Transition checks compare "
+              "consecutive scrimmage rows of one possession (plays with a penalty in the text are not checked for "
+              "down and yards). They describe CFBD's consistency; no play is dropped for failing one."), "",
+             ("| Season | Exact games | Plays | Down carries | Yards carry | Clock order | Kickoff after score | "
+              "Half opens with kickoff |"), "|---|---|---|---|---|---|---|---|"]
+    for season, (frame, t) in zip(range(start, end + 1), results, strict=True):
+        lines.append(f"| {season} | {t['exact_games']} | {len(frame)} | {rate(t, 'down_ok', 'down_checked')} | "
+                     f"{rate(t, 'yards_ok', 'yards_checked')} | {rate(t, 'clock_ok', 'clock_checked')} | "
+                     f"{rate(t, 'kickoff_after_score_ok', 'score_checked')} | "
+                     f"{rate(t, 'half_starts_with_kickoff', 'halves')} |")
+    shares = df["next_score"].value_counts(normalize=True)
+    lines += ["", "## Next-score labels (all seasons)", "", "| Label | Share |", "|---|---|"]
+    lines += [f"| {lab} | {shares.get(lab, 0):.1%} |" for lab in LABELS]
+    rep = REPO_ROOT / "experiments" / "p01"
+    rep.mkdir(parents=True, exist_ok=True)
+    (rep / f"state-checks-{start}-{end}.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    typer.echo("\n".join(lines[4:]))
+    typer.echo(f"{len(df):,} states written to artifacts/plays/states.parquet")
+
+
 @app.command()
 def quality(start: int = typer.Option(2014), end: int = typer.Option(2025)) -> None:
     """D08: per-game score/coverage flags and quarantine per model family (cached data only)."""
