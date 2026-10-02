@@ -17,7 +17,8 @@ This file keeps two things separate:
 | M0 Source audit | 🟡 | n/a | D01, D02, D03 and V01 done |
 | M1 Temporal data foundation | ✅ | n/a | D03–D08 done |
 | M2 Forecasting baseline | ✅ | 🟡 development only | B01, B02, B03 done. Champion decision deferred to the stack/test stages per V01 |
-| M3–M7 | ⬜ | ⬜ | In dependency order after M2 |
+| M3 EP and skill players | 🟡 | ⬜ | P01 scoring/overtime reconciliation done; P02 EP model next |
+| M4–M7 | ⬜ | ⬜ | In dependency order |
 | T1 Tracking / L1 Live | disabled | — | Gated on external data. `tracking_enabled=false`, enforced by config validation |
 
 ## Backlog items
@@ -35,6 +36,7 @@ This file keeps two things separate:
 | D08 Score and coverage quality checks | ✅ | `cfb quality`: per-game flags for 10,372 games; quarantine per model family. Team-score models lose 1 game; play-derived models 1,187 (11.4%). See [experiments/d08/quality-2014-2025.md](experiments/d08/quality-2014-2025.md). 13 tests. |
 | B03 Immutable forecast summaries and forced picks | ✅ | 147 runs, 7,029 forecasts with winner_v1 picks, outcomes and evaluations; rerun inserts 0; 50/50 sampled forecasts replay exactly. 4 replay tests. |
 | B02 Dynamic team-only strength | ✅ | Kalman filter, past-only states checked against every fold snapshot; 36-configuration prior/innovation sensitivity reported. See [experiments/b02/b02-development.md](experiments/b02/b02-development.md). |
+| P01 State machine (scoring, overtime) | 🟡 | Scoring and overtime reconciliation under a cited rules registry: 78.3% of games exact, 11.7% events-only, 10.0% failed. 46 tests against independent sources (ESPN, recaps). Down/distance/field-position and clock transitions remain. See [experiments/p01/reconciliation-2014-2025.md](experiments/p01/reconciliation-2014-2025.md). |
 | B01 Elo and margin/total baselines | ✅ | Both beat the trivial model on every primary metric (development). See [experiments/b01/b01-development.md](experiments/b01/b01-development.md). |
 
 ## Completed work
@@ -151,6 +153,22 @@ Labeling: rows from mocked transports use `provider='SYNTHETIC'`. Live rows use 
 4. **1,981 stay unresolved**. A diagnosis of the first pass: about half have no similar name on the origin roster (roster coverage gaps), 371 come from schools with no roster data (mostly Division II), and nickname variants were the next largest group. Two weaker rules (exact name on the portal-season roster; first-name prefix such as Sam/Samuel) then moved 215 records to proposed. They can never produce verified. Different first names that are not prefixes (Julian/Julio) stay unresolved.
 5. **A named destination is a commitment, not an enrollment.** Enrollment events exist only for verified links (7,767).
 
+### Rules registry (P01 prerequisite)
+
+- [config/rules_registry.json](config/rules_registry.json) and [docs/rules/ncaa-rules-registry.md](docs/rules/ncaa-rules-registry.md): scoring, overtime, clock, kickoff and halftime rules for 2014–2025, each citing its source. 13 sources, 12 primary (NCAA rulebooks and rule-change documents; several read from third-party copies because ncaapublications.com links are broken).
+- Overtime: two-point try mandatory from OT3 in 2014–2020 and from OT2 from 2021; single two-point plays from OT5 in 2019–2020 and from OT3 from 2021. Point values unchanged 2014–2025.
+- Unverified items (2015, 2020 and 2022 rulebooks not opened; 2024 clock restart after the Two-Minute Timeout) are null in the JSON and listed in the .md. The loader raises on a null it needs rather than falling back.
+- [docs/rules/fixture-candidates.md](docs/rules/fixture-candidates.md): 24 real games with an independent source per scoring situation.
+
+## P01 findings (play-level scoring, all 2014–2025 population games)
+
+1. **78.3% of games reconcile exactly** (every score change explained, ending at the official final); 11.7% only at the events tier; 10.0% fail. Exact share is 82–85% through 2020 and 66–79% from 2021. Only exact games should feed transition-level models (P02).
+2. **CFBD conventions handled explicitly, never silently**: scores on plays are after the play and include the try; administrative rows carry stale scores (skipped); 932 games have transient stale rows; 1,005 games have touchdowns under non-touchdown play types (found from text); try results come from text or, in 955 games, from the score change; 7 games record the try on the next play.
+3. **11 games have the offense/defense score columns swapped for the whole game** (e.g. 2022 Florida State–LSU); the swapped reading is used only when it explains strictly more.
+4. **Overtime is unreliable in CFBD**: some games put every overtime in period 5 (overtime number then inferred from possessions), some lack plays for scoreless overtimes (2019 Virginia Tech–North Carolina: 5 inferred, 6 real), and 2021 Illinois–Penn State lacks all seven shootout periods (reported as failed).
+5. **Defensive two-point returns are recorded only in the score**; the try text says the kick was blocked. These reconcile at the events tier, not exactly.
+6. **Fixtures**: 20 games extracted to `tests/fixtures/football/`; official finals, scorers, return touchdowns, safeties, nullified touchdowns, failed tries, overtime counts and the mandatory two-point periods all match ESPN or written recaps.
+
 ## B01 findings (development, reconstructed, tuned on the same games)
 
 Two tuning passes. Pass 1 (commit 7aa513e) selected grid-edge values and gave ridge intervals that were too narrow, so pass 2 widened the grid once and added a ridge covariance scale. No further pass.
@@ -202,7 +220,7 @@ None of these require a spec deviation. Each is a case the blueprint already ant
 
 | Date | Check | Result | Data |
 |---|---|---|---|
-| 2026-10-02 | `uv run pytest` | 106 passed | Synthetic contract rows and mocked transport only |
+| 2026-10-02 | `uv run pytest` | 169 passed | Synthetic contract rows and mocked transport only |
 | 2026-10-01 | `uv run ruff check` | Clean | — |
 | 2026-10-01 | `uv run cfb doctor` | All ok, key present | — |
 | 2026-10-01 | `uv run cfb audit-source --season 2024` | 20/20 endpoints returned 200, none truncated, 19 calls used | **Real CFBD** |
@@ -231,5 +249,6 @@ These checks validate contracts, endpoint access and season coverage. They do no
 ## Next executable step
 
 1. Optional B02 refinement: estimate the observation noise from past one-step innovations instead of tuning it (B02 finding 5).
-2. P01 state machine, waiting on the cited rules registry (research in progress).
+2. P01 remainder: down/distance, field position, possession and clock transitions (the scoring layer is done).
+3. P02: fold-specific college EP/EPA on exact-tier games only.
 3. P01: possession/clock/scoring state machine, which needs hand-checked football fixtures and a sourced rules registry.

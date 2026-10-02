@@ -185,6 +185,59 @@ def players() -> None:
     typer.echo("\n".join(lines[4:]))
 
 
+@app.command("reconcile-plays")
+def reconcile_plays(start: int = typer.Option(2014), end: int = typer.Option(2025),
+                    workers: int = typer.Option(0, help="Worker processes (0 = CPU count - 1)")) -> None:
+    """P01: play-by-play scoring reconciliation per game under the cited rules registry."""
+    import json
+    from collections import Counter
+
+    import pandas as pd
+
+    from cfb.evaluation.backtest import parallel_map
+    from cfb.state.machine import reconcile_season
+
+    seasons = list(range(start, end + 1))
+    df = pd.DataFrame([r for rows in parallel_map(reconcile_season, seasons, workers or None) for r in rows])
+    out = REPO_ROOT / "artifacts" / "quality"
+    out.mkdir(parents=True, exist_ok=True)
+    df.to_parquet(out / "play_reconciliation.parquet", index=False)
+
+    tiers = ["exact", "events", "failed"]
+    lines = ["# P01 play-by-play scoring reconciliation", "",
+             ("Every population game's CFBD plays are walked in game order under the season's rules from "
+              "`config/rules_registry.json`. **exact**: every score change is explained and the walk ends at the "
+              "official final. **events**: the classified scoring events sum to the official final (undescribed "
+              "tries 0-2 points; failed tries may have been returned for 2), but some per-play changes are "
+              "unexplained. **failed**: neither. Only exact games are fit for transition-level models (P02)."), "",
+             "| Season | Games | Exact | Events | Failed | Exact share | Swapped columns | OT games |",
+             "|---|---|---|---|---|---|---|---|"]
+    for season, g in df.groupby("season"):
+        c = g["tier"].value_counts()
+        lines.append(f"| {season} | {len(g)} | " + " | ".join(str(int(c.get(t, 0))) for t in tiers)
+                     + f" | {c.get('exact', 0) / len(g):.1%} | {int(g['score_columns_swapped'].sum())} | "
+                     f"{int((g['overtime_periods'] > 0).sum())} |")
+    c = df["tier"].value_counts()
+    lines.append(f"| All | {len(df)} | " + " | ".join(str(int(c.get(t, 0))) for t in tiers)
+                 + f" | {c.get('exact', 0) / len(df):.1%} | {int(df['score_columns_swapped'].sum())} | "
+                 f"{int((df['overtime_periods'] > 0).sum())} |")
+    issues = Counter()
+    for s in df["issues"]:
+        issues.update({k: 1 for k in json.loads(s)})
+    lines += ["", "## Games with each issue", "", "| Issue | Games |", "|---|---|"]
+    lines += [f"| `{k}` | {n} |" for k, n in issues.most_common()]
+    lines += ["", "## Provider conventions handled (games affected)", "",
+              f"- Touchdowns found from text under non-touchdown play types: {int((df['text_touchdowns'] > 0).sum())}",
+              f"- Stale rows skipped: {int((df['stale_rows'] > 0).sum())}",
+              f"- Try points recorded on the next play: {int((df['split_tries'] > 0).sum())}",
+              f"- Try results inferred from the score change: {int((df['inferred_tries'] > 0).sum())}",
+              f"- Score columns swapped for the whole game: {int(df['score_columns_swapped'].sum())}"]
+    rep = REPO_ROOT / "experiments" / "p01"
+    rep.mkdir(parents=True, exist_ok=True)
+    (rep / f"reconciliation-{start}-{end}.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    typer.echo("\n".join(lines[4:]))
+
+
 @app.command()
 def quality(start: int = typer.Option(2014), end: int = typer.Option(2025)) -> None:
     """D08: per-game score/coverage flags and quarantine per model family (cached data only)."""

@@ -1,0 +1,1434 @@
+{
+  "version": "1.0",
+  "compiled": "2026-10-02",
+  "scope": "NCAA FBS playing rules affecting scoring, possession, clock and game end, seasons 2014-2025",
+  "conventions": {
+    "overtime_period_numbering": "1 = first extra period",
+    "null": "not verified from an opened source, or not applicable (see notes)"
+  },
+  "seasons": {
+    "2014": {
+      "overtime": {
+        "possession_start": "opponent_25_yard_line",
+        "possession_start_yard_line": 25,
+        "possessions_per_period": 2,
+        "series_ends_on": "score_or_failure_to_make_first_down",
+        "team_b_score_other_than_try_ends_period": true,
+        "game_clock_runs": false,
+        "mandatory_two_point_from_overtime_period": 3,
+        "one_point_kick_counts_in_mandatory_periods": false,
+        "two_point_shootout_from_overtime_period": null,
+        "shootout_snap_yard_line": null,
+        "max_overtime_periods": null,
+        "timeouts": "1 per team per extra period; unused timeouts do not carry over",
+        "timeouts_per_team_per_period_ot1_ot2": 1,
+        "timeouts_per_team_ot3_onward_total": null,
+        "mandatory_break_after_periods": [],
+        "rule_ref": "3-1-3",
+        "notes": "No maximum number of extra periods is stated in Rule 3-1-3 (max_overtime_periods null = no stated limit). Pre-2019: every extra period is a full possession series from the 25; two-point try mandatory from the 3rd period.",
+        "source_ids": [
+          "S1"
+        ]
+      },
+      "scoring": {
+        "touchdown": 6,
+        "field_goal": 3,
+        "safety": 2,
+        "pat_kick": 1,
+        "two_point_try": 2,
+        "defensive_return_on_try": 2,
+        "safety_on_try": 1,
+        "try_snap_yard_line": 3,
+        "try_after_td_as_time_expires_in_q4": "not attempted unless the point(s) would affect the outcome",
+        "rule_ref": "8-1-1, 8-3-1, 8-3-2; A.R. 8-3-2-I, A.R. 8-3-2-VII",
+        "notes": "Try scores per 8-1-1 'Successful Try: Touchdown 2, Field Goal or Safety 1'. A.R. 8-3-2-VII: Team B interception returned on a try = 2 points for Team B. A.R. 8-3-2-I/II: safety by Team B on a try = 1 point for Team A.",
+        "source_ids": [
+          "S1"
+        ]
+      },
+      "clock": {
+        "first_down_clock_stop": "all_game",
+        "first_down_clock_restart": "referee_ready_for_play_signal",
+        "first_down_stop_applies_last_two_minutes_of_half": true,
+        "incomplete_pass": "stop; restart on snap",
+        "out_of_bounds_ball_carrier": "stop; restart on ready-for-play signal, except with fewer than 2:00 left in a half (restart on snap)",
+        "touchback": "stop; restart on snap",
+        "change_of_possession_team_b_first_down": "stop; restart on snap",
+        "after_score": "stop; restart when the following free kick is legally touched in the field of play",
+        "two_minute_timeout": false,
+        "two_minute_timeout_detail": null,
+        "two_minute_timeout_clock_restart": null,
+        "timeouts_per_team_per_half": 3,
+        "consecutive_team_timeouts_same_dead_ball_allowed": true,
+        "ten_second_runoff_window": "final 1:00 of each half",
+        "clock_on_snap_option_after_foul_by_leading_team": null,
+        "period_extended_for_untimed_down_in": "all_quarters",
+        "period_extension_triggers": "accepted live-ball foul (not Team A loss-of-down foul), offsetting fouls, inadvertent whistle; TD as time expires -> try",
+        "replay_min_seconds_to_restore_at_end_of_half": null,
+        "rule_ref": "3-2-3, 3-3-2, 3-3-4, 3-3-5 (2024+), 3-4-3, 3-4-4",
+        "notes": null,
+        "source_ids": [
+          "S1"
+        ]
+      },
+      "kickoff": {
+        "kickoff_yard_line": 35,
+        "safety_free_kick_yard_line": 20,
+        "touchback_free_kick_yard_line": 25,
+        "touchback_other_yard_line": 20,
+        "fair_catch_free_kick_inside_25_placed_at_25": false,
+        "free_kick_out_of_bounds_receiving_option": "5 yards from previous spot, 5 yards from dead-ball spot, or ball at hash 30 yards beyond kicking team's restraining line",
+        "rule_ref": "6-1-2, 6-2-1, 6-5-1-a, 8-6-2",
+        "notes": "Fair catch of a free kick: ball belongs to Team B at the spot of the catch (6-5-1-a).",
+        "source_ids": [
+          "S1"
+        ]
+      },
+      "halftime": {
+        "each_half_starts_with_kickoff": true,
+        "coin_toss_winner_may_defer": true,
+        "second_half_first_choice": "loser_of_toss_or_winner_who_deferred",
+        "second_half_choice_options": [
+          "kick_or_receive",
+          "goal_to_defend"
+        ],
+        "quarter_break_q1_q3": "teams switch goals; possession, down, distance and spot carry over",
+        "end_of_half_no_time": "half ends when time expires and ball is dead unless extended for an untimed down (see clock.period_extended_for_untimed_down_in) or a try after a TD",
+        "rule_ref": "3-1-1, 3-1-2, 3-2-3",
+        "notes": "The 2013-14 book (S1) gives the toss winner the option to 'defer his selection to the second half' and says the referee obtains second-half options, but does not contain the explicit sentence 'For the second half the loser of the toss, or the winner who chooses option 3, shall choose...' which first appears in the 2016-17 book (S2). The value is therefore verified only for the deferral case in 2014-2015.",
+        "source_ids": [
+          "S1",
+          "S2"
+        ]
+      },
+      "other_changes": {
+        "items": [],
+        "source_ids": [
+          "S1"
+        ]
+      },
+      "rulebook_opened": "S1",
+      "coverage_note": null
+    },
+    "2015": {
+      "overtime": {
+        "possession_start": "opponent_25_yard_line",
+        "possession_start_yard_line": 25,
+        "possessions_per_period": 2,
+        "series_ends_on": "score_or_failure_to_make_first_down",
+        "team_b_score_other_than_try_ends_period": true,
+        "game_clock_runs": false,
+        "mandatory_two_point_from_overtime_period": 3,
+        "one_point_kick_counts_in_mandatory_periods": false,
+        "two_point_shootout_from_overtime_period": null,
+        "shootout_snap_yard_line": null,
+        "max_overtime_periods": null,
+        "timeouts": "1 per team per extra period; unused timeouts do not carry over",
+        "timeouts_per_team_per_period_ot1_ot2": 1,
+        "timeouts_per_team_ot3_onward_total": null,
+        "mandatory_break_after_periods": [],
+        "rule_ref": "3-1-3",
+        "notes": "No maximum number of extra periods is stated in Rule 3-1-3 (max_overtime_periods null = no stated limit). Pre-2019: every extra period is a full possession series from the 25; two-point try mandatory from the 3rd period.",
+        "source_ids": [
+          "S1",
+          "S2",
+          "S12"
+        ]
+      },
+      "scoring": {
+        "touchdown": 6,
+        "field_goal": 3,
+        "safety": 2,
+        "pat_kick": 1,
+        "two_point_try": 2,
+        "defensive_return_on_try": 2,
+        "safety_on_try": 1,
+        "try_snap_yard_line": 3,
+        "try_after_td_as_time_expires_in_q4": "not attempted unless the point(s) would affect the outcome",
+        "rule_ref": "8-1-1, 8-3-1, 8-3-2; A.R. 8-3-2-I, A.R. 8-3-2-VII",
+        "notes": "Try scores per 8-1-1 'Successful Try: Touchdown 2, Field Goal or Safety 1'. A.R. 8-3-2-VII: Team B interception returned on a try = 2 points for Team B. A.R. 8-3-2-I/II: safety by Team B on a try = 1 point for Team A.",
+        "source_ids": [
+          "S1",
+          "S2",
+          "S12"
+        ]
+      },
+      "clock": {
+        "first_down_clock_stop": "all_game",
+        "first_down_clock_restart": "referee_ready_for_play_signal",
+        "first_down_stop_applies_last_two_minutes_of_half": true,
+        "incomplete_pass": "stop; restart on snap",
+        "out_of_bounds_ball_carrier": "stop; restart on ready-for-play signal, except with fewer than 2:00 left in a half (restart on snap)",
+        "touchback": "stop; restart on snap",
+        "change_of_possession_team_b_first_down": "stop; restart on snap",
+        "after_score": "stop; restart when the following free kick is legally touched in the field of play",
+        "two_minute_timeout": false,
+        "two_minute_timeout_detail": null,
+        "two_minute_timeout_clock_restart": null,
+        "timeouts_per_team_per_half": 3,
+        "consecutive_team_timeouts_same_dead_ball_allowed": true,
+        "ten_second_runoff_window": "final 1:00 of each half",
+        "clock_on_snap_option_after_foul_by_leading_team": null,
+        "period_extended_for_untimed_down_in": "all_quarters",
+        "period_extension_triggers": "accepted live-ball foul (not Team A loss-of-down foul), offsetting fouls, inadvertent whistle; TD as time expires -> try",
+        "replay_min_seconds_to_restore_at_end_of_half": null,
+        "rule_ref": "3-2-3, 3-3-2, 3-3-4, 3-3-5 (2024+), 3-4-3, 3-4-4",
+        "notes": null,
+        "source_ids": [
+          "S1",
+          "S2",
+          "S12"
+        ]
+      },
+      "kickoff": {
+        "kickoff_yard_line": 35,
+        "safety_free_kick_yard_line": 20,
+        "touchback_free_kick_yard_line": 25,
+        "touchback_other_yard_line": 20,
+        "fair_catch_free_kick_inside_25_placed_at_25": false,
+        "free_kick_out_of_bounds_receiving_option": "5 yards from previous spot, 5 yards from dead-ball spot, or ball at hash 30 yards beyond kicking team's restraining line",
+        "rule_ref": "6-1-2, 6-2-1, 6-5-1-a, 8-6-2",
+        "notes": "Fair catch of a free kick: ball belongs to Team B at the spot of the catch (6-5-1-a).",
+        "source_ids": [
+          "S1",
+          "S2",
+          "S12"
+        ]
+      },
+      "halftime": {
+        "each_half_starts_with_kickoff": true,
+        "coin_toss_winner_may_defer": true,
+        "second_half_first_choice": "loser_of_toss_or_winner_who_deferred",
+        "second_half_choice_options": [
+          "kick_or_receive",
+          "goal_to_defend"
+        ],
+        "quarter_break_q1_q3": "teams switch goals; possession, down, distance and spot carry over",
+        "end_of_half_no_time": "half ends when time expires and ball is dead unless extended for an untimed down (see clock.period_extended_for_untimed_down_in) or a try after a TD",
+        "rule_ref": "3-1-1, 3-1-2, 3-2-3",
+        "notes": "The 2013-14 book (S1) gives the toss winner the option to 'defer his selection to the second half' and says the referee obtains second-half options, but does not contain the explicit sentence 'For the second half the loser of the toss, or the winner who chooses option 3, shall choose...' which first appears in the 2016-17 book (S2). The value is therefore verified only for the deferral case in 2014-2015.",
+        "source_ids": [
+          "S1",
+          "S2",
+          "S12"
+        ]
+      },
+      "other_changes": {
+        "items": [
+          "Play clock reset to 25 s after 15 s (was 20 s) when ball not ready; defensive helmet-off sets play clock to 40 s (S12, secondary). No change to scoring/possession items."
+        ],
+        "source_ids": [
+          "S1",
+          "S2",
+          "S12"
+        ]
+      },
+      "rulebook_opened": null,
+      "coverage_note": "The 2015 rulebook was not opened. 2015 values equal the identical text in the 2013-14 (S1) and 2016-17 (S2) books; the 2015 change summary (S12, secondary) lists no change to these items."
+    },
+    "2016": {
+      "overtime": {
+        "possession_start": "opponent_25_yard_line",
+        "possession_start_yard_line": 25,
+        "possessions_per_period": 2,
+        "series_ends_on": "score_or_failure_to_make_first_down",
+        "team_b_score_other_than_try_ends_period": true,
+        "game_clock_runs": false,
+        "mandatory_two_point_from_overtime_period": 3,
+        "one_point_kick_counts_in_mandatory_periods": false,
+        "two_point_shootout_from_overtime_period": null,
+        "shootout_snap_yard_line": null,
+        "max_overtime_periods": null,
+        "timeouts": "1 per team per extra period; unused timeouts do not carry over",
+        "timeouts_per_team_per_period_ot1_ot2": 1,
+        "timeouts_per_team_ot3_onward_total": null,
+        "mandatory_break_after_periods": [],
+        "rule_ref": "3-1-3",
+        "notes": "No maximum number of extra periods is stated in Rule 3-1-3 (max_overtime_periods null = no stated limit). Pre-2019: every extra period is a full possession series from the 25; two-point try mandatory from the 3rd period.",
+        "source_ids": [
+          "S2"
+        ]
+      },
+      "scoring": {
+        "touchdown": 6,
+        "field_goal": 3,
+        "safety": 2,
+        "pat_kick": 1,
+        "two_point_try": 2,
+        "defensive_return_on_try": 2,
+        "safety_on_try": 1,
+        "try_snap_yard_line": 3,
+        "try_after_td_as_time_expires_in_q4": "not attempted unless the point(s) would affect the outcome",
+        "rule_ref": "8-1-1, 8-3-1, 8-3-2; A.R. 8-3-2-I, A.R. 8-3-2-VII",
+        "notes": "Try scores per 8-1-1 'Successful Try: Touchdown 2, Field Goal or Safety 1'. A.R. 8-3-2-VII: Team B interception returned on a try = 2 points for Team B. A.R. 8-3-2-I/II: safety by Team B on a try = 1 point for Team A.",
+        "source_ids": [
+          "S2"
+        ]
+      },
+      "clock": {
+        "first_down_clock_stop": "all_game",
+        "first_down_clock_restart": "referee_ready_for_play_signal",
+        "first_down_stop_applies_last_two_minutes_of_half": true,
+        "incomplete_pass": "stop; restart on snap",
+        "out_of_bounds_ball_carrier": "stop; restart on ready-for-play signal, except with fewer than 2:00 left in a half (restart on snap)",
+        "touchback": "stop; restart on snap",
+        "change_of_possession_team_b_first_down": "stop; restart on snap",
+        "after_score": "stop; restart when the following free kick is legally touched in the field of play",
+        "two_minute_timeout": false,
+        "two_minute_timeout_detail": null,
+        "two_minute_timeout_clock_restart": null,
+        "timeouts_per_team_per_half": 3,
+        "consecutive_team_timeouts_same_dead_ball_allowed": true,
+        "ten_second_runoff_window": "final 1:00 of each half",
+        "clock_on_snap_option_after_foul_by_leading_team": "last 2:00 of a half; foul by team ahead",
+        "period_extended_for_untimed_down_in": "all_quarters",
+        "period_extension_triggers": "accepted live-ball foul (not Team A loss-of-down foul), offsetting fouls, inadvertent whistle; TD as time expires -> try",
+        "replay_min_seconds_to_restore_at_end_of_half": null,
+        "rule_ref": "3-2-3, 3-3-2, 3-3-4, 3-3-5 (2024+), 3-4-3, 3-4-4",
+        "notes": "2016: Rule 3-4-3 added the offended team's option to start the clock on the snap after a foul by the team ahead in the last two minutes.",
+        "source_ids": [
+          "S2"
+        ]
+      },
+      "kickoff": {
+        "kickoff_yard_line": 35,
+        "safety_free_kick_yard_line": 20,
+        "touchback_free_kick_yard_line": 25,
+        "touchback_other_yard_line": 20,
+        "fair_catch_free_kick_inside_25_placed_at_25": false,
+        "free_kick_out_of_bounds_receiving_option": "5 yards from previous spot, 5 yards from dead-ball spot, or ball at hash 30 yards beyond kicking team's restraining line",
+        "rule_ref": "6-1-2, 6-2-1, 6-5-1-a, 8-6-2",
+        "notes": "Fair catch of a free kick: ball belongs to Team B at the spot of the catch (6-5-1-a).",
+        "source_ids": [
+          "S2"
+        ]
+      },
+      "halftime": {
+        "each_half_starts_with_kickoff": true,
+        "coin_toss_winner_may_defer": true,
+        "second_half_first_choice": "loser_of_toss_or_winner_who_deferred",
+        "second_half_choice_options": [
+          "kick_or_receive",
+          "goal_to_defend"
+        ],
+        "quarter_break_q1_q3": "teams switch goals; possession, down, distance and spot carry over",
+        "end_of_half_no_time": "half ends when time expires and ball is dead unless extended for an untimed down (see clock.period_extended_for_untimed_down_in) or a try after a TD",
+        "rule_ref": "3-1-1, 3-1-2, 3-2-3",
+        "notes": null,
+        "source_ids": [
+          "S2"
+        ]
+      },
+      "other_changes": {
+        "items": [
+          "3-4-3 clock-on-snap option after a foul by the team ahead in the last two minutes (S2)."
+        ],
+        "source_ids": [
+          "S2"
+        ]
+      },
+      "rulebook_opened": "S2",
+      "coverage_note": null
+    },
+    "2017": {
+      "overtime": {
+        "possession_start": "opponent_25_yard_line",
+        "possession_start_yard_line": 25,
+        "possessions_per_period": 2,
+        "series_ends_on": "score_or_failure_to_make_first_down",
+        "team_b_score_other_than_try_ends_period": true,
+        "game_clock_runs": false,
+        "mandatory_two_point_from_overtime_period": 3,
+        "one_point_kick_counts_in_mandatory_periods": false,
+        "two_point_shootout_from_overtime_period": null,
+        "shootout_snap_yard_line": null,
+        "max_overtime_periods": null,
+        "timeouts": "1 per team per extra period; unused timeouts do not carry over",
+        "timeouts_per_team_per_period_ot1_ot2": 1,
+        "timeouts_per_team_ot3_onward_total": null,
+        "mandatory_break_after_periods": [],
+        "rule_ref": "3-1-3",
+        "notes": "No maximum number of extra periods is stated in Rule 3-1-3 (max_overtime_periods null = no stated limit). Pre-2019: every extra period is a full possession series from the 25; two-point try mandatory from the 3rd period.",
+        "source_ids": [
+          "S2"
+        ]
+      },
+      "scoring": {
+        "touchdown": 6,
+        "field_goal": 3,
+        "safety": 2,
+        "pat_kick": 1,
+        "two_point_try": 2,
+        "defensive_return_on_try": 2,
+        "safety_on_try": 1,
+        "try_snap_yard_line": 3,
+        "try_after_td_as_time_expires_in_q4": "not attempted unless the point(s) would affect the outcome",
+        "rule_ref": "8-1-1, 8-3-1, 8-3-2; A.R. 8-3-2-I, A.R. 8-3-2-VII",
+        "notes": "Try scores per 8-1-1 'Successful Try: Touchdown 2, Field Goal or Safety 1'. A.R. 8-3-2-VII: Team B interception returned on a try = 2 points for Team B. A.R. 8-3-2-I/II: safety by Team B on a try = 1 point for Team A.",
+        "source_ids": [
+          "S2"
+        ]
+      },
+      "clock": {
+        "first_down_clock_stop": "all_game",
+        "first_down_clock_restart": "referee_ready_for_play_signal",
+        "first_down_stop_applies_last_two_minutes_of_half": true,
+        "incomplete_pass": "stop; restart on snap",
+        "out_of_bounds_ball_carrier": "stop; restart on ready-for-play signal, except with fewer than 2:00 left in a half (restart on snap)",
+        "touchback": "stop; restart on snap",
+        "change_of_possession_team_b_first_down": "stop; restart on snap",
+        "after_score": "stop; restart when the following free kick is legally touched in the field of play",
+        "two_minute_timeout": false,
+        "two_minute_timeout_detail": null,
+        "two_minute_timeout_clock_restart": null,
+        "timeouts_per_team_per_half": 3,
+        "consecutive_team_timeouts_same_dead_ball_allowed": true,
+        "ten_second_runoff_window": "final 1:00 of each half",
+        "clock_on_snap_option_after_foul_by_leading_team": "last 2:00 of a half; foul by team ahead",
+        "period_extended_for_untimed_down_in": "all_quarters",
+        "period_extension_triggers": "accepted live-ball foul (not Team A loss-of-down foul), offsetting fouls, inadvertent whistle; TD as time expires -> try",
+        "replay_min_seconds_to_restore_at_end_of_half": null,
+        "rule_ref": "3-2-3, 3-3-2, 3-3-4, 3-3-5 (2024+), 3-4-3, 3-4-4",
+        "notes": "2016: Rule 3-4-3 added the offended team's option to start the clock on the snap after a foul by the team ahead in the last two minutes.",
+        "source_ids": [
+          "S2"
+        ]
+      },
+      "kickoff": {
+        "kickoff_yard_line": 35,
+        "safety_free_kick_yard_line": 20,
+        "touchback_free_kick_yard_line": 25,
+        "touchback_other_yard_line": 20,
+        "fair_catch_free_kick_inside_25_placed_at_25": false,
+        "free_kick_out_of_bounds_receiving_option": "5 yards from previous spot, 5 yards from dead-ball spot, or ball at hash 30 yards beyond kicking team's restraining line",
+        "rule_ref": "6-1-2, 6-2-1, 6-5-1-a, 8-6-2",
+        "notes": "Fair catch of a free kick: ball belongs to Team B at the spot of the catch (6-5-1-a).",
+        "source_ids": [
+          "S2"
+        ]
+      },
+      "halftime": {
+        "each_half_starts_with_kickoff": true,
+        "coin_toss_winner_may_defer": true,
+        "second_half_first_choice": "loser_of_toss_or_winner_who_deferred",
+        "second_half_choice_options": [
+          "kick_or_receive",
+          "goal_to_defend"
+        ],
+        "quarter_break_q1_q3": "teams switch goals; possession, down, distance and spot carry over",
+        "end_of_half_no_time": "half ends when time expires and ball is dead unless extended for an untimed down (see clock.period_extended_for_untimed_down_in) or a try after a TD",
+        "rule_ref": "3-1-1, 3-1-2, 3-2-3",
+        "notes": null,
+        "source_ids": [
+          "S2"
+        ]
+      },
+      "other_changes": {
+        "items": [
+          "Covered by the 2016-17 book (S2); no separate 2017 change list was opened."
+        ],
+        "source_ids": [
+          "S2"
+        ]
+      },
+      "rulebook_opened": "S2",
+      "coverage_note": null
+    },
+    "2018": {
+      "overtime": {
+        "possession_start": "opponent_25_yard_line",
+        "possession_start_yard_line": 25,
+        "possessions_per_period": 2,
+        "series_ends_on": "score_or_failure_to_make_first_down",
+        "team_b_score_other_than_try_ends_period": true,
+        "game_clock_runs": false,
+        "mandatory_two_point_from_overtime_period": 3,
+        "one_point_kick_counts_in_mandatory_periods": false,
+        "two_point_shootout_from_overtime_period": null,
+        "shootout_snap_yard_line": null,
+        "max_overtime_periods": null,
+        "timeouts": "1 per team per extra period; unused timeouts do not carry over",
+        "timeouts_per_team_per_period_ot1_ot2": 1,
+        "timeouts_per_team_ot3_onward_total": null,
+        "mandatory_break_after_periods": [],
+        "rule_ref": "3-1-3",
+        "notes": "No maximum number of extra periods is stated in Rule 3-1-3 (max_overtime_periods null = no stated limit). Pre-2019: every extra period is a full possession series from the 25; two-point try mandatory from the 3rd period.",
+        "source_ids": [
+          "S3"
+        ]
+      },
+      "scoring": {
+        "touchdown": 6,
+        "field_goal": 3,
+        "safety": 2,
+        "pat_kick": 1,
+        "two_point_try": 2,
+        "defensive_return_on_try": 2,
+        "safety_on_try": 1,
+        "try_snap_yard_line": 3,
+        "try_after_td_as_time_expires_in_q4": "not attempted unless the point(s) would affect the outcome; scoring team ahead by 1 or 2 may forgo the try",
+        "rule_ref": "8-1-1, 8-3-1, 8-3-2; A.R. 8-3-2-I, A.R. 8-3-2-VII",
+        "notes": "Try scores per 8-1-1 'Successful Try: Touchdown 2, Field Goal or Safety 1'. A.R. 8-3-2-VII: Team B interception returned on a try = 2 points for Team B. A.R. 8-3-2-I/II: safety by Team B on a try = 1 point for Team A.",
+        "source_ids": [
+          "S3"
+        ]
+      },
+      "clock": {
+        "first_down_clock_stop": "all_game",
+        "first_down_clock_restart": "referee_ready_for_play_signal",
+        "first_down_stop_applies_last_two_minutes_of_half": true,
+        "incomplete_pass": "stop; restart on snap",
+        "out_of_bounds_ball_carrier": "stop; restart on ready-for-play signal, except with fewer than 2:00 left in a half (restart on snap)",
+        "touchback": "stop; restart on snap",
+        "change_of_possession_team_b_first_down": "stop; restart on snap",
+        "after_score": "stop; restart when the following free kick is legally touched in the field of play",
+        "two_minute_timeout": false,
+        "two_minute_timeout_detail": null,
+        "two_minute_timeout_clock_restart": null,
+        "timeouts_per_team_per_half": 3,
+        "consecutive_team_timeouts_same_dead_ball_allowed": true,
+        "ten_second_runoff_window": "final 1:00 of each half",
+        "clock_on_snap_option_after_foul_by_leading_team": "last 2:00 of a half; foul by team ahead",
+        "period_extended_for_untimed_down_in": "all_quarters",
+        "period_extension_triggers": "accepted live-ball foul (not Team A loss-of-down foul), offsetting fouls, inadvertent whistle; TD as time expires -> try",
+        "replay_min_seconds_to_restore_at_end_of_half": null,
+        "rule_ref": "3-2-3, 3-3-2, 3-3-4, 3-3-5 (2024+), 3-4-3, 3-4-4",
+        "notes": "2016: Rule 3-4-3 added the offended team's option to start the clock on the snap after a foul by the team ahead in the last two minutes. 2018: 40-second play clock after free kicks and touchdowns (3-2-4); replay 10-second runoff (12-3-6).",
+        "source_ids": [
+          "S3"
+        ]
+      },
+      "kickoff": {
+        "kickoff_yard_line": 35,
+        "safety_free_kick_yard_line": 20,
+        "touchback_free_kick_yard_line": 25,
+        "touchback_other_yard_line": 20,
+        "fair_catch_free_kick_inside_25_placed_at_25": true,
+        "free_kick_out_of_bounds_receiving_option": "5 yards from previous spot, 5 yards from dead-ball spot, or ball at hash 30 yards beyond kicking team's restraining line",
+        "rule_ref": "6-1-2, 6-2-1, 6-5-1-a, 8-6-2",
+        "notes": "2018: fair catch of a free kick behind Team B's 25 is put in play at Team B's 25 (6-5-1-a).",
+        "source_ids": [
+          "S3"
+        ]
+      },
+      "halftime": {
+        "each_half_starts_with_kickoff": true,
+        "coin_toss_winner_may_defer": true,
+        "second_half_first_choice": "loser_of_toss_or_winner_who_deferred",
+        "second_half_choice_options": [
+          "kick_or_receive",
+          "goal_to_defend"
+        ],
+        "quarter_break_q1_q3": "teams switch goals; possession, down, distance and spot carry over",
+        "end_of_half_no_time": "half ends when time expires and ball is dead unless extended for an untimed down (see clock.period_extended_for_untimed_down_in) or a try after a TD",
+        "rule_ref": "3-1-1, 3-1-2, 3-2-3",
+        "notes": null,
+        "source_ids": [
+          "S3"
+        ]
+      },
+      "other_changes": {
+        "items": [
+          "6-5-1 fair catch of free kick inside 25 -> 25",
+          "8-3-2 team ahead by 1 or 2 may forgo try when scoring as time expires",
+          "3-2-4 40-s play clock after free kicks and TDs",
+          "12-3-6 replay 10-second runoff"
+        ],
+        "source_ids": [
+          "S3"
+        ]
+      },
+      "rulebook_opened": "S3",
+      "coverage_note": null
+    },
+    "2019": {
+      "overtime": {
+        "possession_start": "opponent_25_yard_line",
+        "possession_start_yard_line": 25,
+        "possessions_per_period": 2,
+        "series_ends_on": "score_or_failure_to_make_first_down",
+        "team_b_score_other_than_try_ends_period": true,
+        "game_clock_runs": false,
+        "mandatory_two_point_from_overtime_period": 3,
+        "one_point_kick_counts_in_mandatory_periods": false,
+        "two_point_shootout_from_overtime_period": 5,
+        "shootout_snap_yard_line": 3,
+        "max_overtime_periods": null,
+        "timeouts": "1 per team per extra period; unused timeouts do not carry over",
+        "timeouts_per_team_per_period_ot1_ot2": 1,
+        "timeouts_per_team_ot3_onward_total": null,
+        "mandatory_break_after_periods": [
+          2,
+          4
+        ],
+        "rule_ref": "3-1-3",
+        "notes": "No maximum number of extra periods is stated in Rule 3-1-3 (max_overtime_periods null = no stated limit). 2019-2020: periods 1-4 are possessions from the 25 (two-point try mandatory from period 3); from period 5 each possession is a single two-point play from the 3.",
+        "source_ids": [
+          "S4",
+          "S5"
+        ]
+      },
+      "scoring": {
+        "touchdown": 6,
+        "field_goal": 3,
+        "safety": 2,
+        "pat_kick": 1,
+        "two_point_try": 2,
+        "defensive_return_on_try": 2,
+        "safety_on_try": 1,
+        "try_snap_yard_line": 3,
+        "try_after_td_as_time_expires_in_q4": "not attempted unless the point(s) would affect the outcome; scoring team ahead by 1 or 2 may forgo the try",
+        "rule_ref": "8-1-1, 8-3-1, 8-3-2; A.R. 8-3-2-I, A.R. 8-3-2-VII",
+        "notes": "Try scores per 8-1-1 'Successful Try: Touchdown 2, Field Goal or Safety 1'. A.R. 8-3-2-VII: Team B interception returned on a try = 2 points for Team B. A.R. 8-3-2-I/II: safety by Team B on a try = 1 point for Team A.",
+        "source_ids": [
+          "S4"
+        ]
+      },
+      "clock": {
+        "first_down_clock_stop": "all_game",
+        "first_down_clock_restart": "referee_ready_for_play_signal",
+        "first_down_stop_applies_last_two_minutes_of_half": true,
+        "incomplete_pass": "stop; restart on snap",
+        "out_of_bounds_ball_carrier": "stop; restart on ready-for-play signal, except with fewer than 2:00 left in a half (restart on snap)",
+        "touchback": "stop; restart on snap",
+        "change_of_possession_team_b_first_down": "stop; restart on snap",
+        "after_score": "stop; restart when the following free kick is legally touched in the field of play",
+        "two_minute_timeout": false,
+        "two_minute_timeout_detail": null,
+        "two_minute_timeout_clock_restart": null,
+        "timeouts_per_team_per_half": 3,
+        "consecutive_team_timeouts_same_dead_ball_allowed": true,
+        "ten_second_runoff_window": "final 1:00 of each half",
+        "clock_on_snap_option_after_foul_by_leading_team": "last 2:00 of a half; foul by team ahead",
+        "period_extended_for_untimed_down_in": "all_quarters",
+        "period_extension_triggers": "accepted live-ball foul (not Team A loss-of-down foul), offsetting fouls, inadvertent whistle; TD as time expires -> try",
+        "replay_min_seconds_to_restore_at_end_of_half": null,
+        "rule_ref": "3-2-3, 3-3-2, 3-3-4, 3-3-5 (2024+), 3-4-3, 3-4-4",
+        "notes": "2016: Rule 3-4-3 added the offended team's option to start the clock on the snap after a foul by the team ahead in the last two minutes. 2018: 40-second play clock after free kicks and touchdowns (3-2-4); replay 10-second runoff (12-3-6).",
+        "source_ids": [
+          "S4"
+        ]
+      },
+      "kickoff": {
+        "kickoff_yard_line": 35,
+        "safety_free_kick_yard_line": 20,
+        "touchback_free_kick_yard_line": 25,
+        "touchback_other_yard_line": 20,
+        "fair_catch_free_kick_inside_25_placed_at_25": true,
+        "free_kick_out_of_bounds_receiving_option": "5 yards from previous spot, 5 yards from dead-ball spot, or ball at hash 30 yards beyond kicking team's restraining line",
+        "rule_ref": "6-1-2, 6-2-1, 6-5-1-a, 8-6-2",
+        "notes": "2018: fair catch of a free kick behind Team B's 25 is put in play at Team B's 25 (6-5-1-a).",
+        "source_ids": [
+          "S4"
+        ]
+      },
+      "halftime": {
+        "each_half_starts_with_kickoff": true,
+        "coin_toss_winner_may_defer": true,
+        "second_half_first_choice": "loser_of_toss_or_winner_who_deferred",
+        "second_half_choice_options": [
+          "kick_or_receive",
+          "goal_to_defend"
+        ],
+        "quarter_break_q1_q3": "teams switch goals; possession, down, distance and spot carry over",
+        "end_of_half_no_time": "half ends when time expires and ball is dead unless extended for an untimed down (see clock.period_extended_for_untimed_down_in) or a try after a TD",
+        "rule_ref": "3-1-1, 3-1-2, 3-2-3",
+        "notes": null,
+        "source_ids": [
+          "S4"
+        ]
+      },
+      "other_changes": {
+        "items": [
+          "3-1-3-e two-point shootout from 5th extra period",
+          "3-1-3-h mandatory 2-minute break after OT2 and OT4",
+          "6-1-10 wedge = two or more players"
+        ],
+        "source_ids": [
+          "S4",
+          "S5"
+        ]
+      },
+      "rulebook_opened": "S4",
+      "coverage_note": null
+    },
+    "2020": {
+      "overtime": {
+        "possession_start": "opponent_25_yard_line",
+        "possession_start_yard_line": 25,
+        "possessions_per_period": 2,
+        "series_ends_on": "score_or_failure_to_make_first_down",
+        "team_b_score_other_than_try_ends_period": true,
+        "game_clock_runs": false,
+        "mandatory_two_point_from_overtime_period": 3,
+        "one_point_kick_counts_in_mandatory_periods": false,
+        "two_point_shootout_from_overtime_period": 5,
+        "shootout_snap_yard_line": 3,
+        "max_overtime_periods": null,
+        "timeouts": "1 per team per extra period; unused timeouts do not carry over",
+        "timeouts_per_team_per_period_ot1_ot2": 1,
+        "timeouts_per_team_ot3_onward_total": null,
+        "mandatory_break_after_periods": [
+          2,
+          4
+        ],
+        "rule_ref": "3-1-3",
+        "notes": "No maximum number of extra periods is stated in Rule 3-1-3 (max_overtime_periods null = no stated limit). 2019-2020: periods 1-4 are possessions from the 25 (two-point try mandatory from period 3); from period 5 each possession is a single two-point play from the 3.",
+        "source_ids": [
+          "S4",
+          "S5",
+          "S6"
+        ]
+      },
+      "scoring": {
+        "touchdown": 6,
+        "field_goal": 3,
+        "safety": 2,
+        "pat_kick": 1,
+        "two_point_try": 2,
+        "defensive_return_on_try": 2,
+        "safety_on_try": 1,
+        "try_snap_yard_line": 3,
+        "try_after_td_as_time_expires_in_q4": "not attempted unless the point(s) would affect the outcome; scoring team ahead by 1 or 2 may forgo the try",
+        "rule_ref": "8-1-1, 8-3-1, 8-3-2; A.R. 8-3-2-I, A.R. 8-3-2-VII",
+        "notes": "Try scores per 8-1-1 'Successful Try: Touchdown 2, Field Goal or Safety 1'. A.R. 8-3-2-VII: Team B interception returned on a try = 2 points for Team B. A.R. 8-3-2-I/II: safety by Team B on a try = 1 point for Team A.",
+        "source_ids": [
+          "S4",
+          "S6"
+        ]
+      },
+      "clock": {
+        "first_down_clock_stop": "all_game",
+        "first_down_clock_restart": "referee_ready_for_play_signal",
+        "first_down_stop_applies_last_two_minutes_of_half": true,
+        "incomplete_pass": "stop; restart on snap",
+        "out_of_bounds_ball_carrier": "stop; restart on ready-for-play signal, except with fewer than 2:00 left in a half (restart on snap)",
+        "touchback": "stop; restart on snap",
+        "change_of_possession_team_b_first_down": "stop; restart on snap",
+        "after_score": "stop; restart when the following free kick is legally touched in the field of play",
+        "two_minute_timeout": false,
+        "two_minute_timeout_detail": null,
+        "two_minute_timeout_clock_restart": null,
+        "timeouts_per_team_per_half": 3,
+        "consecutive_team_timeouts_same_dead_ball_allowed": true,
+        "ten_second_runoff_window": "final 1:00 of each half",
+        "clock_on_snap_option_after_foul_by_leading_team": "last 2:00 of a half; foul by team ahead",
+        "period_extended_for_untimed_down_in": "all_quarters",
+        "period_extension_triggers": "accepted live-ball foul (not Team A loss-of-down foul), offsetting fouls, inadvertent whistle; TD as time expires -> try",
+        "replay_min_seconds_to_restore_at_end_of_half": 3,
+        "rule_ref": "3-2-3, 3-3-2, 3-3-4, 3-3-5 (2024+), 3-4-3, 3-4-4",
+        "notes": "2016: Rule 3-4-3 added the offended team's option to start the clock on the snap after a foul by the team ahead in the last two minutes. 2018: 40-second play clock after free kicks and touchdowns (3-2-4); replay 10-second runoff (12-3-6). 2020: if replay restores time at end of a half with the clock to start on the ready signal, at least 3 seconds must remain (12-3-6).",
+        "source_ids": [
+          "S4",
+          "S6"
+        ]
+      },
+      "kickoff": {
+        "kickoff_yard_line": 35,
+        "safety_free_kick_yard_line": 20,
+        "touchback_free_kick_yard_line": 25,
+        "touchback_other_yard_line": 20,
+        "fair_catch_free_kick_inside_25_placed_at_25": true,
+        "free_kick_out_of_bounds_receiving_option": "5 yards from previous spot, 5 yards from dead-ball spot, or ball at hash 30 yards beyond kicking team's restraining line",
+        "rule_ref": "6-1-2, 6-2-1, 6-5-1-a, 8-6-2",
+        "notes": "2018: fair catch of a free kick behind Team B's 25 is put in play at Team B's 25 (6-5-1-a).",
+        "source_ids": [
+          "S4",
+          "S6"
+        ]
+      },
+      "halftime": {
+        "each_half_starts_with_kickoff": true,
+        "coin_toss_winner_may_defer": true,
+        "second_half_first_choice": "loser_of_toss_or_winner_who_deferred",
+        "second_half_choice_options": [
+          "kick_or_receive",
+          "goal_to_defend"
+        ],
+        "quarter_break_q1_q3": "teams switch goals; possession, down, distance and spot carry over",
+        "end_of_half_no_time": "half ends when time expires and ball is dead unless extended for an untimed down (see clock.period_extended_for_untimed_down_in) or a try after a TD",
+        "rule_ref": "3-1-1, 3-1-2, 3-2-3",
+        "notes": null,
+        "source_ids": [
+          "S4",
+          "S6"
+        ]
+      },
+      "other_changes": {
+        "items": [
+          "10-2-5 fouls with option to carry to succeeding kickoff may carry to succeeding spot in extra periods",
+          "12-3-6 replay must leave >= 3 s to restore time at end of half"
+        ],
+        "source_ids": [
+          "S4",
+          "S6"
+        ]
+      },
+      "rulebook_opened": null,
+      "coverage_note": "The 2020 rulebook was not opened. Values carried from the 2019 book (S4); the official 2020 rules-change list (S6) contains no change to overtime, scoring values, kickoff/touchback, or the game-clock start/stop list."
+    },
+    "2021": {
+      "overtime": {
+        "possession_start": "opponent_25_yard_line",
+        "possession_start_yard_line": 25,
+        "possessions_per_period": 2,
+        "series_ends_on": "score_or_failure_to_make_first_down",
+        "team_b_score_other_than_try_ends_period": true,
+        "game_clock_runs": false,
+        "mandatory_two_point_from_overtime_period": 2,
+        "one_point_kick_counts_in_mandatory_periods": false,
+        "two_point_shootout_from_overtime_period": 3,
+        "shootout_snap_yard_line": 3,
+        "max_overtime_periods": null,
+        "timeouts": "1 per team per extra period; unused timeouts do not carry over",
+        "timeouts_per_team_per_period_ot1_ot2": 1,
+        "timeouts_per_team_ot3_onward_total": null,
+        "mandatory_break_after_periods": [
+          2,
+          4
+        ],
+        "rule_ref": "3-1-3",
+        "notes": "No maximum number of extra periods is stated in Rule 3-1-3 (max_overtime_periods null = no stated limit). 2021+: two-point try mandatory after a TD from period 2; from period 3 each possession is a single two-point play from the 3.",
+        "source_ids": [
+          "S7"
+        ]
+      },
+      "scoring": {
+        "touchdown": 6,
+        "field_goal": 3,
+        "safety": 2,
+        "pat_kick": 1,
+        "two_point_try": 2,
+        "defensive_return_on_try": 2,
+        "safety_on_try": 1,
+        "try_snap_yard_line": 3,
+        "try_after_td_as_time_expires_in_q4": "not attempted unless the point(s) would affect the outcome; scoring team ahead by 1 or 2 may forgo the try",
+        "rule_ref": "8-1-1, 8-3-1, 8-3-2; A.R. 8-3-2-I, A.R. 8-3-2-VII",
+        "notes": "Try scores per 8-1-1 'Successful Try: Touchdown 2, Field Goal or Safety 1'. A.R. 8-3-2-VII: Team B interception returned on a try = 2 points for Team B. A.R. 8-3-2-I/II: safety by Team B on a try = 1 point for Team A.",
+        "source_ids": [
+          "S7"
+        ]
+      },
+      "clock": {
+        "first_down_clock_stop": "all_game",
+        "first_down_clock_restart": "referee_ready_for_play_signal",
+        "first_down_stop_applies_last_two_minutes_of_half": true,
+        "incomplete_pass": "stop; restart on snap",
+        "out_of_bounds_ball_carrier": "stop; restart on ready-for-play signal, except with fewer than 2:00 left in a half (restart on snap)",
+        "touchback": "stop; restart on snap",
+        "change_of_possession_team_b_first_down": "stop; restart on snap",
+        "after_score": "stop; restart when the following free kick is legally touched in the field of play",
+        "two_minute_timeout": false,
+        "two_minute_timeout_detail": null,
+        "two_minute_timeout_clock_restart": null,
+        "timeouts_per_team_per_half": 3,
+        "consecutive_team_timeouts_same_dead_ball_allowed": true,
+        "ten_second_runoff_window": "final 1:00 of each half",
+        "clock_on_snap_option_after_foul_by_leading_team": "last 2:00 of a half; foul by team ahead",
+        "period_extended_for_untimed_down_in": "all_quarters",
+        "period_extension_triggers": "accepted live-ball foul (not Team A loss-of-down foul), offsetting fouls, inadvertent whistle; TD as time expires -> try",
+        "replay_min_seconds_to_restore_at_end_of_half": 3,
+        "rule_ref": "3-2-3, 3-3-2, 3-3-4, 3-3-5 (2024+), 3-4-3, 3-4-4",
+        "notes": "2016: Rule 3-4-3 added the offended team's option to start the clock on the snap after a foul by the team ahead in the last two minutes. 2018: 40-second play clock after free kicks and touchdowns (3-2-4); replay 10-second runoff (12-3-6). 2020: if replay restores time at end of a half with the clock to start on the ready signal, at least 3 seconds must remain (12-3-6).",
+        "source_ids": [
+          "S7"
+        ]
+      },
+      "kickoff": {
+        "kickoff_yard_line": 35,
+        "safety_free_kick_yard_line": 20,
+        "touchback_free_kick_yard_line": 25,
+        "touchback_other_yard_line": 20,
+        "fair_catch_free_kick_inside_25_placed_at_25": true,
+        "free_kick_out_of_bounds_receiving_option": "5 yards from previous spot, 5 yards from dead-ball spot, or ball at hash 30 yards beyond kicking team's restraining line",
+        "rule_ref": "6-1-2, 6-2-1, 6-5-1-a, 8-6-2",
+        "notes": "2018: fair catch of a free kick behind Team B's 25 is put in play at Team B's 25 (6-5-1-a).",
+        "source_ids": [
+          "S7"
+        ]
+      },
+      "halftime": {
+        "each_half_starts_with_kickoff": true,
+        "coin_toss_winner_may_defer": true,
+        "second_half_first_choice": "loser_of_toss_or_winner_who_deferred",
+        "second_half_choice_options": [
+          "kick_or_receive",
+          "goal_to_defend"
+        ],
+        "quarter_break_q1_q3": "teams switch goals; possession, down, distance and spot carry over",
+        "end_of_half_no_time": "half ends when time expires and ball is dead unless extended for an untimed down (see clock.period_extended_for_untimed_down_in) or a try after a TD",
+        "rule_ref": "3-1-1, 3-1-2, 3-2-3",
+        "notes": null,
+        "source_ids": [
+          "S7"
+        ]
+      },
+      "other_changes": {
+        "items": [
+          "3-1-3-e two-point shootout from 3rd extra period",
+          "3-1-3-f mandatory two-point try from 2nd extra period",
+          "3-4-5 offended team option when a period is not extended (editorial)"
+        ],
+        "source_ids": [
+          "S7"
+        ]
+      },
+      "rulebook_opened": "S7",
+      "coverage_note": null
+    },
+    "2022": {
+      "overtime": {
+        "possession_start": "opponent_25_yard_line",
+        "possession_start_yard_line": 25,
+        "possessions_per_period": 2,
+        "series_ends_on": "score_or_failure_to_make_first_down",
+        "team_b_score_other_than_try_ends_period": true,
+        "game_clock_runs": false,
+        "mandatory_two_point_from_overtime_period": 2,
+        "one_point_kick_counts_in_mandatory_periods": false,
+        "two_point_shootout_from_overtime_period": 3,
+        "shootout_snap_yard_line": 3,
+        "max_overtime_periods": null,
+        "timeouts": "1 per team per extra period; unused timeouts do not carry over",
+        "timeouts_per_team_per_period_ot1_ot2": 1,
+        "timeouts_per_team_ot3_onward_total": null,
+        "mandatory_break_after_periods": [
+          2,
+          4
+        ],
+        "rule_ref": "3-1-3",
+        "notes": "No maximum number of extra periods is stated in Rule 3-1-3 (max_overtime_periods null = no stated limit). 2021+: two-point try mandatory after a TD from period 2; from period 3 each possession is a single two-point play from the 3.",
+        "source_ids": [
+          "S7",
+          "S8",
+          "S9"
+        ]
+      },
+      "scoring": {
+        "touchdown": 6,
+        "field_goal": 3,
+        "safety": 2,
+        "pat_kick": 1,
+        "two_point_try": 2,
+        "defensive_return_on_try": 2,
+        "safety_on_try": 1,
+        "try_snap_yard_line": 3,
+        "try_after_td_as_time_expires_in_q4": "not attempted unless the point(s) would affect the outcome; scoring team ahead by 1 or 2 may forgo the try",
+        "rule_ref": "8-1-1, 8-3-1, 8-3-2; A.R. 8-3-2-I, A.R. 8-3-2-VII",
+        "notes": "Try scores per 8-1-1 'Successful Try: Touchdown 2, Field Goal or Safety 1'. A.R. 8-3-2-VII: Team B interception returned on a try = 2 points for Team B. A.R. 8-3-2-I/II: safety by Team B on a try = 1 point for Team A.",
+        "source_ids": [
+          "S7",
+          "S8",
+          "S9"
+        ]
+      },
+      "clock": {
+        "first_down_clock_stop": "all_game",
+        "first_down_clock_restart": "referee_ready_for_play_signal",
+        "first_down_stop_applies_last_two_minutes_of_half": true,
+        "incomplete_pass": "stop; restart on snap",
+        "out_of_bounds_ball_carrier": "stop; restart on ready-for-play signal, except with fewer than 2:00 left in a half (restart on snap)",
+        "touchback": "stop; restart on snap",
+        "change_of_possession_team_b_first_down": "stop; restart on snap",
+        "after_score": "stop; restart when the following free kick is legally touched in the field of play",
+        "two_minute_timeout": false,
+        "two_minute_timeout_detail": null,
+        "two_minute_timeout_clock_restart": null,
+        "timeouts_per_team_per_half": 3,
+        "consecutive_team_timeouts_same_dead_ball_allowed": true,
+        "ten_second_runoff_window": "final 1:00 of each half",
+        "clock_on_snap_option_after_foul_by_leading_team": "last 2:00 of a half; foul by team ahead",
+        "period_extended_for_untimed_down_in": "all_quarters",
+        "period_extension_triggers": "accepted live-ball foul (not Team A loss-of-down foul), offsetting fouls, inadvertent whistle; TD as time expires -> try",
+        "replay_min_seconds_to_restore_at_end_of_half": 3,
+        "rule_ref": "3-2-3, 3-3-2, 3-3-4, 3-3-5 (2024+), 3-4-3, 3-4-4",
+        "notes": "2016: Rule 3-4-3 added the offended team's option to start the clock on the snap after a foul by the team ahead in the last two minutes. 2018: 40-second play clock after free kicks and touchdowns (3-2-4); replay 10-second runoff (12-3-6). 2020: if replay restores time at end of a half with the clock to start on the ready signal, at least 3 seconds must remain (12-3-6).",
+        "source_ids": [
+          "S7",
+          "S8",
+          "S9"
+        ]
+      },
+      "kickoff": {
+        "kickoff_yard_line": 35,
+        "safety_free_kick_yard_line": 20,
+        "touchback_free_kick_yard_line": 25,
+        "touchback_other_yard_line": 20,
+        "fair_catch_free_kick_inside_25_placed_at_25": true,
+        "free_kick_out_of_bounds_receiving_option": "5 yards from previous spot, 5 yards from dead-ball spot, or ball at hash 30 yards beyond kicking team's restraining line",
+        "rule_ref": "6-1-2, 6-2-1, 6-5-1-a, 8-6-2",
+        "notes": "2018: fair catch of a free kick behind Team B's 25 is put in play at Team B's 25 (6-5-1-a).",
+        "source_ids": [
+          "S7",
+          "S8",
+          "S9"
+        ]
+      },
+      "halftime": {
+        "each_half_starts_with_kickoff": true,
+        "coin_toss_winner_may_defer": true,
+        "second_half_first_choice": "loser_of_toss_or_winner_who_deferred",
+        "second_half_choice_options": [
+          "kick_or_receive",
+          "goal_to_defend"
+        ],
+        "quarter_break_q1_q3": "teams switch goals; possession, down, distance and spot carry over",
+        "end_of_half_no_time": "half ends when time expires and ball is dead unless extended for an untimed down (see clock.period_extended_for_untimed_down_in) or a try after a TD",
+        "rule_ref": "3-1-1, 3-1-2, 3-2-3",
+        "notes": null,
+        "source_ids": [
+          "S7",
+          "S8",
+          "S9"
+        ]
+      },
+      "other_changes": {
+        "items": [
+          "7-2-5-b fumble at rest: belongs to fumbling team at fumble spot if in advance of it",
+          "9-3-4 defensive holding always includes automatic first down",
+          "7-3-11 illegal touching adds loss of down",
+          "4-1-3-r ball dead at start of feigned slide"
+        ],
+        "source_ids": [
+          "S7",
+          "S8",
+          "S9"
+        ]
+      },
+      "rulebook_opened": null,
+      "coverage_note": "The 2022 rulebook was not opened. Values carried from the 2021 book (S7); the 2022 rules-change list (S8) contains no change to these items, and the 2023 book (S9) lists the 2023 changes against the 2022 text."
+    },
+    "2023": {
+      "overtime": {
+        "possession_start": "opponent_25_yard_line",
+        "possession_start_yard_line": 25,
+        "possessions_per_period": 2,
+        "series_ends_on": "score_or_failure_to_make_first_down",
+        "team_b_score_other_than_try_ends_period": true,
+        "game_clock_runs": false,
+        "mandatory_two_point_from_overtime_period": 2,
+        "one_point_kick_counts_in_mandatory_periods": false,
+        "two_point_shootout_from_overtime_period": 3,
+        "shootout_snap_yard_line": 3,
+        "max_overtime_periods": null,
+        "timeouts": "1 per team per extra period; unused timeouts do not carry over",
+        "timeouts_per_team_per_period_ot1_ot2": 1,
+        "timeouts_per_team_ot3_onward_total": null,
+        "mandatory_break_after_periods": [
+          2,
+          4
+        ],
+        "rule_ref": "3-1-3",
+        "notes": "No maximum number of extra periods is stated in Rule 3-1-3 (max_overtime_periods null = no stated limit). 2021+: two-point try mandatory after a TD from period 2; from period 3 each possession is a single two-point play from the 3.",
+        "source_ids": [
+          "S9"
+        ]
+      },
+      "scoring": {
+        "touchdown": 6,
+        "field_goal": 3,
+        "safety": 2,
+        "pat_kick": 1,
+        "two_point_try": 2,
+        "defensive_return_on_try": 2,
+        "safety_on_try": 1,
+        "try_snap_yard_line": 3,
+        "try_after_td_as_time_expires_in_q4": "not attempted unless the point(s) would affect the outcome; scoring team ahead by 1 or 2 may forgo the try",
+        "rule_ref": "8-1-1, 8-3-1, 8-3-2; A.R. 8-3-2-I, A.R. 8-3-2-VII",
+        "notes": "Try scores per 8-1-1 'Successful Try: Touchdown 2, Field Goal or Safety 1'. A.R. 8-3-2-VII: Team B interception returned on a try = 2 points for Team B. A.R. 8-3-2-I/II: safety by Team B on a try = 1 point for Team A.",
+        "source_ids": [
+          "S9"
+        ]
+      },
+      "clock": {
+        "first_down_clock_stop": "under_2_minutes_q2_q4",
+        "first_down_clock_restart": "referee_ready_for_play_signal",
+        "first_down_stop_applies_last_two_minutes_of_half": true,
+        "incomplete_pass": "stop; restart on snap",
+        "out_of_bounds_ball_carrier": "stop; restart on ready-for-play signal, except with fewer than 2:00 left in a half (restart on snap)",
+        "touchback": "stop; restart on snap",
+        "change_of_possession_team_b_first_down": "stop; restart on snap",
+        "after_score": "stop; restart when the following free kick is legally touched in the field of play",
+        "two_minute_timeout": false,
+        "two_minute_timeout_detail": null,
+        "two_minute_timeout_clock_restart": null,
+        "timeouts_per_team_per_half": 3,
+        "consecutive_team_timeouts_same_dead_ball_allowed": false,
+        "ten_second_runoff_window": "final 1:00 of each half",
+        "clock_on_snap_option_after_foul_by_leading_team": "last 2:00 of a half; foul by team ahead",
+        "period_extended_for_untimed_down_in": "q2_q4_only",
+        "period_extension_triggers": "accepted live-ball foul (not Team A loss-of-down foul), offsetting fouls, inadvertent whistle; TD as time expires -> try",
+        "replay_min_seconds_to_restore_at_end_of_half": 3,
+        "rule_ref": "3-2-3, 3-3-2, 3-3-4, 3-3-5 (2024+), 3-4-3, 3-4-4",
+        "notes": "2016: Rule 3-4-3 added the offended team's option to start the clock on the snap after a foul by the team ahead in the last two minutes. 2018: 40-second play clock after free kicks and touchdowns (3-2-4); replay 10-second runoff (12-3-6). 2020: if replay restores time at end of a half with the clock to start on the ready signal, at least 3 seconds must remain (12-3-6). 2023: first-down clock stop only in the last 2:00 of Q2/Q4; extension of periods only at the end of Q2/Q4; no consecutive charged timeouts by the same team in one dead-ball period.",
+        "source_ids": [
+          "S9"
+        ]
+      },
+      "kickoff": {
+        "kickoff_yard_line": 35,
+        "safety_free_kick_yard_line": 20,
+        "touchback_free_kick_yard_line": 25,
+        "touchback_other_yard_line": 20,
+        "fair_catch_free_kick_inside_25_placed_at_25": true,
+        "free_kick_out_of_bounds_receiving_option": "5 yards from previous spot, 5 yards from dead-ball spot, or ball at hash 30 yards beyond kicking team's restraining line",
+        "rule_ref": "6-1-2, 6-2-1, 6-5-1-a, 8-6-2",
+        "notes": "2018: fair catch of a free kick behind Team B's 25 is put in play at Team B's 25 (6-5-1-a).",
+        "source_ids": [
+          "S9"
+        ]
+      },
+      "halftime": {
+        "each_half_starts_with_kickoff": true,
+        "coin_toss_winner_may_defer": true,
+        "second_half_first_choice": "loser_of_toss_or_winner_who_deferred",
+        "second_half_choice_options": [
+          "kick_or_receive",
+          "goal_to_defend"
+        ],
+        "quarter_break_q1_q3": "teams switch goals; possession, down, distance and spot carry over",
+        "end_of_half_no_time": "half ends when time expires and ball is dead unless extended for an untimed down (see clock.period_extended_for_untimed_down_in) or a try after a TD",
+        "rule_ref": "3-1-1, 3-1-2, 3-2-3",
+        "notes": null,
+        "source_ids": [
+          "S9"
+        ]
+      },
+      "other_changes": {
+        "items": [
+          "3-3-2-e-1 first-down clock stop only under 2:00 in Q2/Q4",
+          "3-2-3-a period extension only at end of Q2/Q4",
+          "3-3-4 no consecutive charged timeouts in same dead-ball period"
+        ],
+        "source_ids": [
+          "S9"
+        ]
+      },
+      "rulebook_opened": "S9",
+      "coverage_note": null
+    },
+    "2024": {
+      "overtime": {
+        "possession_start": "opponent_25_yard_line",
+        "possession_start_yard_line": 25,
+        "possessions_per_period": 2,
+        "series_ends_on": "score_or_failure_to_make_first_down",
+        "team_b_score_other_than_try_ends_period": true,
+        "game_clock_runs": false,
+        "mandatory_two_point_from_overtime_period": 2,
+        "one_point_kick_counts_in_mandatory_periods": false,
+        "two_point_shootout_from_overtime_period": 3,
+        "shootout_snap_yard_line": 3,
+        "max_overtime_periods": null,
+        "timeouts": "1 per team per extra period; unused timeouts do not carry over",
+        "timeouts_per_team_per_period_ot1_ot2": 1,
+        "timeouts_per_team_ot3_onward_total": null,
+        "mandatory_break_after_periods": [
+          2,
+          4
+        ],
+        "rule_ref": "3-1-3",
+        "notes": "No maximum number of extra periods is stated in Rule 3-1-3 (max_overtime_periods null = no stated limit). 2021+: two-point try mandatory after a TD from period 2; from period 3 each possession is a single two-point play from the 3.",
+        "source_ids": [
+          "S10"
+        ]
+      },
+      "scoring": {
+        "touchdown": 6,
+        "field_goal": 3,
+        "safety": 2,
+        "pat_kick": 1,
+        "two_point_try": 2,
+        "defensive_return_on_try": 2,
+        "safety_on_try": 1,
+        "try_snap_yard_line": 3,
+        "try_after_td_as_time_expires_in_q4": "not attempted unless the point(s) would affect the outcome; scoring team ahead by 1 or 2 may forgo the try",
+        "rule_ref": "8-1-1, 8-3-1, 8-3-2; A.R. 8-3-2-I, A.R. 8-3-2-VII",
+        "notes": "Try scores per 8-1-1 'Successful Try: Touchdown 2, Field Goal or Safety 1'. A.R. 8-3-2-VII: Team B interception returned on a try = 2 points for Team B. A.R. 8-3-2-I/II: safety by Team B on a try = 1 point for Team A.",
+        "source_ids": [
+          "S10"
+        ]
+      },
+      "clock": {
+        "first_down_clock_stop": "after_two_minute_timeout_q2_q4",
+        "first_down_clock_restart": "referee_ready_for_play_signal",
+        "first_down_stop_applies_last_two_minutes_of_half": true,
+        "incomplete_pass": "stop; restart on snap",
+        "out_of_bounds_ball_carrier": "stop; restart on ready-for-play signal before the Two-Minute Timeout in Q2/Q4, on snap after it",
+        "touchback": "stop; restart on snap",
+        "change_of_possession_team_b_first_down": "stop; restart on snap",
+        "after_score": "stop; restart when the following free kick is legally touched in the field of play",
+        "two_minute_timeout": true,
+        "two_minute_timeout_detail": "Referee stops the clock at exactly 2:00 of Q2 and Q4 when the ball is dead, or when the ball becomes dead if a down is live at 2:00 (Rule 3-3-5); play clock set to 25.",
+        "two_minute_timeout_clock_restart": null,
+        "timeouts_per_team_per_half": 3,
+        "consecutive_team_timeouts_same_dead_ball_allowed": false,
+        "ten_second_runoff_window": "after the Two-Minute Timeout in Q2/Q4",
+        "clock_on_snap_option_after_foul_by_leading_team": "after Two-Minute Timeout; foul by team ahead or either team if tied",
+        "period_extended_for_untimed_down_in": "q2_q4_only",
+        "period_extension_triggers": "accepted live-ball foul (not Team A loss-of-down foul), offsetting fouls, inadvertent whistle; TD as time expires -> try",
+        "replay_min_seconds_to_restore_at_end_of_half": 3,
+        "rule_ref": "3-2-3, 3-3-2, 3-3-4, 3-3-5 (2024+), 3-4-3, 3-4-4",
+        "notes": "2016: Rule 3-4-3 added the offended team's option to start the clock on the snap after a foul by the team ahead in the last two minutes. 2018: 40-second play clock after free kicks and touchdowns (3-2-4); replay 10-second runoff (12-3-6). 2020: if replay restores time at end of a half with the clock to start on the ready signal, at least 3 seconds must remain (12-3-6). 2023: first-down clock stop only in the last 2:00 of Q2/Q4; extension of periods only at the end of Q2/Q4; no consecutive charged timeouts by the same team in one dead-ball period. 2024 book's 3-3-2-d list does not name the Two-Minute Timeout; the 2025 book adds 'A Two-Minute Timeout is declared' to the starts-on-snap list (3-3-2-d-12), so two_minute_timeout_clock_restart is null for 2024. 2024: Two-Minute Timeout; 'two minutes' triggers in 3-3-2, 3-4-3, 3-4-4 and injury runoff re-keyed to after the Two-Minute Timeout; 10-second runoff window widened from final 1:00 to after the Two-Minute Timeout.",
+        "source_ids": [
+          "S10"
+        ]
+      },
+      "kickoff": {
+        "kickoff_yard_line": 35,
+        "safety_free_kick_yard_line": 20,
+        "touchback_free_kick_yard_line": 25,
+        "touchback_other_yard_line": 20,
+        "fair_catch_free_kick_inside_25_placed_at_25": true,
+        "free_kick_out_of_bounds_receiving_option": "5 yards from previous spot, 5 yards from dead-ball spot, or ball at hash 30 yards beyond kicking team's restraining line",
+        "rule_ref": "6-1-2, 6-2-1, 6-5-1-a, 8-6-2",
+        "notes": "2018: fair catch of a free kick behind Team B's 25 is put in play at Team B's 25 (6-5-1-a).",
+        "source_ids": [
+          "S10"
+        ]
+      },
+      "halftime": {
+        "each_half_starts_with_kickoff": true,
+        "coin_toss_winner_may_defer": true,
+        "second_half_first_choice": "loser_of_toss_or_winner_who_deferred",
+        "second_half_choice_options": [
+          "kick_or_receive",
+          "goal_to_defend"
+        ],
+        "quarter_break_q1_q3": "teams switch goals; possession, down, distance and spot carry over",
+        "end_of_half_no_time": "half ends when time expires and ball is dead unless extended for an untimed down (see clock.period_extended_for_untimed_down_in) or a try after a TD",
+        "rule_ref": "3-1-1, 3-1-2, 3-2-3",
+        "notes": null,
+        "source_ids": [
+          "S10"
+        ]
+      },
+      "other_changes": {
+        "items": [
+          "3-3-5 Two-Minute Timeout",
+          "3-3-2-d/e and 3-4-3/3-4-4 keyed to the Two-Minute Timeout",
+          "3-2-1-c: no further replay reviews of the previous play after the referee declares the first half ended"
+        ],
+        "source_ids": [
+          "S10"
+        ]
+      },
+      "rulebook_opened": "S10",
+      "coverage_note": null
+    },
+    "2025": {
+      "overtime": {
+        "possession_start": "opponent_25_yard_line",
+        "possession_start_yard_line": 25,
+        "possessions_per_period": 2,
+        "series_ends_on": "score_or_failure_to_make_first_down",
+        "team_b_score_other_than_try_ends_period": true,
+        "game_clock_runs": false,
+        "mandatory_two_point_from_overtime_period": 2,
+        "one_point_kick_counts_in_mandatory_periods": false,
+        "two_point_shootout_from_overtime_period": 3,
+        "shootout_snap_yard_line": 3,
+        "max_overtime_periods": null,
+        "timeouts": "1 per team in OT1, 1 per team in OT2, then 1 per team for all of OT3 onward until the game ends",
+        "timeouts_per_team_per_period_ot1_ot2": 1,
+        "timeouts_per_team_ot3_onward_total": 1,
+        "mandatory_break_after_periods": [
+          2
+        ],
+        "rule_ref": "3-1-3",
+        "notes": "No maximum number of extra periods is stated in Rule 3-1-3 (max_overtime_periods null = no stated limit). 2021+: two-point try mandatory after a TD from period 2; from period 3 each possession is a single two-point play from the 3. 2025: radio/TV timeouts only after OT1 and OT2; mandatory 2-minute break after OT2 only.",
+        "source_ids": [
+          "S11"
+        ]
+      },
+      "scoring": {
+        "touchdown": 6,
+        "field_goal": 3,
+        "safety": 2,
+        "pat_kick": 1,
+        "two_point_try": 2,
+        "defensive_return_on_try": 2,
+        "safety_on_try": 1,
+        "try_snap_yard_line": 3,
+        "try_after_td_as_time_expires_in_q4": "not attempted unless the point(s) would affect the outcome; scoring team ahead by 1 or 2 may forgo the try",
+        "rule_ref": "8-1-1, 8-3-1, 8-3-2; A.R. 8-3-2-I, A.R. 8-3-2-VII",
+        "notes": "Try scores per 8-1-1 'Successful Try: Touchdown 2, Field Goal or Safety 1'. A.R. 8-3-2-VII: Team B interception returned on a try = 2 points for Team B. A.R. 8-3-2-I/II: safety by Team B on a try = 1 point for Team A.",
+        "source_ids": [
+          "S11"
+        ]
+      },
+      "clock": {
+        "first_down_clock_stop": "after_two_minute_timeout_q2_q4",
+        "first_down_clock_restart": "referee_ready_for_play_signal",
+        "first_down_stop_applies_last_two_minutes_of_half": true,
+        "incomplete_pass": "stop; restart on snap",
+        "out_of_bounds_ball_carrier": "stop; restart on ready-for-play signal before the Two-Minute Timeout in Q2/Q4, on snap after it",
+        "touchback": "stop; restart on snap",
+        "change_of_possession_team_b_first_down": "stop; restart on snap",
+        "after_score": "stop; restart when the following free kick is legally touched in the field of play",
+        "two_minute_timeout": true,
+        "two_minute_timeout_detail": "Referee stops the clock at exactly 2:00 of Q2 and Q4 when the ball is dead, or when the ball becomes dead if a down is live at 2:00 (Rule 3-3-5); play clock set to 25.",
+        "two_minute_timeout_clock_restart": "snap",
+        "timeouts_per_team_per_half": 3,
+        "consecutive_team_timeouts_same_dead_ball_allowed": false,
+        "ten_second_runoff_window": "after the Two-Minute Timeout in Q2/Q4",
+        "clock_on_snap_option_after_foul_by_leading_team": "after Two-Minute Timeout; foul by team ahead or either team if tied",
+        "period_extended_for_untimed_down_in": "q2_q4_only",
+        "period_extension_triggers": "accepted live-ball foul (not Team A loss-of-down foul), offsetting fouls, inadvertent whistle; TD as time expires -> try",
+        "replay_min_seconds_to_restore_at_end_of_half": 3,
+        "rule_ref": "3-2-3, 3-3-2, 3-3-4, 3-3-5 (2024+), 3-4-3, 3-4-4",
+        "notes": "2016: Rule 3-4-3 added the offended team's option to start the clock on the snap after a foul by the team ahead in the last two minutes. 2018: 40-second play clock after free kicks and touchdowns (3-2-4); replay 10-second runoff (12-3-6). 2020: if replay restores time at end of a half with the clock to start on the ready signal, at least 3 seconds must remain (12-3-6). 2023: first-down clock stop only in the last 2:00 of Q2/Q4; extension of periods only at the end of Q2/Q4; no consecutive charged timeouts by the same team in one dead-ball period. 2025: 3-5-3-b clock-reset option for a defensive 12-men foul after the Two-Minute Timeout. 2024: Two-Minute Timeout; 'two minutes' triggers in 3-3-2, 3-4-3, 3-4-4 and injury runoff re-keyed to after the Two-Minute Timeout; 10-second runoff window widened from final 1:00 to after the Two-Minute Timeout.",
+        "source_ids": [
+          "S11"
+        ]
+      },
+      "kickoff": {
+        "kickoff_yard_line": 35,
+        "safety_free_kick_yard_line": 20,
+        "touchback_free_kick_yard_line": 25,
+        "touchback_other_yard_line": 20,
+        "fair_catch_free_kick_inside_25_placed_at_25": true,
+        "free_kick_out_of_bounds_receiving_option": "5 yards from previous spot, 5 yards from dead-ball spot, or ball at hash 30 yards beyond kicking team's restraining line",
+        "rule_ref": "6-1-2, 6-2-1, 6-5-1-a, 8-6-2",
+        "notes": "2018: fair catch of a free kick behind Team B's 25 is put in play at Team B's 25 (6-5-1-a).",
+        "source_ids": [
+          "S11"
+        ]
+      },
+      "halftime": {
+        "each_half_starts_with_kickoff": true,
+        "coin_toss_winner_may_defer": true,
+        "second_half_first_choice": "loser_of_toss_or_winner_who_deferred",
+        "second_half_choice_options": [
+          "kick_or_receive",
+          "goal_to_defend"
+        ],
+        "quarter_break_q1_q3": "teams switch goals; possession, down, distance and spot carry over",
+        "end_of_half_no_time": "half ends when time expires and ball is dead unless extended for an untimed down (see clock.period_extended_for_untimed_down_in) or a try after a TD",
+        "rule_ref": "3-1-1, 3-1-2, 3-2-3",
+        "notes": null,
+        "source_ids": [
+          "S11"
+        ]
+      },
+      "other_changes": {
+        "items": [
+          "3-1-3-h extra-period timeouts modified (1 per team in OT1, OT2; 1 total from OT3); media/mandatory break only after OT1/OT2",
+          "3-5-3-b: after the Two-Minute Timeout, a defensive 12-men-participating foul lets the offended team reset the game clock to the time at the snap; clock restarts on the snap",
+          "3-3-2-d-12: game clock starts on the snap after a Two-Minute Timeout (explicit from 2025)"
+        ],
+        "source_ids": [
+          "S11"
+        ]
+      },
+      "rulebook_opened": "S11",
+      "coverage_note": null
+    }
+  },
+  "sources": [
+    {
+      "id": "S1",
+      "title": "2013 and 2014 NCAA Football Rules and Interpretations (online final v3)",
+      "url": "https://cfo.arbitersports.com/Groups/104777/Library/files/2013_14_Football_Rules_Book_ONLINE_FINAL_V3.pdf",
+      "publisher": "NCAA (copy hosted by College Football Officiating on ArbiterSports)",
+      "accessed": "2026-10-02",
+      "primary": true
+    },
+    {
+      "id": "S2",
+      "title": "2016 and 2017 NCAA Football Rules and Interpretations",
+      "url": "https://sbmsa.org/wp-content/uploads/2022/04/2016-2017-NCAA-Football-Rules-and-Interpretations.pdf",
+      "publisher": "NCAA (copy hosted by sbmsa.org)",
+      "accessed": "2026-10-02",
+      "primary": true
+    },
+    {
+      "id": "S3",
+      "title": "2018 NCAA Football Rules and Interpretations",
+      "url": "https://nextgen.soconsports.com/api/media/file/548b486f-159a-4ba3-9c39-238af2dfe676-2018_20Football_20Rules_20and_20Interpretations.pdf",
+      "publisher": "NCAA (copy hosted by Southern Conference)",
+      "accessed": "2026-10-02",
+      "primary": true
+    },
+    {
+      "id": "S4",
+      "title": "2019 NCAA Football Rules and Interpretations",
+      "url": "https://ncaa.soutronglobal.net/Public/Default/en-US/RecordView/Index/9190",
+      "publisher": "NCAA (NCAA library archive)",
+      "accessed": "2026-10-02",
+      "primary": true
+    },
+    {
+      "id": "S5",
+      "title": "Memorandum: 2019 NCAA Football Rules Changes (Steve Shaw, secretary-rules editor, April 26, 2019)",
+      "url": "https://ncaaorg.s3.amazonaws.com/championships/sports/football/rules/2019-20PRMFB_2019FootballRulesChanges.pdf",
+      "publisher": "NCAA",
+      "accessed": "2026-10-02",
+      "primary": true
+    },
+    {
+      "id": "S6",
+      "title": "2020 NCAA Football Rules Changes",
+      "url": "https://ncaaorg.s3.amazonaws.com/championships/sports/football/rules/2020PRMFB_FootballRulesChanges.pdf",
+      "publisher": "NCAA",
+      "accessed": "2026-10-02",
+      "primary": true
+    },
+    {
+      "id": "S7",
+      "title": "2021 NCAA Football Rules and Interpretations",
+      "url": "https://cdn1.sportngin.com/attachments/document/0071/5057/2021-20211_NCAA_Rule_Book.pdf",
+      "publisher": "NCAA (copy hosted on SportsEngine CDN)",
+      "accessed": "2026-10-02",
+      "primary": true
+    },
+    {
+      "id": "S8",
+      "title": "2022 NCAA Football Rules Committee Changes (PROP action April 20), Steve Shaw, secretary-rules editor",
+      "url": "https://www.eaifo.org/wp-content/uploads/2022-NCAA-Rules-Changes-with-PROP-Action.pdf",
+      "publisher": "College Football Officiating, LLC / NCAA rules editor (copy hosted by eaifo.org)",
+      "accessed": "2026-10-02",
+      "primary": true
+    },
+    {
+      "id": "S9",
+      "title": "2023 NCAA Football Rules and Interpretations",
+      "url": "https://ncaa.soutronglobal.net/Public/Default/en-US/RecordView/Index/44239",
+      "publisher": "NCAA (NCAA library archive)",
+      "accessed": "2026-10-02",
+      "primary": true
+    },
+    {
+      "id": "S10",
+      "title": "2024 NCAA Football Rules and Interpretations",
+      "url": "https://media.hometeamsonline.com/photos/football/PLAYERSFOOTBALLASSOC/2024-NCAA-Football-Rulebook.pdf",
+      "publisher": "NCAA (copy hosted by hometeamsonline.com)",
+      "accessed": "2026-10-02",
+      "primary": true
+    },
+    {
+      "id": "S11",
+      "title": "2025 NCAA Football Rules and Interpretations",
+      "url": "https://taso.org/wp-content/uploads/2025/06/2025-NCAA-FB-Rule-Book.pdf",
+      "publisher": "NCAA (copy hosted by TASO)",
+      "accessed": "2026-10-02",
+      "primary": true
+    },
+    {
+      "id": "S12",
+      "title": "NCAA football: What you need to know about rules changes for the 2015 season (NFF column by Rogers Redding)",
+      "url": "https://www.ncaa.com/news/football/article/2015-08-25/ncaa-football-need-know-rules-changes-2015-season",
+      "publisher": "NCAA.com / National Football Foundation",
+      "accessed": "2026-10-02",
+      "primary": false
+    },
+    {
+      "id": "S13",
+      "title": "NCAA Football Playing Rules (index of rule books and rule-change documents)",
+      "url": "https://www.ncaa.org/championships/playing-rules/football-playing-rules/",
+      "publisher": "NCAA",
+      "accessed": "2026-10-02",
+      "primary": true
+    }
+  ]
+}
