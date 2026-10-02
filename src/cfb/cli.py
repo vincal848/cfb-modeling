@@ -454,6 +454,210 @@ def ability() -> None:
     typer.echo("\n".join(lines))
 
 
+@app.command("roster-eval")
+def roster_eval() -> None:
+    """R01: preseason roster projection versus last season's team offense (one process)."""
+    from collections import defaultdict
+
+    import pandas as pd
+
+    from cfb.evaluation import p04, r01
+    from cfb.evaluation.backtest import latest_facts
+    from cfb.evaluation.protocol import load_protocol
+
+    spec = load_protocol()
+    seasons = spec["seasons"]["development"]["seasons"]
+    first_ep = spec["seasons"]["warmup"]["seasons"][0]
+    conn, ledger = open_store()
+    states = pd.read_parquet(REPO_ROOT / "artifacts" / "plays" / "states.parquet")
+    stat_seasons = list(range(2015, max(seasons) + 1))
+    pos = p04.positions(ledger, stat_seasons)
+    rosters: dict[int, dict[str, set[str]]] = {}
+    for s in stat_seasons:
+        e = ledger.latest_success("/roster", {"year": s})
+        teams = defaultdict(set)
+        for r in ledger.load(e) if e else []:
+            if r.get("id") is not None:
+                teams[r["team"]].add(str(r["id"]))
+        rosters[s] = dict(teams)
+    rows_raw = []
+    for sch in latest_facts(conn, "game_schedule"):
+        if sch["season"] in stat_seasons:
+            e = ledger.latest_success("/plays/stats", {"gameId": int(sch["game_id"].split("-")[-1])})
+            for r in ledger.load(e) if e else []:
+                cat = p04.STAT_CATEGORY.get(r.get("statType"))
+                if cat and r.get("athleteId") is not None:
+                    rows_raw.append((str(r["playId"]), str(r["athleteId"]), cat, int(r["season"]), r["team"]))
+    stats = pd.DataFrame(rows_raw, columns=["play_id", "athlete_id", "category", "season", "team"]).drop_duplicates(
+        ["play_id", "athlete_id", "category"])
+
+    tests = []
+    for s in seasons:
+        model = p04.fold_ep_model(states, s, first_ep, REPO_ROOT / "artifacts" / "models", log=typer.echo)
+        st = states[states["season"].between(2015, s)]
+        epa = p04.play_epa(st, model)
+        rows, sigma2 = p04.player_seasons(stats[stats["season"] <= s].drop(columns="team"), epa, pos)
+        offense = r01.team_offense(st, epa)
+        data = r01.season_dataset(rows, stats[stats["season"] <= s], rosters, pos, sigma2, offense, s)
+        tests.append(r01.calibrated_predictions(data, s))
+        typer.echo(f"  season {s}: {int((data['season'] == s).sum())} teams")
+    df = pd.concat(tests, ignore_index=True)
+    df.to_parquet(REPO_ROOT / "artifacts" / "plays" / "roster-development.parquet", index=False)
+
+    reps, seed = spec["comparison"]["replicates"], spec["monte_carlo"]["root_seed"]
+    lines = ["# R01 roster projection: development results", "",
+             (f"Seasons {seasons}, reconstructed. Target: each team's offensive EPA per play (P01 exact-tier games). "
+              "Predictors are past-only and linearly calibrated on 2017 through the season before. 'roster' is the "
+              "preseason roster-scenario strength (P03 shares x P04 abilities); 'naive' is last season's team EPA "
+              "per play, which ignores roster turnover."), "",
+             "| Season | Teams | MSE naive | MSE roster | MSE both | Corr naive | Corr roster |",
+             "|---|---|---|---|---|---|---|"]
+    for s, g in df.groupby("season"):
+        mse = {k: float(((g["realized"] - g[f"pred_{k}"]) ** 2).mean()) for k in r01.PREDICTORS}
+        lines.append(f"| {s} | {len(g)} | {mse['naive']:.5f} | {mse['roster']:.5f} | {mse['both']:.5f} | "
+                     f"{g['naive'].corr(g['realized']):.3f} | {g['roster'].corr(g['realized']):.3f} |")
+    mse_all = {k: float(((df["realized"] - df[f"pred_{k}"]) ** 2).mean()) for k in r01.PREDICTORS}
+    lines.append(f"| All | {len(df)} | {mse_all['naive']:.5f} | {mse_all['roster']:.5f} | {mse_all['both']:.5f} | "
+                 f"{df['naive'].corr(df['realized']):.3f} | {df['roster'].corr(df['realized']):.3f} |")
+    lines += ["", "Paired squared-error differences (bootstrap over teams, 95% interval):", ""]
+    sq = {k: (df["realized"] - df[f"pred_{k}"]) ** 2 for k in r01.PREDICTORS}
+    for a, b in (("both", "naive"), ("roster", "naive")):
+        m, lo, hi = r01.team_bootstrap(sq[a] - sq[b], df["team"], reps, seed)
+        lines.append(f"- {a} minus {b}: {m:+.6f} [{lo:+.6f}, {hi:+.6f}]")
+    lines += ["", "Calibration coefficients fit on earlier seasons (intercept, slopes):", ""]
+    for s, g in df.groupby("season"):
+        lines.append(f"- {s}: naive {g['coef_naive'].iloc[0]}, roster {g['coef_roster'].iloc[0]}, "
+                     f"both {g['coef_both'].iloc[0]}")
+    out = REPO_ROOT / "experiments" / "r01"
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "roster-development.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    typer.echo("\n".join(lines))
+
+
+@app.command("transfer-eval")
+def transfer_eval() -> None:
+    """R02: mover-versus-stayer adaptation, support and censoring (descriptive, not causal)."""
+    from collections import defaultdict
+
+    import numpy as np
+    import pandas as pd
+
+    from cfb.evaluation import p04, r02
+    from cfb.evaluation.backtest import latest_facts
+    from cfb.evaluation.protocol import load_protocol
+
+    spec = load_protocol()
+    seasons = spec["seasons"]["development"]["seasons"]
+    conn, ledger = open_store()
+    pred = pd.read_parquet(REPO_ROOT / "artifacts" / "plays" / "ability-development.parquet")
+    stat_seasons = list(range(min(seasons) - 1, max(seasons) + 1))
+    rows = []
+    for sch in latest_facts(conn, "game_schedule"):
+        if sch["season"] in stat_seasons:
+            e = ledger.latest_success("/plays/stats", {"gameId": int(sch["game_id"].split("-")[-1])})
+            for r in ledger.load(e) if e else []:
+                if p04.STAT_CATEGORY.get(r.get("statType")) and r.get("athleteId") is not None:
+                    rows.append((str(r["athleteId"]), int(r["season"]), r["team"], str(r["playId"])))
+    stats = pd.DataFrame(rows, columns=["athlete_id", "season", "team", "play_id"]).drop_duplicates()
+    rosters: dict[int, dict[str, set[str]]] = {}
+    for s in seasons:
+        e = ledger.latest_success("/roster", {"year": s})
+        teams = defaultdict(set)
+        for r in ledger.load(e) if e else []:
+            if r.get("id") is not None:
+                teams[r["team"]].add(str(r["id"]))
+        rosters[s] = dict(teams)
+    tiers = r02.team_tiers(ledger, stat_seasons)
+    d = r02.adaptation_table(pred, r02.main_team(stats), tiers)
+    d.to_parquet(REPO_ROOT / "artifacts" / "plays" / "transfer-development.parquet", index=False)
+    reps, seed = 2000, spec["monte_carlo"]["root_seed"]
+
+    lines = ["# R02 destination and adaptation: development results", "",
+             (f"Seasons {seasons}, reconstructed. **Descriptive, not causal**: players choose to move, so these gaps "
+              "are associations conditional on the P04 forecast, not effects of transferring. Residual = actual "
+              "season EPA per opportunity minus the P04 forecast from history before that season; gaps are movers "
+              "minus stayers, weighted by opportunities, with a bootstrap over players. Players without history are "
+              "excluded (no pre-move forecast)."), "",
+             "## Adaptation gap by category and position", "",
+             "| Category | Group | Movers | Stayers | Mover opportunities | Gap (EPA/opportunity) | 95% interval |",
+             "|---|---|---|---|---|---|---|"]
+    for (cat, grp), g in d.groupby(["category", "group"]):
+        mv, st = g[g["mover"]], g[~g["mover"]]
+        if len(mv) < 5 or len(st) < 5:
+            continue
+        gap, lo, hi = r02.weighted_gap(mv, st, reps, seed)
+        flag = " (thin)" if len(mv) < r02.MIN_SUPPORT else ""
+        lines.append(f"| {cat} | {grp} | {len(mv)}{flag} | {len(st)} | {int(mv['n'].sum()):,} | {gap:+.3f} | "
+                     f"[{lo:+.3f}, {hi:+.3f}] |")
+    lines += ["", "## Support by move direction (player-seasons with opportunities, all categories)", "",
+              "| Direction | Player-season-categories | Opportunities | Mean residual | Support |", "|---|---|---|---|---|"]
+    for direction, g in d.groupby("direction"):
+        lines.append(f"| {direction} | {len(g):,} | {int(g['n'].sum()):,} | "
+                     f"{np.average(g['residual'], weights=g['n']):+.3f} | "
+                     f"{'thin: no comparison claimed' if len(g) < r02.MIN_SUPPORT else 'adequate'} |")
+    lines += ["", "## Censoring: appearance the next season", "",
+              ("Of players with opportunities in the previous season, the share with any opportunity this season. "
+               "'Not on a roster' covers graduation, the draft, leaving the sport and missing roster coverage; "
+               "these are distinct exits CFBD does not separate. Non-appearance is never scored as zero ability."), "",
+              "| Season | Group | Appeared | Total | Share |", "|---|---|---|---|---|"]
+    for s in seasons:
+        for key, (hit, tot) in r02.appearance(stats, rosters, s).items():
+            lines.append(f"| {s} | {key} | {hit:,} | {tot:,} | {hit / tot:.1%} |" if tot else f"| {s} | {key} | 0 | 0 | n/a |")
+    out = REPO_ROOT / "experiments" / "r02"
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "transfer-development.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    typer.echo("\n".join(lines))
+
+
+@app.command("decomposition-eval")
+def decomposition_eval() -> None:
+    """R03: forward-residual roster correction of B02 forecasts, with a double-counting ablation."""
+    import json
+
+    import pandas as pd
+
+    from cfb.evaluation import r03
+    from cfb.evaluation.backtest import block_bootstrap, latest_facts
+    from cfb.evaluation.protocol import load_protocol
+
+    spec = load_protocol()
+    conn, _ = open_store()
+    b02_report = json.loads((REPO_ROOT / "experiments" / "b02" / "b02-development.json").read_text(encoding="utf-8"))
+    chosen = b02_report["selected"]["dynamic"]
+    b02 = pd.read_parquet(REPO_ROOT / "artifacts" / "backtests" / "b02-development.parquet")
+    b02 = b02[b02["config"] == chosen]
+    names = dict(conn.execute("SELECT team_id, display_name FROM teams").fetchall())
+    sched = {s["game_id"]: (names[s["home_team_id"]], names[s["away_team_id"]]) for s in latest_facts(conn, "game_schedule")}
+    feats = r03.team_features(pd.read_parquet(REPO_ROOT / "artifacts" / "plays" / "roster-development.parquet"))
+    games = r03.game_table(b02, sched, feats)
+    seasons = sorted(games["season"].unique())
+    df = pd.concat([r03.forward_correction(games, s) for s in seasons[1:]], ignore_index=True)
+
+    reps, seed = spec["comparison"]["replicates"], spec["monte_carlo"]["root_seed"]
+    blocks = df["season"].astype(str) + "-" + df["season_type"] + "-" + df["week"].astype(str)
+    lines = ["# R03 player-informed team decomposition: development results", "",
+             (f"Forward-residual correction of B02 (`{chosen}`) margin forecasts by the difference in the two teams' "
+              "preseason roster offense features (R01). Fit on earlier development seasons, applied to the next "
+              "(2019 -> 2020, 2019-2020 -> 2021). Reconstructed. Lower is better; differences are corrected minus "
+              "B02, week-block bootstrap. Games where a team lacks a roster feature get no correction."), "",
+             "| Feature | Test season | Games | Fitted beta | In-sample MSE gain | Margin MSE change | Margin CRPS change |",
+             "|---|---|---|---|---|---|---|"]
+    for k in r03.FEATURES:
+        for s, g in df.groupby("season"):
+            lines.append(f"| {k} | {s} | {len(g)} | {g[f'beta_{k}'].iloc[0]:+.2f} | {g[f'train_gain_{k}'].iloc[0]:+.3f} | "
+                         f"{(g[f'sq_{k}'] - g['sq_base']).mean():+.3f} | {(g[f'crps_{k}'] - g['crps_base']).mean():+.4f} |")
+    lines += ["", "Pooled over test seasons (95% interval):", ""]
+    for k in r03.FEATURES:
+        m, lo, hi = block_bootstrap(df[f"crps_{k}"] - df["crps_base"], blocks, reps, seed)
+        lines.append(f"- {k}: margin CRPS change {m:+.4f} [{lo:+.4f}, {hi:+.4f}]")
+    covered = float((games["raw_diff"] != 0).mean())
+    lines += ["", f"Games with a roster feature for both teams: {covered:.1%}."]
+    out = REPO_ROOT / "experiments" / "r03"
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "decomposition-development.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    typer.echo("\n".join(lines))
+
+
 @app.command("build-states")
 def build_states(start: int = typer.Option(2014), end: int = typer.Option(2025),
                  workers: int = typer.Option(0, help="Worker processes (0 = CPU count - 1)")) -> None:

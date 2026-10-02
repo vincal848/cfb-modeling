@@ -18,7 +18,8 @@ This file keeps two things separate:
 | M1 Temporal data foundation | ✅ | n/a | D03–D08 done |
 | M2 Forecasting baseline | ✅ | 🟡 development only | B01, B02, B03 done. Champion decision deferred to the stack/test stages per V01 |
 | M3 EP and skill players | ✅ | 🟡 development only | P01–P04 done. Remaining P01 work: down/distance-level state transitions are measured, not modeled |
-| M4–M7 | ⬜ | ⬜ | In dependency order |
+| M4 Transfers and rosters | ✅ | 🟡 development only (null results) | R01–R03 done; roster information does not yet improve team forecasts |
+| M5–M7 | ⬜ | ⬜ | In dependency order |
 | T1 Tracking / L1 Live | disabled | — | Gated on external data. `tracking_enabled=false`, enforced by config validation |
 
 ## Backlog items
@@ -40,6 +41,9 @@ This file keeps two things separate:
 | P02 College EP and EPA | ✅ | Fold-specific multinomial next-score model, all fits converged. Held-out log loss 1.207 vs 1.407 (yard line only) and 1.477 (class prior); calibrated within 0.12 points per EP decile. See [experiments/p02/ep-development.md](experiments/p02/ep-development.md). 4 tests. |
 | P03 Hierarchical opportunity shares | ✅ | Shares (dropbacks, carries, targets) with explicit unknown/unassigned group; totals conserved to 4e-14. Beats a smoothed last-game copy in every category and season (log score 1.55 vs 1.80); separate participation model beats both alternatives. See [experiments/p03/opportunity-development.md](experiments/p03/opportunity-development.md). 9 tests. |
 | P04 Skill-player effectiveness and development | ✅ | Per-position development model of EPA per opportunity; matches or beats the position mean in every fitted group and beats last season's raw mean everywhere; new players get the pooled (widest) uncertainty. See [experiments/p04/ability-development.md](experiments/p04/ability-development.md). 6 tests incl. parameter recovery. |
+| R01 Roster scenario graph | ✅ | Scenarios with transfers that move players, redistribute shares and keep IDs; paired changes with common random numbers. Projection does not beat last season's team EPA (combined −0.00007, interval includes 0). See [experiments/r01/roster-development.md](experiments/r01/roster-development.md). 3 tests. |
+| R02 Destination/adaptation | ✅ | No significant mover-stayer gap in any category; support and censoring reported; explicitly not causal. See [experiments/r02/transfer-development.md](experiments/r02/transfer-development.md). 4 tests. |
+| R03 Player-informed team decomposition | ✅ | Forward-residual correction of B02 with raw vs residualized roster features; no out-of-sample gain, so B02 stays the team model. See [experiments/r03/decomposition-development.md](experiments/r03/decomposition-development.md). 3 tests. |
 | B01 Elo and margin/total baselines | ✅ | Both beat the trivial model on every primary metric (development). See [experiments/b01/b01-development.md](experiments/b01/b01-development.md). |
 
 ## Completed work
@@ -201,6 +205,12 @@ Labeling: rows from mocked transports use `provider='SYNTHETIC'`. Live rows use 
 4. **Results**: the model matches or beats the position mean in every fitted group (QB passing MSE 0.0541 vs 0.0549, RB rushing 0.0433 vs 0.0445, WR receiving 0.1718 vs 0.1725) and beats last season's raw mean everywhere (e.g. QB passing 0.150). Gains over the mean are small: season EPA per opportunity is noisy, so strong shrinkage toward the position mean is mostly right.
 5. **Uncertainty**: new players get the pooled prior (widest intervals); 80% intervals cover 77–81%. Some persistence estimates sit at their bounds (RB receiving 1.0, TE receiving near 0), so the data identify them weakly.
 
+## M4 findings (development 2019–2021, reconstructed)
+
+1. **R01: the roster projection does not beat last season's team offense.** Preseason strength = P03 game-1 shares × P04 abilities (QB passing, rushing), weighted by last season's pass rate. Alone it predicts team offensive EPA per play worse than last season's value (MSE 0.0101 vs 0.0087); combined it adds nothing significant (−0.00007, 95% interval −0.0004 to +0.0003), though its calibrated weight is stable and positive (0.32–0.46). Correlation with the outcome falls from 0.49 (2019) to 0.27–0.28 (2020–2021). Checked: every starting quarterback (150+ dropbacks) is on his preseason roster and 78–85% had prior-season dropbacks, so this is not a coverage bug. The projection covers only quarterbacks and running backs; line, defense and scheme are absent.
+2. **R02: players who change teams perform about as forecast.** No mover-stayer gap in EPA per opportunity is significant in any category (e.g. QB passing −0.004, interval −0.063 to +0.046). Support is adequate for P5↔G5, P5→P5, G5→G5 and G5→FCS moves; other directions are flagged thin. Movers appear the next season 72–83% of the time, stayers 70–84%. Returning players beat their P04 forecast by about +0.06 on average whether they moved or not: survivors are better than forecast, a calibration point for P04.
+3. **R03: no roster correction is promoted.** Correcting B02 margins by the roster-feature difference helped in 2020 and hurt in 2021; pooled margin CRPS +0.023 (raw) and +0.016 (residualized), intervals including 0. The raw feature, which overlaps with results B02 already absorbed, did worse than the residualized one, consistent with partial double counting. B02 remains the team model (V01: keep the simpler champion).
+
 ## B01 findings (development, reconstructed, tuned on the same games)
 
 Two tuning passes. Pass 1 (commit 7aa513e) selected grid-edge values and gave ridge intervals that were too narrow, so pass 2 widened the grid once and added a ridge covariance scale. No further pass.
@@ -252,7 +262,7 @@ None of these require a spec deviation. Each is a case the blueprint already ant
 
 | Date | Check | Result | Data |
 |---|---|---|---|
-| 2026-10-02 | `uv run pytest` | 191 passed | Synthetic contract rows and mocked transport only |
+| 2026-10-02 | `uv run pytest` | 201 passed | Synthetic contract rows and mocked transport only |
 | 2026-10-01 | `uv run ruff check` | Clean | — |
 | 2026-10-01 | `uv run cfb doctor` | All ok, key present | — |
 | 2026-10-01 | `uv run cfb audit-source --season 2024` | 20/20 endpoints returned 200, none truncated, 19 calls used | **Real CFBD** |
@@ -281,6 +291,6 @@ These checks validate contracts, endpoint access and season coverage. They do no
 ## Next executable step
 
 1. Optional B02 refinement: estimate the observation noise from past one-step innovations instead of tuning it (B02 finding 5).
-2. M4: roster scenario graph (R01) and destination/adaptation models (R02), using D06 identities and P03/P04.
+2. M5: joint score experts (G01 joint-score, G02 feature expert, G03–G04 drive simulator).
 3. Player play stats exist for 2015–2021 only; stack-fit and test seasons need 2022–2025 (about 3,600 more calls) before those stages.
 3. P01: possession/clock/scoring state machine, which needs hand-checked football fixtures and a sourced rules registry.

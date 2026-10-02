@@ -25,6 +25,7 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
+from scipy.special import expit
 
 GROUPS = ("QB", "RB", "WR", "TE", "OTHER")
 
@@ -55,7 +56,7 @@ class AbilityParams:
 def _unpack(theta: np.ndarray, groups: list[str], sigma2: float) -> AbilityParams:
     mu = dict(zip(groups, theta[: len(groups)], strict=True))
     tau2, q = np.exp(theta[len(groups)]), np.exp(theta[len(groups) + 1])
-    rho = 1 / (1 + np.exp(-theta[len(groups) + 2]))
+    rho = expit(theta[len(groups) + 2])  # logistic, without overflow at large arguments
     return AbilityParams(mu, float(tau2), float(rho), float(q), sigma2)
 
 

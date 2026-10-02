@@ -107,6 +107,39 @@ MIN_GROUP_OPPORTUNITIES = 1000
 MIN_GROUP_MEDIAN_OPPORTUNITIES = 5
 
 
+def fit_groups(train: pd.DataFrame, sigma2: float) -> dict[str, dict]:
+    """Per position group: a fitted development model when the group has a real role,
+    otherwise its training mean and calibrated variance (same rule as evaluate_category)."""
+    gm = train.groupby("group").apply(lambda d: np.average(d["y"], weights=d["n"]), include_groups=False)
+    out = {}
+    for group, tr in train.groupby("group"):
+        mean = float(gm[group])
+        entry = {"mean": mean, "var": _baseline_var(tr, np.full(len(tr), mean), sigma2), "train": tr}
+        if (len(tr) >= MIN_GROUP_PLAYER_SEASONS and tr["n"].sum() >= MIN_GROUP_OPPORTUNITIES
+                and tr["n"].median() >= MIN_GROUP_MEDIAN_OPPORTUNITIES):
+            entry["params"] = ability.fit_ability(tr, sigma2)
+        out[group] = entry
+    out["_pooled"] = {"mean": float(np.average(train["y"], weights=train["n"])),
+                      "var": _baseline_var(train, np.full(len(train), np.average(train["y"], weights=train["n"])),
+                                           sigma2)}
+    return out
+
+
+def predict_groups(fitted: dict[str, dict], targets: pd.DataFrame) -> pd.DataFrame:
+    """Predictive (mean, ability variance) for any targets (athlete_id, season, group), e.g.
+    every roster player, not only players observed in the target season."""
+    out = targets.reset_index(drop=True).copy()
+    out["pred_mean"], out["pred_var"] = np.nan, np.nan
+    for group, idx in out.groupby("group").groups.items():
+        entry = fitted.get(group, fitted["_pooled"])
+        if "params" in entry:
+            pred = ability.predict(entry["train"], out.loc[idx, ["athlete_id", "season", "group"]], entry["params"])
+            out.loc[idx, "pred_mean"], out.loc[idx, "pred_var"] = pred["pred_mean"].to_numpy(), pred["pred_var"].to_numpy()
+        else:
+            out.loc[idx, "pred_mean"], out.loc[idx, "pred_var"] = entry["mean"], entry["var"]
+    return out
+
+
 def evaluate_category(rows: pd.DataFrame, season: int, sigma2: float) -> tuple[pd.DataFrame, list[dict]]:
     """Fit the development model separately per position group (methodology §4: mu[p],
     rho[p] per position). A group too thin to fit, such as non-quarterback passers on
