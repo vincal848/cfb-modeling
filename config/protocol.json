@@ -1,0 +1,161 @@
+{
+  "protocol_id": "V01",
+  "protocol_version": "1.0",
+  "status": "frozen",
+  "registered_date": "2026-10-01",
+  "candidate_results_seen": false,
+  "basis": [
+    "docs/blueprint/methodology.md sections 1, 7, 8, 11",
+    "config/config.json validation block",
+    "experiments/m0/d02-findings.md"
+  ],
+
+  "population": {
+    "definition": "games with at least one team in that season's /teams/fbs",
+    "outcome_of_record": "official /games homePoints and awayPoints",
+    "score_type": "final",
+    "excluded_from_scoring": ["not_completed", "missing_either_final_score", "canceled"],
+    "play_derived_training_exclusions": [
+      "no_drives",
+      "pbp_ends_before_q4",
+      "pbp_short_of_final",
+      "pbp_over_or_mixed"
+    ],
+    "play_derived_exclusions_apply_to_outcomes": false
+  },
+
+  "replay": {
+    "historical_class": "reconstructed",
+    "historical_reason": "CFBD history was first retrieved in 2026; no archived-publication evidence exists for 2014-2025 facts, so strict replay is not available historically",
+    "prospective_class": "prospective",
+    "prospective_season": 2026,
+    "prospective_start": "first_actual_implementation_forecast",
+    "reconstructed_result_available_after_kickoff_hours": 6,
+    "label_every_reported_score_with_replay_class": true
+  },
+
+  "seasons": {
+    "warmup": {"seasons": [2014, 2015, 2016, 2017, 2018], "use": "fit_only_not_scored"},
+    "development": {"seasons": [2019, 2020, 2021], "use": "outer_folds_scored_for_model_and_hyperparameter_selection"},
+    "stack_fit": {"seasons": [2022], "use": "held_forward_expert_forecasts_fit_stack_weights"},
+    "calibration": {
+      "seasons": [2023],
+      "use": "fit_coherent_calibration_if_enabled",
+      "if_calibration_disabled": "score_frozen_stack_as_validation; may halt promotion; may not refit weights or hyperparameters"
+    },
+    "test": {
+      "seasons": [2024, 2025],
+      "use": "opened_once_after_all_compared_models_are_frozen",
+      "after_opening": "archive_result; future confirmation uses a new prospective period"
+    }
+  },
+
+  "folds": {
+    "unit": "calendar_week",
+    "key": ["season", "seasonType", "week"],
+    "source": "/calendar per season",
+    "postseason": "one fold per season (CFBD postseason week 1 spans mid-December to January)",
+    "game_cutoff": "scheduled_kickoff_utc minus horizon",
+    "fold_cutoff": "minimum game_cutoff among the fold's games",
+    "parameter_fit_rule": "parameters used in a fold are fit only on data available at or before that fold's cutoff",
+    "state_update_rule": "filtered states may add results available at or before each game's own cutoff",
+    "minimum_refit_cadence": "every stage refit at least at each season's first fold; refitting more often is allowed",
+    "entire_pipeline_refit_inside_fold": true,
+    "start_time_tbd": "use scheduled date with provider placeholder time and flag the game"
+  },
+
+  "products": {
+    "primary": {"product": "football_only", "estimand": "game", "horizon_minutes": 1440},
+    "secondary_horizons_minutes": [10080, 60],
+    "horizons_never_pooled": true,
+    "reconstructed_horizon_note": "with no timestamped intra-week information, 24h and 60m reconstructed forecasts may coincide; report them separately anyway",
+    "market_informed": {
+      "historical_evaluation": "none; historical lines lack observation timestamps (D01 finding 1)",
+      "evaluation": "prospective only, from timestamped captures"
+    }
+  },
+
+  "metrics": {
+    "game_joint": {
+      "primary": "energy_score",
+      "outcome_vector": ["home_points", "away_points"],
+      "norm": "euclidean",
+      "lower_is_better": true,
+      "estimator": "all draws for E||X-y||; split-pairing of the same draws for 0.5 E||X-X'||"
+    },
+    "winner": {"primary": "log_loss", "companions": ["brier", "reliability_diagram"]},
+    "margin": {"primary": "crps", "companions": ["mae"]},
+    "total": {"primary": "crps", "companions": ["mae"]},
+    "intervals": {"levels": [0.5, 0.8, 0.95], "targets": ["margin", "total"], "report": ["coverage", "mean_width"]},
+    "promotion_metric": "game_joint.energy_score",
+    "models_without_joint_scores": "scored on winner, margin and total only; cannot be compared on the promotion metric",
+    "initial_champion_requirement": "the initial champion must emit paired final-score samples"
+  },
+
+  "comparison": {
+    "unit": "per-game paired difference (challenger minus champion) on the same games, horizon and replay class",
+    "resampling": "block bootstrap over fold weeks",
+    "block": "one calendar-week fold",
+    "replicates": 4000,
+    "interval": "95% percentile",
+    "superiority_rule": "upper bound of the 95% interval of mean paired energy-score difference is below 0",
+    "dependence_sensitivity": ["three-week blocks", "season-half blocks"],
+    "test_primary_comparison": "final stack versus initial champion",
+    "other_test_comparisons": "reported as secondary; no superiority claims",
+    "no_improvement_rule": "keep the simpler champion"
+  },
+
+  "cohorts": {
+    "reported_for_every_evaluation": [
+      {"id": "early_season", "definition": "regular-season game where either team has played fewer than 3 games that season before kickoff"},
+      {"id": "fbs_vs_nonfbs", "definition": "exactly one team in /teams/fbs"},
+      {"id": "postseason", "definition": "seasonType == postseason"},
+      {"id": "neutral_site", "definition": "neutralSite is true"},
+      {"id": "season_2020", "definition": "season == 2020 (short, atypical season; D02 finding 5)"},
+      {"id": "pbp_unreconciled", "definition": "no drives, or drive reconciliation kind other than match"},
+      {"id": "missing_team_stats", "definition": "game absent from /games/teams"},
+      {"id": "no_line", "definition": "no /lines entry with a spread"}
+    ],
+    "pending_registration_before_results": [
+      {"id": "transfer_heavy", "requires": "portal coverage audit by season (not yet done)"}
+    ],
+    "minimum_size_for_stable_summary": 100,
+    "small_cohorts": "publish counts and uncertainty without a definitive gate"
+  },
+
+  "benchmarks": {
+    "reconstructed_market_spread": {
+      "season_range": [2014, 2025],
+      "line": "median spread across books present for the game",
+      "distribution": "margin centered at minus spread, scale fit past-only on training seasons",
+      "metrics": ["winner.log_loss", "margin.crps"],
+      "label": "reconstructed benchmark of unknown line timing; descriptive only, no superiority claims"
+    },
+    "reconstructed_open_spread": {
+      "season_range": [2021, 2025],
+      "line": "median spreadOpen across books present",
+      "label": "reconstructed; opening lines absent before 2021 (D02 finding 1); never pooled with the 2014-2020 benchmark"
+    },
+    "games_without_comparable_line": "reported as a count, never dropped silently"
+  },
+
+  "sensitivity": [
+    "exclude 2020 from training and scoring",
+    "FBS-only training versus retained FCS opponents",
+    "history decay variants registered before their results",
+    "three-week and season-half bootstrap blocks"
+  ],
+
+  "monte_carlo": {
+    "draws_per_game": 20000,
+    "root_seed": 20261001,
+    "seed_derivation": "sha256 of root_seed, protocol_version, model_id, game_id and horizon",
+    "parallel_execution": "games and folds may be simulated in parallel; each game's draws depend only on its derived seed, so results must be identical for any worker count or order",
+    "convergence_check": "repeat at double draws for games within 0.02 of a decision boundary"
+  },
+
+  "short_history_modules": {
+    "rule": "each module registers its own seasons, folds and metrics in this file before any of its results are seen",
+    "registered": []
+  }
+}

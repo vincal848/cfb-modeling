@@ -7,16 +7,16 @@ This file keeps two things separate:
 - **Implemented** means the code exists and its contract tests pass.
 - **Demonstrated** means forecasting performance was observed out of sample on real data.
 
-**Nothing is demonstrated yet.** No model has been fitted.
+**Development evidence only.** B01 baselines were scored forward on the 2019–2021 development seasons (reconstructed replay, configurations tuned on the same games). No stack-fit, calibration or test season has been scored.
 
 ## Status by milestone
 
 | Milestone | Implemented | Demonstrated | Notes |
 |---|---|---|---|
 | Repo setup | ✅ | n/a | Scaffold, blueprint copy, config/schema loaders, contract tests |
-| M0 Source audit | 🟡 | n/a | D01, D02 and D03 done; V01 protocol freeze remains |
-| M1 Temporal data foundation | 🟡 | n/a | D03 done (ledger, immutable raw store). D04–D08 remain. |
-| M2 Forecasting baseline | ⬜ | ⬜ | |
+| M0 Source audit | 🟡 | n/a | D01, D02, D03 and V01 done |
+| M1 Temporal data foundation | 🟡 | n/a | D03, D04, D07 done; D05 done for games/teams (players pending D06); D06, D08 remain |
+| M2 Forecasting baseline | 🟡 | 🟡 development only | B01 done; B02 dynamic team model and B03 immutable forecast records remain |
 | M3–M7 | ⬜ | ⬜ | In dependency order after M2 |
 | T1 Tracking / L1 Live | disabled | — | Gated on external data. `tracking_enabled=false`, enforced by config validation |
 
@@ -27,9 +27,13 @@ This file keeps two things separate:
 | D01 Endpoint contracts | ✅ | Live run: 20/20 endpoints returned 200. See [experiments/m0/d01-findings.md](experiments/m0/d01-findings.md). |
 | D02 Season/team coverage | ✅ | Live run 2014–2025: 10,372 FBS games, 0 failed partitions, 585 calls. See [experiments/m0/d02-findings.md](experiments/m0/d02-findings.md). |
 | D03 Credentials and request ledger | ✅ | `src/cfb/ingestion/{client,ledger,fetch}.py`, 10 tests on a mocked transport |
-| D04 Immutable raw backfill | 🟡 | Content-addressed store and cache-first reruns exist. No backfill job yet. |
-| V01 Folds, estimands, metrics | ⬜ | Next |
-| D05–D08 | ⬜ | |
+| D04 Immutable raw backfill | ✅ | `cfb ingest --family core --season 2014 --end 2025`: all partitions cached, 0 calls, 0 failed, 0 truncated. 3 tests. |
+| V01 Folds, estimands, metrics | ✅ | Frozen 2026-10-01T19:57:51Z before any model was fitted; sha256 `5d0f1fc0…`. See [experiments/protocols/V01-protocol.md](experiments/protocols/V01-protocol.md). |
+| D05 Canonical games/teams/players | 🟡 | Games and teams: 10,372 schedule and 10,371 result facts, 12 FBS lists; rerun adds 0. Players wait for D06. |
+| D06 Roster/portal crosswalk | ⬜ | Needed for M3–M4, not for B01 |
+| D07 Snapshot builder | ✅ | Sealed, deterministic cutoff snapshots; strict mode admits no reconstructed history. 6 temporal tests. |
+| D08 Score and coverage quality checks | ⬜ | Needed before P01; D02 already classifies play-by-play mismatches |
+| B01 Elo and margin/total baselines | ✅ | Both beat the trivial model on every primary metric (development). See [experiments/b01/b01-development.md](experiments/b01/b01-development.md). |
 
 ## Completed work
 
@@ -94,6 +98,26 @@ Labeling: rows from mocked transports use `provider='SYNTHETIC'`. Live rows use 
 - `cfb audit-coverage --start 2014 --end 2025` writes `experiments/m0/coverage-<start>-<end>.{md,json}`. Reruns read from the cache and make no calls.
 - Drive reconciliation uses the last drive's end score, not the maximum seen, and classifies each mismatch (ends before Q4, short of final, over or mixed).
 
+### D04–D07: data foundation for B01
+
+- `cfb ingest` backfills by family and season, cache-first. API calls stay sequential: they share one quota and rate limit.
+- `cfb canonicalize` turns raw `/games` into append-only `source_records`: a schedule fact (available kickoff − 7 days) and a separate result fact (available kickoff + 6 hours, per V01), plus per-season FBS lists. Only the V01 population is canonicalized. Provider Elo and win probabilities are dropped.
+- `cfb build-snapshot` seals the latest version of each fact available at a cutoff. Each forecast's own target game is read as of that game's cutoff, because a postseason fold spans several weeks.
+
+### B01: baselines (development seasons only)
+
+- Models: trivial home-advantage-only, recomputed margin Elo with a decayed total, and the ridge champion (team offense/defense, non-FBS group effect, time decay). Each emits 20,000 paired integer final scores per game; tied draws are redrawn.
+- Parallel: snapshots are built in the main process; each fold is one worker task over all 39 configurations. Seeds are per game, so results are identical for any worker count (tested). Workers use one BLAS thread each. Full run: about 40 s on 19 workers.
+- `cfb backtest --stage b01` writes [experiments/b01/b01-development.md](experiments/b01/b01-development.md); per-game rows go to `artifacts/backtests/` (git-ignored).
+
+## B01 findings (development, reconstructed, tuned on the same games)
+
+1. **Both baselines beat the trivial model** on energy score, winner log loss and margin/total CRPS, for every bootstrap block choice and without 2020.
+2. **Ridge beats Elo on energy score** (−0.30, 95% interval −0.44 to −0.18), mostly through totals. On winner log loss and margin CRPS the difference is not resolved.
+3. **Ridge intervals are slightly too narrow**: 48.8 / 77.3 / 93.5% coverage at nominal 50 / 80 / 95% for margin, similar for total. Elo's are slightly wide.
+4. **Grid edges**: the selected ridge penalty (2) and Elo home advantage (50) and carryover (0.75) are at the edges of the pre-set grid. The best values may lie outside it.
+5. **Cohorts**: no cohort reverses the ordering. `missing_team_stats` has 0 games and `no_line` has 8 (descriptive only).
+
 ## D02 findings (real CFBD data, 2014–2025)
 
 Full detail is in [experiments/m0/d02-findings.md](experiments/m0/d02-findings.md).
@@ -135,7 +159,7 @@ None of these require a spec deviation. Each is a case the blueprint already ant
 
 | Date | Check | Result | Data |
 |---|---|---|---|
-| 2026-10-01 | `uv run pytest` | 40 passed | Synthetic contract rows and mocked transport only |
+| 2026-10-01 | `uv run pytest` | 73 passed | Synthetic contract rows and mocked transport only |
 | 2026-10-01 | `uv run ruff check` | Clean | — |
 | 2026-10-01 | `uv run cfb doctor` | All ok, key present | — |
 | 2026-10-01 | `uv run cfb audit-source --season 2024` | 20/20 endpoints returned 200, none truncated, 19 calls used | **Real CFBD** |
@@ -163,10 +187,7 @@ These checks validate contracts, endpoint access and season coverage. They do no
 
 ## Next executable step
 
-**V01: register folds, estimands and primary metrics, and freeze the protocol before any model results are seen.**
-
-D02 constraints V01 must reflect:
-
-- Market benchmarks: opening lines and moneylines cover 2021–2025 only; 2014–2020 has one spread of unknown timing.
-- 2020 is a short, atypical season (568 FBS games).
-- Play-derived evaluations exclude games whose play-by-play does not reconcile to the official final score (see D02 finding 2).
+1. Decide whether to widen the B01 grid (finding 4) and how to correct the ridge interval width (finding 3). Both are development-season choices.
+2. B03: store immutable forecast summaries and forced picks in the contract tables.
+3. B02: dynamic team strength (filtered states, past-only).
+4. D06 and D08 before the play-level work in M3.

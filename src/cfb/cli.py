@@ -102,5 +102,156 @@ def audit_coverage(
     typer.echo(f"wrote {mpath.relative_to(REPO_ROOT)} and {jpath.name}")
 
 
+@app.command()
+def ingest(
+    family: list[str] = typer.Option(..., help="Family name(s), or 'core' for every registered family"),  # noqa: B008
+    season: int = typer.Option(..., help="First season"),
+    end: int = typer.Option(None, help="Last season (defaults to --season)"),
+    refresh: bool = typer.Option(False, help="Re-fetch cached partitions (correction window)"),
+) -> None:
+    """D04: cache-first raw backfill; restarts make no calls for partitions already retrieved."""
+    from cfb.ingestion.backfill import FAMILIES, backfill
+
+    families = list(FAMILIES) if family == ["core"] else family
+    unknown = [f for f in families if f not in FAMILIES]
+    if unknown:
+        typer.echo(f"unknown family {unknown}; choose from {sorted(FAMILIES)} or 'core'", err=True)
+        raise typer.Exit(code=2)
+    fetcher = open_fetcher()
+    failed = truncated = 0
+    for s in range(season, (end or season) + 1):
+        for f in families:
+            r = backfill(fetcher, f, s, refresh=refresh, log=typer.echo)
+            failed += len(r.failed)
+            truncated += len(r.truncated)
+    typer.echo(f"calls remaining: {fetcher.guard.remaining}; failed {failed}; truncated {truncated}")
+    raise typer.Exit(code=1 if failed else 0)
+
+
+def open_store():
+    """The local contract database and raw store, without needing the API key."""
+    DATA_DIR.mkdir(exist_ok=True)
+    conn = connect(DATA_DIR / "ledger.sqlite")
+    return conn, RawLedger(DATA_DIR / "raw", conn)
+
+
+@app.command()
+def canonicalize() -> None:
+    """D05: canonical teams/games and versioned schedule/result facts from cached /games."""
+    from cfb.canonical.games import canonicalize_games
+    from cfb.evaluation.protocol import load_protocol
+
+    lag = load_protocol()["replay"]["reconstructed_result_available_after_kickoff_hours"]
+    conn, ledger = open_store()
+    canonicalize_games(conn, ledger, lag, log=typer.echo)
+    for etype, n in conn.execute("SELECT entity_type, count(*) FROM source_records GROUP BY 1"):
+        typer.echo(f"  {etype}: {n} versions")
+
+
+@app.command("build-snapshot")
+def build_snapshot_cmd(
+    cutoff: str = typer.Option(..., help="UTC cutoff, e.g. 2019-09-06T16:00:00Z"),
+    mode: str = typer.Option("strict", help="strict or reconstructed"),
+) -> None:
+    """D07: build (or return) the sealed snapshot for a cutoff."""
+    from datetime import datetime
+
+    from cfb.snapshots.builder import build_snapshot
+
+    conn, _ = open_store()
+    snap = build_snapshot(conn, datetime.fromisoformat(cutoff), mode, REPO_ROOT / "artifacts" / "snapshots")
+    typer.echo(f"{snap.snapshot_id} {snap.cutoff} {snap.mode}: {len(snap.record_version_ids)} facts")
+
+
+@app.command()
+def backtest(
+    stage: str = typer.Option("b01", help="Backtest stage (b01)"),
+    workers: int = typer.Option(0, help="Worker processes (0 = CPU count - 1)"),
+) -> None:
+    """B01: forward evaluation of the baselines on the development seasons only."""
+    import time
+
+    from cfb.evaluation import b01
+    from cfb.evaluation.backtest import latest_facts, prepare_tasks, run_tasks, to_frame
+    from cfb.evaluation.cohorts import label_cohorts
+    from cfb.evaluation.protocol import load_protocol
+
+    if stage != "b01":
+        typer.echo(f"unknown stage {stage!r}", err=True)
+        raise typer.Exit(code=2)
+    spec = load_protocol()
+    seasons = spec["seasons"]["development"]["seasons"]
+    conn, ledger = open_store()
+    configs = b01.grid_configs()
+    typer.echo(f"{len(configs)} configurations x development seasons {seasons}")
+    t0 = time.perf_counter()
+    tasks = prepare_tasks(conn, spec, seasons, configs, REPO_ROOT / "artifacts" / "snapshots", log=typer.echo)
+    t1 = time.perf_counter()
+    df = run_tasks(tasks, workers or None)
+    t2 = time.perf_counter()
+    typer.echo(f"snapshots {t1 - t0:.1f}s; fit+simulate+score {t2 - t1:.1f}s; {len(df)} game forecasts")
+
+    art = REPO_ROOT / "artifacts" / "backtests"
+    art.mkdir(parents=True, exist_ok=True)
+    df.to_parquet(art / "b01-development.parquet", index=False)
+
+    results = {r["game_id"]: r for r in latest_facts(conn, "game_result")}
+    sched = [s for s in latest_facts(conn, "game_schedule") if s["season"] in seasons]
+    games = to_frame(sched, results).rename(columns={"hp": "home_points", "ap": "away_points"})
+    cohorts = label_cohorts(games, ledger)
+    rep = b01.report(df, cohorts, spec)
+    j, m = b01.write(rep, REPO_ROOT / "experiments" / "b01")
+    typer.echo(f"selected: {rep['selected']}")
+    typer.echo(f"wrote {m.relative_to(REPO_ROOT)} and {j.name}")
+
+
+@app.command()
+def protocol(
+    freeze: bool = typer.Option(False, help="Freeze the draft protocol (irreversible for this version)"),
+) -> None:
+    """V01: validate config/protocol.json and count folds and scored games from cached CFBD data."""
+    import sqlite3
+
+    from cfb.evaluation import protocol as proto
+    from cfb.ingestion.coverage import game_scores
+
+    try:
+        if freeze:
+            record = proto.freeze_protocol()
+            typer.echo(f"froze {record['protocol_id']} sha256={record['protocol_sha256']}")
+        spec = proto.load_protocol()
+    except proto.ProtocolError as exc:
+        typer.echo(f"[FAIL] protocol: {exc}", err=True)
+        raise typer.Exit(code=1) from None
+    typer.echo(f"{spec['protocol_id']} v{spec['protocol_version']}: {spec['status']}, "
+               f"sha256={proto.protocol_hash(spec)[:16]}")
+
+    ledger_path = DATA_DIR / "ledger.sqlite"
+    if not ledger_path.exists():
+        typer.echo("no cached CFBD data; run `cfb audit-coverage` for fold counts")
+        return
+    conn = sqlite3.connect(f"file:{ledger_path.as_posix()}?mode=ro", uri=True)
+    ledger = RawLedger(DATA_DIR / "raw", conn)
+    horizon = spec["products"]["primary"]["horizon_minutes"]
+    typer.echo(f"primary horizon {horizon} min; replay class {spec['replay']['historical_class']}")
+    typer.echo("season  role         folds  scored games  TBD kickoffs")
+    for role, _ in proto.ROLES:
+        for season in spec["seasons"][role]["seasons"]:
+            entries = [ledger.latest_success(p, q) for p, q in [("/teams/fbs", {"year": season})] + [
+                ("/games", {"year": season, "seasonType": st}) for st in ("regular", "postseason")]]
+            if any(e is None for e in entries):
+                typer.echo(f"{season}    {role:<12} not cached")
+                continue
+            fbs = {t["id"] for t in ledger.load(entries[0])}
+            games = [g for e in entries[1:] for g in ledger.load(e)
+                     if (g.get("homeId") in fbs or g.get("awayId") in fbs)
+                     and g.get("completed") and game_scores(g) is not None]
+            folds = proto.build_folds(spec, season, games, horizon)
+            n_games = sum(len(f.game_ids) for f in folds) if folds else len(games)
+            n_tbd = sum(len(f.tbd_game_ids) for f in folds)
+            label = "-" if role not in proto.SCORED_ROLES else str(len(folds))
+            typer.echo(f"{season}    {role:<12} {label:>5}  {n_games:>12}  {n_tbd:>12}")
+
+
 if __name__ == "__main__":
     app()

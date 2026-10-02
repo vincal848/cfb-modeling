@@ -1,0 +1,964 @@
+{
+ "stage": "B01",
+ "generated_at": "2026-10-01T20:27:26+00:00",
+ "protocol_id": "V01",
+ "protocol_version": "1.0",
+ "evaluation_class": "reconstructed",
+ "role": "development",
+ "seasons": [
+  2019,
+  2020,
+  2021
+ ],
+ "horizon_minutes": 1440,
+ "draws_per_game": 20000,
+ "selected": {
+  "elo": "elo|carryover=0.75|hfa=50|k=30",
+  "hfa_only": "hfa_only|half_life_days=365",
+  "ridge": "ridge|half_life_days=240|penalty=2"
+ },
+ "overall": [
+  {
+   "config": "elo|carryover=0.75|hfa=50|k=30",
+   "games": 2343,
+   "energy_score": 10.802690879628612,
+   "winner_log_loss": 0.5093077609174554,
+   "winner_brier": 0.17045826997151572,
+   "margin_crps": 9.573260862374093,
+   "total_crps": 9.862189861806446,
+   "margin_abs_error": 13.534571062740078,
+   "total_abs_error": 13.862996158770807,
+   "margin_50_covered": 0.5198463508322664,
+   "margin_50_width": 23.266431924882628,
+   "total_50_covered": 0.537345283824157,
+   "total_50_width": 24.15514297908664,
+   "margin_80_covered": 0.8096457533077251,
+   "margin_80_width": 43.91813913785746,
+   "total_80_covered": 0.8203158344003414,
+   "total_80_width": 45.67720870678618,
+   "margin_95_covered": 0.9603072983354674,
+   "margin_95_width": 66.50408664105842,
+   "total_95_covered": 0.9568928723858301,
+   "total_95_width": 69.18819889031153
+  },
+  {
+   "config": "hfa_only|half_life_days=365",
+   "games": 2343,
+   "energy_score": 12.645077278007676,
+   "winner_log_loss": 0.6624910163008413,
+   "winner_brier": 0.23482185598721647,
+   "margin_crps": 12.702691363464574,
+   "total_crps": 9.88208090371212,
+   "margin_abs_error": 17.778489116517285,
+   "total_abs_error": 13.890524967989757,
+   "margin_50_covered": 0.5480153649167734,
+   "margin_50_width": 31.135616730687154,
+   "total_50_covered": 0.5335040546308152,
+   "total_50_width": 24.02198036705079,
+   "margin_80_covered": 0.7972684592402902,
+   "margin_80_width": 57.93905249679899,
+   "total_80_covered": 0.8203158344003414,
+   "total_80_width": 45.73141271873667,
+   "margin_95_covered": 0.9466495945369184,
+   "margin_95_width": 86.60093896713612,
+   "total_95_covered": 0.9586000853606488,
+   "total_95_width": 69.2632415706359
+  },
+  {
+   "config": "ridge|half_life_days=240|penalty=2",
+   "games": 2343,
+   "energy_score": 10.498340969221733,
+   "winner_log_loss": 0.5023138625051344,
+   "winner_brier": 0.1680520131747006,
+   "margin_crps": 9.467576407566154,
+   "total_crps": 9.4149229576003,
+   "margin_abs_error": 13.373879641485276,
+   "total_abs_error": 13.277848911651729,
+   "margin_50_covered": 0.48826291079812206,
+   "margin_50_width": 21.02315407597098,
+   "total_50_covered": 0.50917626973965,
+   "total_50_width": 21.0411865130175,
+   "margin_80_covered": 0.7729406743491251,
+   "margin_80_width": 39.654289372599244,
+   "total_80_covered": 0.7789159197609902,
+   "total_80_width": 39.84699103713189,
+   "margin_95_covered": 0.9346991037131882,
+   "margin_95_width": 60.09367264191204,
+   "total_95_covered": 0.9355527102005975,
+   "total_95_width": 60.505975245411825
+  }
+ ],
+ "by_season": [
+  {
+   "config": "elo|carryover=0.75|hfa=50|k=30",
+   "season": 2019,
+   "games": 888,
+   "energy_score": 10.716693421772112,
+   "winner_log_loss": 0.4771185782594052,
+   "winner_brier": 0.1579401735551364,
+   "margin_crps": 9.419423590202703,
+   "total_crps": 9.86524285902027,
+   "margin_abs_error": 13.217905405405405,
+   "total_abs_error": 13.973536036036036,
+   "margin_50_covered": 0.5416666666666666,
+   "margin_50_width": 23.479166666666668,
+   "total_50_covered": 0.5349099099099099,
+   "total_50_width": 24.5678490990991,
+   "margin_80_covered": 0.8220720720720721,
+   "margin_80_width": 44.338288288288304,
+   "total_80_covered": 0.8220720720720721,
+   "total_80_width": 46.43626126126127,
+   "margin_95_covered": 0.9617117117117117,
+   "margin_95_width": 67.15278716216211,
+   "total_95_covered": 0.9684684684684685,
+   "total_95_width": 70.28910472972967
+  },
+  {
+   "config": "elo|carryover=0.75|hfa=50|k=30",
+   "season": 2020,
+   "games": 568,
+   "energy_score": 11.132628985980716,
+   "winner_log_loss": 0.5474696778443418,
+   "winner_brier": 0.18450207404964972,
+   "margin_crps": 9.630012473882042,
+   "total_crps": 10.360607577297536,
+   "margin_abs_error": 13.632042253521126,
+   "total_abs_error": 14.52024647887324,
+   "margin_50_covered": 0.5070422535211268,
+   "margin_50_width": 23.207306338028168,
+   "total_50_covered": 0.5193661971830986,
+   "total_50_width": 24.13336267605634,
+   "margin_80_covered": 0.8098591549295775,
+   "margin_80_width": 43.701056338028174,
+   "total_80_covered": 0.8098591549295775,
+   "total_80_width": 45.7973591549296,
+   "margin_95_covered": 0.9612676056338029,
+   "margin_95_width": 66.17367957746472,
+   "total_95_covered": 0.9383802816901409,
+   "total_95_width": 69.45875880281685
+  },
+  {
+   "config": "elo|carryover=0.75|hfa=50|k=30",
+   "season": 2021,
+   "games": 887,
+   "energy_score": 10.677505871926897,
+   "winner_log_loss": 0.5170958391427962,
+   "winner_brier": 0.1739973780903035,
+   "margin_crps": 9.69093006457441,
+   "total_crps": 9.539966272263248,
+   "margin_abs_error": 13.789177001127396,
+   "total_abs_error": 13.331454340473506,
+   "margin_50_covered": 0.5062006764374295,
+   "margin_50_width": 23.091319052987597,
+   "total_50_covered": 0.5512965050732808,
+   "total_50_width": 23.755918827508456,
+   "margin_80_covered": 0.7970687711386697,
+   "margin_80_width": 43.63652762119504,
+   "total_80_covered": 0.8252536640360767,
+   "total_80_width": 44.8403607666291,
+   "margin_95_covered": 0.9582863585118376,
+   "margin_95_width": 66.06623449830886,
+   "total_95_covered": 0.9571589627959414,
+   "total_95_width": 67.91279594137538
+  },
+  {
+   "config": "hfa_only|half_life_days=365",
+   "season": 2019,
+   "games": 888,
+   "energy_score": 12.820454831742369,
+   "winner_log_loss": 0.6501280418602761,
+   "winner_brier": 0.22877412712233444,
+   "margin_crps": 13.01893795436374,
+   "total_crps": 9.891795752291666,
+   "margin_abs_error": 18.214527027027028,
+   "total_abs_error": 14.003378378378379,
+   "margin_50_covered": 0.543918918918919,
+   "margin_50_width": 31.456925675675677,
+   "total_50_covered": 0.5292792792792793,
+   "total_50_width": 24.413006756756758,
+   "margin_80_covered": 0.7894144144144144,
+   "margin_80_width": 58.447860360360366,
+   "total_80_covered": 0.8254504504504504,
+   "total_80_width": 46.52184684684685,
+   "margin_95_covered": 0.9436936936936937,
+   "margin_95_width": 87.35095720720717,
+   "total_95_covered": 0.9684684684684685,
+   "total_95_width": 70.38834459459454
+  },
+  {
+   "config": "hfa_only|half_life_days=365",
+   "season": 2020,
+   "games": 568,
+   "energy_score": 12.644207411963812,
+   "winner_log_loss": 0.6793140839614575,
+   "winner_brier": 0.24307645181754967,
+   "margin_crps": 12.24516693262324,
+   "total_crps": 10.370206981135563,
+   "margin_abs_error": 17.169014084507044,
+   "total_abs_error": 14.540492957746478,
+   "margin_50_covered": 0.5580985915492958,
+   "margin_50_width": 30.955105633802816,
+   "total_50_covered": 0.5176056338028169,
+   "total_50_width": 24.08274647887324,
+   "margin_80_covered": 0.8116197183098591,
+   "margin_80_width": 57.696654929577484,
+   "total_80_covered": 0.8080985915492958,
+   "total_80_width": 45.763204225352126,
+   "margin_95_covered": 0.954225352112676,
+   "margin_95_width": 86.25444542253516,
+   "total_95_covered": 0.9436619718309859,
+   "total_95_width": 69.44973591549291
+  },
+  {
+   "config": "hfa_only|half_life_days=365",
+   "season": 2021,
+   "games": 887,
+   "energy_score": 12.470059032456948,
+   "winner_log_loss": 0.6640950962016214,
+   "winner_brier": 0.23559048372158625,
+   "margin_crps": 12.67906893279876,
+   "total_crps": 9.559778313503383,
+   "margin_abs_error": 17.732243517474632,
+   "total_abs_error": 13.361330326944758,
+   "margin_50_covered": 0.5456595264937993,
+   "margin_50_width": 30.929537767756482,
+   "total_50_covered": 0.5479143179255919,
+   "total_50_width": 23.59160090191657,
+   "margin_80_covered": 0.7959413754227734,
+   "margin_80_width": 57.584892897407,
+   "total_80_covered": 0.8229988726042841,
+   "total_80_width": 44.91972942502819,
+   "margin_95_covered": 0.9447576099210823,
+   "margin_95_width": 86.07195603156704,
+   "total_95_covered": 0.9582863585118376,
+   "total_95_width": 68.01744644870347
+  },
+  {
+   "config": "ridge|half_life_days=240|penalty=2",
+   "season": 2019,
+   "games": 888,
+   "energy_score": 10.354047756171324,
+   "winner_log_loss": 0.46791069582213807,
+   "winner_brier": 0.15529039127084512,
+   "margin_crps": 9.293141516275337,
+   "total_crps": 9.322273719777591,
+   "margin_abs_error": 13.00731981981982,
+   "total_abs_error": 13.252815315315315,
+   "margin_50_covered": 0.5180180180180181,
+   "margin_50_width": 21.006475225225227,
+   "total_50_covered": 0.5056306306306306,
+   "total_50_width": 21.405405405405407,
+   "margin_80_covered": 0.7792792792792793,
+   "margin_80_width": 39.66621621621622,
+   "total_80_covered": 0.7871621621621622,
+   "total_80_width": 40.540427927927944,
+   "margin_95_covered": 0.9346846846846847,
+   "margin_95_width": 60.11317567567565,
+   "total_95_covered": 0.9436936936936937,
+   "total_95_width": 61.60650337837834
+  },
+  {
+   "config": "ridge|half_life_days=240|penalty=2",
+   "season": 2020,
+   "games": 568,
+   "energy_score": 10.785791949689703,
+   "winner_log_loss": 0.5322651430260816,
+   "winner_brier": 0.18046870780128754,
+   "margin_crps": 9.519381859507043,
+   "total_crps": 9.853742686804578,
+   "margin_abs_error": 13.415492957746478,
+   "total_abs_error": 13.837147887323944,
+   "margin_50_covered": 0.4876760563380282,
+   "margin_50_width": 21.444542253521128,
+   "total_50_covered": 0.5088028169014085,
+   "total_50_width": 21.117077464788732,
+   "margin_80_covered": 0.7799295774647887,
+   "margin_80_width": 40.42693661971832,
+   "total_80_covered": 0.7605633802816901,
+   "total_80_width": 39.98978873239437,
+   "margin_95_covered": 0.9383802816901409,
+   "margin_95_width": 61.24568661971826,
+   "total_95_covered": 0.9225352112676056,
+   "total_95_width": 60.66606514084504
+  },
+  {
+   "config": "ridge|half_life_days=240|penalty=2",
+   "season": 2021,
+   "games": 887,
+   "energy_score": 10.458724527601616,
+   "winner_log_loss": 0.517576190214946,
+   "winner_brier": 0.17287685838633787,
+   "margin_crps": 9.609033777085681,
+   "total_crps": 9.226673709571589,
+   "margin_abs_error": 13.714205186020292,
+   "total_abs_error": 12.944757609921082,
+   "margin_50_covered": 0.4588500563697858,
+   "margin_50_width": 20.77001127395716,
+   "total_50_covered": 0.5129650507328072,
+   "total_50_width": 20.627959413754226,
+   "margin_80_covered": 0.762119503945885,
+   "margin_80_width": 39.14757609921083,
+   "total_80_covered": 0.7824126268320181,
+   "total_80_width": 39.06133032694477,
+   "margin_95_covered": 0.9323562570462233,
+   "margin_95_width": 59.33644306651632,
+   "total_95_covered": 0.9357384441939121,
+   "total_95_width": 59.30169109357381
+  }
+ ],
+ "comparisons": [
+  {
+   "challenger": "ridge|half_life_days=240|penalty=2",
+   "baseline": "hfa_only|half_life_days=365",
+   "metric": "energy_score",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": -2.1467363087859423,
+   "ci95": [
+    -2.3464911375117716,
+    -1.9456748167025155
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "ridge|half_life_days=240|penalty=2",
+   "baseline": "hfa_only|half_life_days=365",
+   "metric": "energy_score",
+   "blocks": "three_week",
+   "games": 2343,
+   "mean_difference": -2.1467363087859423,
+   "ci95": [
+    -2.373863846846467,
+    -1.9052086639611763
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "ridge|half_life_days=240|penalty=2",
+   "baseline": "hfa_only|half_life_days=365",
+   "metric": "energy_score",
+   "blocks": "season_half",
+   "games": 2343,
+   "mean_difference": -2.146736308785943,
+   "ci95": [
+    -2.3689712794824827,
+    -1.9029438310471507
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "ridge|half_life_days=240|penalty=2",
+   "baseline": "hfa_only|half_life_days=365",
+   "metric": "winner_log_loss",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": -0.16017715379570685,
+   "ci95": [
+    -0.18072238516681358,
+    -0.13914977625633004
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "ridge|half_life_days=240|penalty=2",
+   "baseline": "hfa_only|half_life_days=365",
+   "metric": "margin_crps",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": -3.235114955898421,
+   "ci95": [
+    -3.620164842038626,
+    -2.8627626566446844
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "ridge|half_life_days=240|penalty=2",
+   "baseline": "hfa_only|half_life_days=365",
+   "metric": "total_crps",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": -0.4671579461118224,
+   "ci95": [
+    -0.6746088824385286,
+    -0.2806652697241525
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "elo|carryover=0.75|hfa=50|k=30",
+   "baseline": "hfa_only|half_life_days=365",
+   "metric": "energy_score",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": -1.8423863983790625,
+   "ci95": [
+    -2.050458650858969,
+    -1.636335719287356
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "elo|carryover=0.75|hfa=50|k=30",
+   "baseline": "hfa_only|half_life_days=365",
+   "metric": "energy_score",
+   "blocks": "three_week",
+   "games": 2343,
+   "mean_difference": -1.8423863983790625,
+   "ci95": [
+    -2.105140040197423,
+    -1.5414861375641
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "elo|carryover=0.75|hfa=50|k=30",
+   "baseline": "hfa_only|half_life_days=365",
+   "metric": "energy_score",
+   "blocks": "season_half",
+   "games": 2343,
+   "mean_difference": -1.8423863983790625,
+   "ci95": [
+    -2.037634686517269,
+    -1.6186132690031227
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "elo|carryover=0.75|hfa=50|k=30",
+   "baseline": "hfa_only|half_life_days=365",
+   "metric": "winner_log_loss",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": -0.1531832553833858,
+   "ci95": [
+    -0.17394675254309963,
+    -0.13256539311394777
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "elo|carryover=0.75|hfa=50|k=30",
+   "baseline": "hfa_only|half_life_days=365",
+   "metric": "margin_crps",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": -3.1294305010904826,
+   "ci95": [
+    -3.4762346610546624,
+    -2.7802705273995914
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "elo|carryover=0.75|hfa=50|k=30",
+   "baseline": "hfa_only|half_life_days=365",
+   "metric": "total_crps",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": -0.019891041905676515,
+   "ci95": [
+    -0.028742657429343763,
+    -0.011070997699851993
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "ridge|half_life_days=240|penalty=2",
+   "baseline": "elo|carryover=0.75|hfa=50|k=30",
+   "metric": "energy_score",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": -0.30434991040688,
+   "ci95": [
+    -0.4379598179626773,
+    -0.17936361498223333
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "ridge|half_life_days=240|penalty=2",
+   "baseline": "elo|carryover=0.75|hfa=50|k=30",
+   "metric": "energy_score",
+   "blocks": "three_week",
+   "games": 2343,
+   "mean_difference": -0.30434991040688,
+   "ci95": [
+    -0.4266962613498373,
+    -0.19268438171714827
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "ridge|half_life_days=240|penalty=2",
+   "baseline": "elo|carryover=0.75|hfa=50|k=30",
+   "metric": "energy_score",
+   "blocks": "season_half",
+   "games": 2343,
+   "mean_difference": -0.30434991040688,
+   "ci95": [
+    -0.4029111852607904,
+    -0.22209725177494435
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "ridge|half_life_days=240|penalty=2",
+   "baseline": "elo|carryover=0.75|hfa=50|k=30",
+   "metric": "winner_log_loss",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": -0.006993898412320995,
+   "ci95": [
+    -0.015948792128205498,
+    0.0016508343124110635
+   ],
+   "challenger_better": false
+  },
+  {
+   "challenger": "ridge|half_life_days=240|penalty=2",
+   "baseline": "elo|carryover=0.75|hfa=50|k=30",
+   "metric": "margin_crps",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": -0.10568445480793852,
+   "ci95": [
+    -0.22020464719049712,
+    0.00038772089280106705
+   ],
+   "challenger_better": false
+  },
+  {
+   "challenger": "ridge|half_life_days=240|penalty=2",
+   "baseline": "elo|carryover=0.75|hfa=50|k=30",
+   "metric": "total_crps",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": -0.44726690420614584,
+   "ci95": [
+    -0.6527573141331787,
+    -0.25929008143393534
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "ridge|half_life_days=240|penalty=2",
+   "baseline": "hfa_only|half_life_days=365",
+   "metric": "energy_score",
+   "blocks": "week",
+   "games": 1775,
+   "mean_difference": -2.238998979669729,
+   "ci95": [
+    -2.4777566259025603,
+    -1.993620189133767
+   ],
+   "challenger_better": true,
+   "sensitivity": "exclude 2020"
+  },
+  {
+   "challenger": "ridge|half_life_days=240|penalty=2",
+   "baseline": "elo|carryover=0.75|hfa=50|k=30",
+   "metric": "energy_score",
+   "blocks": "week",
+   "games": 1775,
+   "mean_difference": -0.2907540301239572,
+   "ci95": [
+    -0.44120387528657434,
+    -0.14632270369483397
+   ],
+   "challenger_better": true,
+   "sensitivity": "exclude 2020"
+  }
+ ],
+ "cohorts": [
+  {
+   "cohort": "early_season",
+   "config": "elo|carryover=0.75|hfa=50|k=30",
+   "games": 780,
+   "energy_score": 10.931316166914154,
+   "winner_log_loss": 0.4354982335883803,
+   "margin_crps": 10.033677264076923
+  },
+  {
+   "cohort": "early_season",
+   "config": "hfa_only|half_life_days=365",
+   "games": 780,
+   "energy_score": 13.288636161523138,
+   "winner_log_loss": 0.619401977097363,
+   "margin_crps": 13.994668702708333
+  },
+  {
+   "cohort": "early_season",
+   "config": "ridge|half_life_days=240|penalty=2",
+   "games": 780,
+   "energy_score": 10.758310524118153,
+   "winner_log_loss": 0.42183977930820815,
+   "margin_crps": 9.813148018509615
+  },
+  {
+   "cohort": "fbs_vs_nonfbs",
+   "config": "elo|carryover=0.75|hfa=50|k=30",
+   "games": 265,
+   "energy_score": 10.879815126541057,
+   "winner_log_loss": 0.21662392415916362,
+   "margin_crps": 10.158945251556604
+  },
+  {
+   "cohort": "fbs_vs_nonfbs",
+   "config": "hfa_only|half_life_days=365",
+   "games": 265,
+   "energy_score": 14.831196487180561,
+   "winner_log_loss": 0.49076733718359417,
+   "margin_crps": 16.700799192764148
+  },
+  {
+   "cohort": "fbs_vs_nonfbs",
+   "config": "ridge|half_life_days=240|penalty=2",
+   "games": 265,
+   "energy_score": 10.753692795812997,
+   "winner_log_loss": 0.1989193417973255,
+   "margin_crps": 9.679435858981131
+  },
+  {
+   "cohort": "postseason",
+   "config": "elo|carryover=0.75|hfa=50|k=30",
+   "games": 104,
+   "energy_score": 10.846764148529386,
+   "winner_log_loss": 0.6317784477506481,
+   "margin_crps": 9.559167724278847
+  },
+  {
+   "cohort": "postseason",
+   "config": "hfa_only|half_life_days=365",
+   "games": 104,
+   "energy_score": 11.174474015467249,
+   "winner_log_loss": 0.6902428397450314,
+   "margin_crps": 10.261698730360575
+  },
+  {
+   "cohort": "postseason",
+   "config": "ridge|half_life_days=240|penalty=2",
+   "games": 104,
+   "energy_score": 10.379575096719886,
+   "winner_log_loss": 0.6487120704566451,
+   "margin_crps": 9.589186636009616
+  },
+  {
+   "cohort": "neutral_site",
+   "config": "elo|carryover=0.75|hfa=50|k=30",
+   "games": 153,
+   "energy_score": 10.955577008397258,
+   "winner_log_loss": 0.6088543943900234,
+   "margin_crps": 9.45474708882353
+  },
+  {
+   "cohort": "neutral_site",
+   "config": "hfa_only|half_life_days=365",
+   "games": 153,
+   "energy_score": 11.501766081943417,
+   "winner_log_loss": 0.6925285837338304,
+   "margin_crps": 10.531152086846406
+  },
+  {
+   "cohort": "neutral_site",
+   "config": "ridge|half_life_days=240|penalty=2",
+   "games": 153,
+   "energy_score": 10.34158932685403,
+   "winner_log_loss": 0.6178885236991953,
+   "margin_crps": 9.514796840326799
+  },
+  {
+   "cohort": "season_2020",
+   "config": "elo|carryover=0.75|hfa=50|k=30",
+   "games": 568,
+   "energy_score": 11.132628985980716,
+   "winner_log_loss": 0.5474696778443418,
+   "margin_crps": 9.630012473882042
+  },
+  {
+   "cohort": "season_2020",
+   "config": "hfa_only|half_life_days=365",
+   "games": 568,
+   "energy_score": 12.644207411963812,
+   "winner_log_loss": 0.6793140839614575,
+   "margin_crps": 12.245166932623238
+  },
+  {
+   "cohort": "season_2020",
+   "config": "ridge|half_life_days=240|penalty=2",
+   "games": 568,
+   "energy_score": 10.7857919496897,
+   "winner_log_loss": 0.5322651430260816,
+   "margin_crps": 9.519381859507043
+  },
+  {
+   "cohort": "pbp_unreconciled",
+   "config": "elo|carryover=0.75|hfa=50|k=30",
+   "games": 86,
+   "energy_score": 10.363175783221939,
+   "winner_log_loss": 0.6157059964376682,
+   "margin_crps": 8.901808401104653
+  },
+  {
+   "cohort": "pbp_unreconciled",
+   "config": "hfa_only|half_life_days=365",
+   "games": 86,
+   "energy_score": 11.744086465093659,
+   "winner_log_loss": 0.6798268545256245,
+   "margin_crps": 11.218844779215114
+  },
+  {
+   "cohort": "pbp_unreconciled",
+   "config": "ridge|half_life_days=240|penalty=2",
+   "games": 86,
+   "energy_score": 10.031852829027134,
+   "winner_log_loss": 0.5918077375623677,
+   "margin_crps": 8.430430496337209
+  },
+  {
+   "cohort": "missing_team_stats",
+   "config": "elo|carryover=0.75|hfa=50|k=30",
+   "games": 0,
+   "energy_score": null,
+   "winner_log_loss": null,
+   "margin_crps": null
+  },
+  {
+   "cohort": "missing_team_stats",
+   "config": "hfa_only|half_life_days=365",
+   "games": 0,
+   "energy_score": null,
+   "winner_log_loss": null,
+   "margin_crps": null
+  },
+  {
+   "cohort": "missing_team_stats",
+   "config": "ridge|half_life_days=240|penalty=2",
+   "games": 0,
+   "energy_score": null,
+   "winner_log_loss": null,
+   "margin_crps": null
+  },
+  {
+   "cohort": "no_line",
+   "config": "elo|carryover=0.75|hfa=50|k=30",
+   "games": 8,
+   "energy_score": 12.916101231737128,
+   "winner_log_loss": 0.13006812179263816,
+   "margin_crps": 11.853635315625
+  },
+  {
+   "cohort": "no_line",
+   "config": "hfa_only|half_life_days=365",
+   "games": 8,
+   "energy_score": 17.938257196638396,
+   "winner_log_loss": 0.44497454170326556,
+   "margin_crps": 20.140401456874997
+  },
+  {
+   "cohort": "no_line",
+   "config": "ridge|half_life_days=240|penalty=2",
+   "games": 8,
+   "energy_score": 11.607624148051942,
+   "winner_log_loss": 0.06369928503227781,
+   "margin_crps": 9.5938423625
+  }
+ ],
+ "grid": [
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.6|hfa=50|k=20",
+   "energy_score": 10.86410598142286
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.6|hfa=50|k=30",
+   "energy_score": 10.826807026076699
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.6|hfa=50|k=40",
+   "energy_score": 10.843283307309628
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.6|hfa=65|k=20",
+   "energy_score": 10.909650159507613
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.6|hfa=65|k=30",
+   "energy_score": 10.856107640288942
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.6|hfa=65|k=40",
+   "energy_score": 10.861617457556525
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.6|hfa=80|k=20",
+   "energy_score": 10.969086483716934
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.6|hfa=80|k=30",
+   "energy_score": 10.899146514584793
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.6|hfa=80|k=40",
+   "energy_score": 10.893216942394652
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.75|hfa=50|k=20",
+   "energy_score": 10.82695667196576
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.75|hfa=50|k=30",
+   "energy_score": 10.802690879628612
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.75|hfa=50|k=40",
+   "energy_score": 10.816665772783871
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.75|hfa=65|k=20",
+   "energy_score": 10.859037134861682
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.75|hfa=65|k=30",
+   "energy_score": 10.822378280239324
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.75|hfa=65|k=40",
+   "energy_score": 10.828445902349365
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.75|hfa=80|k=20",
+   "energy_score": 10.904826676890792
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.75|hfa=80|k=30",
+   "energy_score": 10.855328493118847
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.75|hfa=80|k=40",
+   "energy_score": 10.852311600839347
+  },
+  {
+   "model": "hfa_only",
+   "config": "hfa_only|half_life_days=365",
+   "energy_score": 12.645077278007676
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=120|penalty=10",
+   "energy_score": 11.112613293032293
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=120|penalty=2",
+   "energy_score": 10.62320035917304
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=120|penalty=20",
+   "energy_score": 11.45274470433246
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=120|penalty=5",
+   "energy_score": 10.818010012844066
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=120|penalty=50",
+   "energy_score": 11.81707316594985
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=240|penalty=10",
+   "energy_score": 10.856662463676166
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=240|penalty=2",
+   "energy_score": 10.498340969221733
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=240|penalty=20",
+   "energy_score": 11.186183143907758
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=240|penalty=5",
+   "energy_score": 10.62599056959994
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=240|penalty=50",
+   "energy_score": 11.621935910375951
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=480|penalty=10",
+   "energy_score": 10.802121353091113
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=480|penalty=2",
+   "energy_score": 10.617926640749785
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=480|penalty=20",
+   "energy_score": 11.026073389856016
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=480|penalty=5",
+   "energy_score": 10.676895900556461
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=480|penalty=50",
+   "energy_score": 11.425711857351201
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=960|penalty=10",
+   "energy_score": 10.893045659067848
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=960|penalty=2",
+   "energy_score": 10.816297985088882
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=960|penalty=20",
+   "energy_score": 11.021163617336981
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=960|penalty=5",
+   "energy_score": 10.833162950763413
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|half_life_days=960|penalty=50",
+   "energy_score": 11.315736219013244
+  }
+ ]
+}
