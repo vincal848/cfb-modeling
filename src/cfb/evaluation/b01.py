@@ -75,21 +75,29 @@ def paired(df: pd.DataFrame, a: str, b: str, metric: str, kind: str, reps: int, 
             "mean_difference": mean, "ci95": [lo, hi], "challenger_better": hi < 0}
 
 
-def report(df: pd.DataFrame, cohorts: pd.DataFrame, protocol: dict[str, Any]) -> dict[str, Any]:
+B01_PAIRS = ((CHAMPION_MODEL, TRIVIAL_MODEL), ("elo", TRIVIAL_MODEL), (CHAMPION_MODEL, "elo"))
+B01_SENSITIVITY_PAIRS = ((CHAMPION_MODEL, TRIVIAL_MODEL), (CHAMPION_MODEL, "elo"))
+
+
+def report(
+    df: pd.DataFrame, cohorts: pd.DataFrame, protocol: dict[str, Any], *, stage: str = "B01",
+    grid_pass: int = GRID_PASS, pairs: tuple[tuple[str, str], ...] = B01_PAIRS,
+    sensitivity_pairs: tuple[tuple[str, str], ...] = B01_SENSITIVITY_PAIRS,
+) -> dict[str, Any]:
+    """`pairs` are (challenger model, baseline model); each uses that model's selected config."""
     chosen = select(df)
     sel = df[df["config"].isin(chosen.values())]
     reps = protocol["comparison"]["replicates"]
     seed = protocol["monte_carlo"]["root_seed"]
-    champ, elo, triv = chosen[CHAMPION_MODEL], chosen["elo"], chosen[TRIVIAL_MODEL]
 
     comparisons = []
-    for a, b in ((champ, triv), (elo, triv), (champ, elo)):
+    for a, b in ((chosen[x], chosen[y]) for x, y in pairs):
         for kind in ("week", "three_week", "season_half"):
             comparisons.append(paired(sel, a, b, "energy_score", kind, reps, seed))
         for metric in ("winner_log_loss", "margin_crps", "total_crps"):
             comparisons.append(paired(sel, a, b, metric, "week", reps, seed))
     no2020 = sel[sel["season"] != 2020]
-    for a, b in ((champ, triv), (champ, elo)):
+    for a, b in ((chosen[x], chosen[y]) for x, y in sensitivity_pairs):
         c = paired(no2020, a, b, "energy_score", "week", reps, seed)
         c["sensitivity"] = "exclude 2020"
         comparisons.append(c)
@@ -110,8 +118,8 @@ def report(df: pd.DataFrame, cohorts: pd.DataFrame, protocol: dict[str, Any]) ->
 
     grid = df.groupby(["model", "config"])["energy_score"].mean().reset_index()
     return {
-        "stage": "B01",
-        "grid_pass": GRID_PASS,
+        "stage": stage,
+        "grid_pass": grid_pass,
         "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
         "protocol_id": protocol["protocol_id"], "protocol_version": protocol["protocol_version"],
         "evaluation_class": protocol["replay"]["historical_class"],
@@ -134,7 +142,7 @@ def render(rep: dict[str, Any]) -> str:
     sel = rep["selected"]
     names = {v: k for k, v in sel.items()}
     lines = [
-        "# B01 baselines: development results",
+        f"# {rep['stage']}: development results",
         "",
         (f"Generated {rep['generated_at']}. Protocol {rep['protocol_id']} v{rep['protocol_version']} "
          f"(frozen). **Evaluation class: {rep['evaluation_class']}.** Seasons {rep['seasons']} "
@@ -144,8 +152,10 @@ def render(rep: dict[str, Any]) -> str:
         ("Each model's configuration was selected on these same games, so these scores are "
          "optimistic. They are development evidence, not test results."),
         "",
-        (f"Tuning pass {rep['grid_pass']}. Pass 1 (commit 7aa513e) selected values at the edges of "
-         "its grid, so pass 2 widened the grid once; no further pass is planned."),
+        (f"Tuning pass {rep['grid_pass']}. " + (
+            "Pass 1 (commit 7aa513e) selected values at the edges of its grid, so pass 2 widened "
+            "the grid once; no further pass is planned." if rep["stage"] == "B01" else
+            "The grid was fixed before this run.")),
         "",
         "## Selected configurations",
         "",
@@ -203,7 +213,8 @@ def render(rep: dict[str, Any]) -> str:
 
 def write(rep: dict[str, Any], out_dir: Path) -> tuple[Path, Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
-    j, m = out_dir / "b01-development.json", out_dir / "b01-development.md"
+    stem = f"{rep['stage'].lower()}-development"
+    j, m = out_dir / f"{stem}.json", out_dir / f"{stem}.md"
     j.write_text(json.dumps(rep, indent=1, default=float), encoding="utf-8")
     m.write_text(render(rep), encoding="utf-8")
     return j, m

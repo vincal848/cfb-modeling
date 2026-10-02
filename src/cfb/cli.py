@@ -165,7 +165,7 @@ def build_snapshot_cmd(
 
 @app.command()
 def backtest(
-    stage: str = typer.Option("b01", help="Backtest stage (b01)"),
+    stage: str = typer.Option("b01", help="Backtest stage (b01 or b02)"),
     workers: int = typer.Option(0, help="Worker processes (0 = CPU count - 1)"),
 ) -> None:
     """B01: forward evaluation of the baselines on the development seasons only."""
@@ -176,12 +176,15 @@ def backtest(
     from cfb.evaluation.cohorts import label_cohorts
     from cfb.evaluation.protocol import load_protocol
 
-    if stage != "b01":
+    if stage not in ("b01", "b02"):
         typer.echo(f"unknown stage {stage!r}", err=True)
         raise typer.Exit(code=2)
     spec = load_protocol()
     seasons = spec["seasons"]["development"]["seasons"]
     conn, ledger = open_store()
+    if stage == "b02":
+        _backtest_b02(spec, seasons, conn, ledger, workers)
+        return
     configs = b01.grid_configs()
     typer.echo(f"{len(configs)} configurations x development seasons {seasons}")
     t0 = time.perf_counter()
@@ -201,6 +204,39 @@ def backtest(
     cohorts = label_cohorts(games, ledger)
     rep = b01.report(df, cohorts, spec)
     j, m = b01.write(rep, REPO_ROOT / "experiments" / "b01")
+    typer.echo(f"selected: {rep['selected']}")
+    typer.echo(f"wrote {m.relative_to(REPO_ROOT)} and {j.name}")
+
+
+def _backtest_b02(spec, seasons, conn, ledger, workers) -> None:
+    import time
+
+    import pandas as pd
+
+    from cfb.evaluation import b01, b02
+    from cfb.evaluation.backtest import latest_facts, prepare_tasks, to_frame
+    from cfb.evaluation.cohorts import label_cohorts
+
+    lag = spec["replay"]["reconstructed_result_available_after_kickoff_hours"]
+    t0 = time.perf_counter()
+    tasks = prepare_tasks(conn, spec, seasons, [], REPO_ROOT / "artifacts" / "snapshots", log=typer.echo)
+    t1 = time.perf_counter()
+    df = b02.run_grid(tasks, lag, workers or None)
+    t2 = time.perf_counter()
+    typer.echo(f"{len(b02.grid_configs())} configurations; snapshots {t1 - t0:.1f}s; "
+               f"filter+simulate+score {t2 - t1:.1f}s; {len(df)} game forecasts")
+    art = REPO_ROOT / "artifacts" / "backtests"
+    art.mkdir(parents=True, exist_ok=True)
+    df.to_parquet(art / "b02-development.parquet", index=False)
+    b01_rows = pd.read_parquet(art / "b01-development.parquet")
+    combined = pd.concat([b01_rows, df], ignore_index=True)
+
+    results = {r["game_id"]: r for r in latest_facts(conn, "game_result")}
+    sched = [s for s in latest_facts(conn, "game_schedule") if s["season"] in seasons]
+    games = to_frame(sched, results).rename(columns={"hp": "home_points", "ap": "away_points"})
+    rep = b01.report(combined, label_cohorts(games, ledger), spec, stage="B02", grid_pass=1,
+                     pairs=b02.PAIRS, sensitivity_pairs=b02.SENSITIVITY_PAIRS)
+    j, m = b01.write(rep, REPO_ROOT / "experiments" / "b02")
     typer.echo(f"selected: {rep['selected']}")
     typer.echo(f"wrote {m.relative_to(REPO_ROOT)} and {j.name}")
 

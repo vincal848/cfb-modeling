@@ -7,7 +7,7 @@ This file keeps two things separate:
 - **Implemented** means the code exists and its contract tests pass.
 - **Demonstrated** means forecasting performance was observed out of sample on real data.
 
-**Development evidence only.** B01 baselines were scored forward on the 2019–2021 development seasons (reconstructed replay, configurations tuned on the same games). No stack-fit, calibration or test season has been scored.
+**Development evidence only.** B01 baselines and the B02 dynamic model were scored forward on the 2019–2021 development seasons (reconstructed replay, configurations tuned on the same games). No stack-fit, calibration or test season has been scored.
 
 ## Status by milestone
 
@@ -16,7 +16,7 @@ This file keeps two things separate:
 | Repo setup | ✅ | n/a | Scaffold, blueprint copy, config/schema loaders, contract tests |
 | M0 Source audit | 🟡 | n/a | D01, D02, D03 and V01 done |
 | M1 Temporal data foundation | 🟡 | n/a | D03, D04, D07 done; D05 done for games/teams (players pending D06); D06, D08 remain |
-| M2 Forecasting baseline | 🟡 | 🟡 development only | B01 and B03 done; B02 dynamic team model remains |
+| M2 Forecasting baseline | ✅ | 🟡 development only | B01, B02, B03 done. Champion decision deferred to the stack/test stages per V01 |
 | M3–M7 | ⬜ | ⬜ | In dependency order after M2 |
 | T1 Tracking / L1 Live | disabled | — | Gated on external data. `tracking_enabled=false`, enforced by config validation |
 
@@ -34,6 +34,7 @@ This file keeps two things separate:
 | D07 Snapshot builder | ✅ | Sealed, deterministic cutoff snapshots; strict mode admits no reconstructed history. 6 temporal tests. |
 | D08 Score and coverage quality checks | ⬜ | Needed before P01; D02 already classifies play-by-play mismatches |
 | B03 Immutable forecast summaries and forced picks | ✅ | 147 runs, 7,029 forecasts with winner_v1 picks, outcomes and evaluations; rerun inserts 0; 50/50 sampled forecasts replay exactly. 4 replay tests. |
+| B02 Dynamic team-only strength | ✅ | Kalman filter, past-only states checked against every fold snapshot; 36-configuration prior/innovation sensitivity reported. See [experiments/b02/b02-development.md](experiments/b02/b02-development.md). |
 | B01 Elo and margin/total baselines | ✅ | Both beat the trivial model on every primary metric (development). See [experiments/b01/b01-development.md](experiments/b01/b01-development.md). |
 
 ## Completed work
@@ -118,6 +119,21 @@ Labeling: rows from mocked transports use `provider='SYNTHETIC'`. Live rows use 
 - Replay: a stored forecast's parameters and derived seed regenerate the identical samples hash, probability and pick.
 - Storage: samples are about 69 KB per forecast (483 MB for the 7,029 development forecasts) because random draws barely compress. Since replay regenerates them exactly, storing only parameters and seeds is an option before the stack and test seasons multiply the run count.
 
+### B02: dynamic team strength
+
+- `cfb backtest --stage b02`: Kalman filter on paired final scores (league level, home advantage, non-FBS group effects, team offense/defense). Weekly random-walk drift, off-season shrinkage by rho with innovation (1 − rho²)·s0², filtered never smoothed.
+- One forward pass per configuration, run in parallel. Before each fold's predictions the filter must have absorbed exactly that fold's snapshot results (checked by digest), so every prediction is past-only.
+- Predictions use only the state entries a game loads on; a test checks them against the full-state computation for same-week, next-week, new-season and new-team cases.
+- 36 configurations, fixed before running; about 3.5 minutes on 19 workers.
+
+## B02 findings (development, reconstructed, tuned on the same games)
+
+1. **Best development energy score so far**: dynamic 10.391, ridge 10.462, Elo 10.799, trivial 12.645.
+2. **Versus the ridge champion the gain is small and not robust**: −0.072, with the 95% interval below 0 for week blocks (−0.141 to −0.009) but not for three-week or season-half blocks. Margin CRPS improves (−0.124, interval below 0); winner log loss and total CRPS do not differ. Excluding 2020: −0.097 (interval below 0). Under V01 this is development evidence only; promotion is decided later on held-out seasons.
+3. **Clearly better than Elo and the trivial model** on every primary metric and block choice.
+4. **Intervals are slightly wide** (margin 53.4 / 82.1 / 96.1%, total 53.9 / 81.5 / 95.3% at nominal 50 / 80 / 95%). The selected observation noise, sigma = 11, is the smallest value in the grid, so it is probably a little high.
+5. **The tuning surface is flat**: the selected configuration (q_week 0.25, rho 0.9, s0 8, sigma 11) sits at grid edges, but the second best (q_week 1, rho 0.75, s0 5, sigma 11) is 0.005 worse and interior on drift and carryover. No second pass was run: the gap to ridge is small enough that more tuning on these seasons could manufacture a win. A better fix is to estimate sigma from past innovations rather than tune it.
+
 ## B01 findings (development, reconstructed, tuned on the same games)
 
 Two tuning passes. Pass 1 (commit 7aa513e) selected grid-edge values and gave ridge intervals that were too narrow, so pass 2 widened the grid once and added a ridge covariance scale. No further pass.
@@ -169,7 +185,7 @@ None of these require a spec deviation. Each is a case the blueprint already ant
 
 | Date | Check | Result | Data |
 |---|---|---|---|
-| 2026-10-02 | `uv run pytest` | 77 passed | Synthetic contract rows and mocked transport only |
+| 2026-10-02 | `uv run pytest` | 83 passed | Synthetic contract rows and mocked transport only |
 | 2026-10-01 | `uv run ruff check` | Clean | — |
 | 2026-10-01 | `uv run cfb doctor` | All ok, key present | — |
 | 2026-10-01 | `uv run cfb audit-source --season 2024` | 20/20 endpoints returned 200, none truncated, 19 calls used | **Real CFBD** |
@@ -197,5 +213,6 @@ These checks validate contracts, endpoint access and season coverage. They do no
 
 ## Next executable step
 
-1. B02: dynamic team strength (filtered states, past-only).
-2. D06 and D08 before the play-level work in M3.
+1. Optional B02 refinement: estimate the observation noise from past one-step innovations instead of tuning it (B02 finding 5).
+2. D06 (roster/portal crosswalk) and D08 (score and coverage quality checks) before the play-level work in M3.
+3. P01: possession/clock/scoring state machine, which needs hand-checked football fixtures and a sourced rules registry.
