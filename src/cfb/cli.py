@@ -110,9 +110,9 @@ def ingest(
     refresh: bool = typer.Option(False, help="Re-fetch cached partitions (correction window)"),
 ) -> None:
     """D04: cache-first raw backfill; restarts make no calls for partitions already retrieved."""
-    from cfb.ingestion.backfill import FAMILIES, backfill
+    from cfb.ingestion.backfill import CORE_FAMILIES, FAMILIES, backfill
 
-    families = list(FAMILIES) if family == ["core"] else family
+    families = list(CORE_FAMILIES) if family == ["core"] else family
     unknown = [f for f in families if f not in FAMILIES]
     if unknown:
         typer.echo(f"unknown family {unknown}; choose from {sorted(FAMILIES)} or 'core'", err=True)
@@ -146,6 +146,43 @@ def canonicalize() -> None:
     canonicalize_games(conn, ledger, lag, log=typer.echo)
     for etype, n in conn.execute("SELECT entity_type, count(*) FROM source_records GROUP BY 1"):
         typer.echo(f"  {etype}: {n} versions")
+
+
+@app.command()
+def players() -> None:
+    """D05/D06: canonical players and roster memberships; portal identity crosswalk."""
+    from cfb.canonical.players import canonicalize_rosters, crosswalk_portal
+
+    conn, ledger = open_store()
+    canonicalize_rosters(conn, ledger, log=typer.echo)
+    crosswalk_portal(conn, ledger, log=typer.echo)
+    rows = conn.execute(
+        """SELECT CAST(substr(source_player_key, 1, 4) AS INTEGER) AS season, status, count(*)
+           FROM player_identity_links GROUP BY 1, 2 ORDER BY 1, 2""").fetchall()
+    by: dict[int, dict[str, int]] = {}
+    for season, status, n in rows:
+        by.setdefault(season, {})[status] = n
+    statuses = ["verified", "proposed", "ambiguous", "unresolved"]
+    lines = ["# D06 portal identity crosswalk", "",
+             ("Each portal record is matched by exact normalized name to the origin team's roster the season "
+              "before. `verified` also requires the same athlete ID on the named destination's roster in the "
+              "portal season; `ambiguous` (several same-name players) and `unresolved` records get no player."), "",
+             "| Portal season | Records | " + " | ".join(statuses) + " | Verified share |",
+             "|---|---|" + "---|" * (len(statuses) + 1)]
+    for season, c in sorted(by.items()):
+        total = sum(c.values())
+        lines.append(f"| {season} | {total} | " + " | ".join(str(c.get(s, 0)) for s in statuses)
+                     + f" | {c.get('verified', 0) / total:.1%} |")
+    moved = conn.execute(
+        """SELECT count(*) FROM (SELECT player_id FROM roster_memberships GROUP BY player_id
+           HAVING count(DISTINCT team_id) > 1)""").fetchone()[0]
+    players_n = conn.execute("SELECT count(*) FROM players").fetchone()[0]
+    lines += ["", (f"Canonical players: {players_n:,}. Players listed on more than one team across seasons, "
+                   f"under one athlete ID: {moved:,}.")]
+    out = REPO_ROOT / "experiments" / "d06"
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "portal-crosswalk.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    typer.echo("\n".join(lines[4:]))
 
 
 @app.command()

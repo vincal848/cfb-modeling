@@ -92,24 +92,27 @@ class FactWriter:
     def __init__(self, conn: sqlite3.Connection) -> None:
         self.conn = conn
         self.latest: dict[tuple[str, str], str] = {}
-        for etype, key, h in conn.execute(
-            """SELECT entity_type, entity_key, payload_hash FROM source_records r
+        self.latest_id: dict[tuple[str, str], str] = {}
+        for etype, key, h, vid in conn.execute(
+            """SELECT entity_type, entity_key, payload_hash, record_version_id FROM source_records r
                WHERE ingested_at = (SELECT max(ingested_at) FROM source_records s
                                     WHERE s.entity_type=r.entity_type AND s.entity_key=r.entity_key)"""
         ):
             self.latest[(etype, key)] = h
+            self.latest_id[(etype, key)] = vid
         self.added = 0
         self.unchanged = 0
 
     def write(
         self, request_id: str, ingested_at: str, entity_type: str, entity_key: str,
         payload: dict[str, Any], event_time: datetime | None, available_at: datetime,
-    ) -> None:
+    ) -> str:
+        """Append a version unless the payload is unchanged; return the current version ID."""
         body = canonical_json(payload)
         digest = hashlib.sha256(body.encode()).hexdigest()
         if self.latest.get((entity_type, entity_key)) == digest:
             self.unchanged += 1
-            return
+            return self.latest_id[(entity_type, entity_key)]
         if available_at > parse_utc(ingested_at):
             raise ValueError(f"{entity_type} {entity_key} available after it was ingested")
         version_id = hashlib.sha256(f"{request_id}|{entity_type}|{entity_key}|{digest}".encode()).hexdigest()[:32]
@@ -120,7 +123,9 @@ class FactWriter:
              EVIDENCE, f"cfbd:{request_id}", body, digest),
         )
         self.latest[(entity_type, entity_key)] = digest
+        self.latest_id[(entity_type, entity_key)] = version_id
         self.added += 1
+        return version_id
 
 
 def _successful(conn: sqlite3.Connection, provider: str, endpoint: str) -> list[tuple]:

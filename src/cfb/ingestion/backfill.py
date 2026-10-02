@@ -28,7 +28,12 @@ FAMILIES: dict[str, tuple[str, str]] = {
     "team_game_stats": ("/games/teams", "week"),
     "drives": ("/drives", "week"),
     "plays": ("/plays", "week"),
+    # Player families (D06). /roster accepts a season without a team and returns every team.
+    "rosters": ("/roster", "season"),
+    "portal": ("/player/portal", "season"),
+    "recruiting": ("/recruiting/players", "season"),
 }
+CORE_FAMILIES = ("teams_fbs", "calendar", "games", "lines", "team_game_stats", "drives", "plays")
 
 
 def partitions(fetcher: Fetcher, family: str, season: int, *, refresh: bool = False) -> Iterator[dict[str, Any]]:

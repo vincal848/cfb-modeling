@@ -15,7 +15,7 @@ This file keeps two things separate:
 |---|---|---|---|
 | Repo setup | ✅ | n/a | Scaffold, blueprint copy, config/schema loaders, contract tests |
 | M0 Source audit | 🟡 | n/a | D01, D02, D03 and V01 done |
-| M1 Temporal data foundation | 🟡 | n/a | D03, D04, D07, D08 done; D05 done for games/teams (players pending D06); D06 remains |
+| M1 Temporal data foundation | ✅ | n/a | D03–D08 done |
 | M2 Forecasting baseline | ✅ | 🟡 development only | B01, B02, B03 done. Champion decision deferred to the stack/test stages per V01 |
 | M3–M7 | ⬜ | ⬜ | In dependency order after M2 |
 | T1 Tracking / L1 Live | disabled | — | Gated on external data. `tracking_enabled=false`, enforced by config validation |
@@ -29,8 +29,8 @@ This file keeps two things separate:
 | D03 Credentials and request ledger | ✅ | `src/cfb/ingestion/{client,ledger,fetch}.py`, 10 tests on a mocked transport |
 | D04 Immutable raw backfill | ✅ | `cfb ingest --family core --season 2014 --end 2025`: all partitions cached, 0 calls, 0 failed, 0 truncated. 3 tests. |
 | V01 Folds, estimands, metrics | ✅ | Frozen 2026-10-01T19:57:51Z before any model was fitted; sha256 `5d0f1fc0…`. See [experiments/protocols/V01-protocol.md](experiments/protocols/V01-protocol.md). |
-| D05 Canonical games/teams/players | 🟡 | Games and teams: 10,372 schedule and 10,371 result facts, 12 FBS lists; rerun adds 0. Players wait for D06. |
-| D06 Roster/portal crosswalk | ⬜ | Needed for M3–M4, not for B01 |
+| D05 Canonical games/teams/players | ✅ | Games/teams: 10,372 schedule and 10,371 result facts. Players: 103,372 from 246,248 roster rows (2014–2025); 14,393 players appear on several teams under one athlete ID. Reruns add 0. |
+| D06 Roster/portal crosswalk | ✅ | 14,422 portal records (2021–2025): 7,767 verified, 4,604 proposed, 70 ambiguous (never merged), 1,981 unresolved. See [experiments/d06/portal-crosswalk.md](experiments/d06/portal-crosswalk.md). 7 tests. |
 | D07 Snapshot builder | ✅ | Sealed, deterministic cutoff snapshots; strict mode admits no reconstructed history. 6 temporal tests. |
 | D08 Score and coverage quality checks | ✅ | `cfb quality`: per-game flags for 10,372 games; quarantine per model family. Team-score models lose 1 game; play-derived models 1,187 (11.4%). See [experiments/d08/quality-2014-2025.md](experiments/d08/quality-2014-2025.md). 13 tests. |
 | B03 Immutable forecast summaries and forced picks | ✅ | 147 runs, 7,029 forecasts with winner_v1 picks, outcomes and evaluations; rerun inserts 0; 50/50 sampled forecasts replay exactly. 4 replay tests. |
@@ -143,6 +143,14 @@ Labeling: rows from mocked transports use `provider='SYNTHETIC'`. Live rows use 
 5. **957 games still have a score decrease between or within drives** (for example a touchdown drive ending at 38 and the next drive starting at 31 at the same clock time). Drive records cannot tell which is right, so these stay quarantined for play models. This is conservative; P01's play-level reconciliation supersedes these drive proxies.
 6. The three D02 spot-check games are kept for team-score models and quarantined for play models.
 
+## D06 findings (portal crosswalk, 2021–2025)
+
+1. **`/roster` returns every team for a season in one call**, so rosters for 2014–2025 cost 12 calls (35 calls with portal and recruiting).
+2. **Verified share rises over time**: 32% of 2021 portal records to 64% of 2025. Verified needs a unique exact-name match on the origin's prior-season roster and the same athlete ID on the named destination's roster.
+3. **70 records are ambiguous** (same-name players on one roster) and get no player.
+4. **1,981 stay unresolved**. A diagnosis of the first pass: about half have no similar name on the origin roster (roster coverage gaps), 371 come from schools with no roster data (mostly Division II), and nickname variants were the next largest group. Two weaker rules (exact name on the portal-season roster; first-name prefix such as Sam/Samuel) then moved 215 records to proposed. They can never produce verified. Different first names that are not prefixes (Julian/Julio) stay unresolved.
+5. **A named destination is a commitment, not an enrollment.** Enrollment events exist only for verified links (7,767).
+
 ## B01 findings (development, reconstructed, tuned on the same games)
 
 Two tuning passes. Pass 1 (commit 7aa513e) selected grid-edge values and gave ridge intervals that were too narrow, so pass 2 widened the grid once and added a ridge covariance scale. No further pass.
@@ -194,7 +202,7 @@ None of these require a spec deviation. Each is a case the blueprint already ant
 
 | Date | Check | Result | Data |
 |---|---|---|---|
-| 2026-10-02 | `uv run pytest` | 99 passed | Synthetic contract rows and mocked transport only |
+| 2026-10-02 | `uv run pytest` | 106 passed | Synthetic contract rows and mocked transport only |
 | 2026-10-01 | `uv run ruff check` | Clean | — |
 | 2026-10-01 | `uv run cfb doctor` | All ok, key present | — |
 | 2026-10-01 | `uv run cfb audit-source --season 2024` | 20/20 endpoints returned 200, none truncated, 19 calls used | **Real CFBD** |
@@ -223,5 +231,5 @@ These checks validate contracts, endpoint access and season coverage. They do no
 ## Next executable step
 
 1. Optional B02 refinement: estimate the observation noise from past one-step innovations instead of tuning it (B02 finding 5).
-2. D06 (roster/portal crosswalk) before the player work in M3–M4.
+2. P01 state machine, waiting on the cited rules registry (research in progress).
 3. P01: possession/clock/scoring state machine, which needs hand-checked football fixtures and a sourced rules registry.
