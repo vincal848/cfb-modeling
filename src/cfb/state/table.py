@@ -84,8 +84,15 @@ def game_states(plays: list[dict[str, Any]], rules: ScoringRules,
         off, dfn = p["offense"], p["defense"]
         home_off = off == p.get("home")
         pre_margin = (last[0] - last[1]) if home_off else (last[1] - last[0])
+        new = after.get(p["id"], last)
+        delta_home, delta_away = new[0] - last[0], new[1] - last[1]
+        off_pts, def_pts = (delta_home, delta_away) if home_off else (delta_away, delta_home)
         if p.get("playType") not in NON_SCRIMMAGE and p.get("down") in (1, 2, 3, 4):
             nxt = next((ev for ev in events[ev_ptr:] if ev[0] >= i and ev[1] == half), None)
+            try_points = None
+            if e.kind == "touchdown":
+                scorer_pts = off_pts if e.scorer == "offense" else def_pts
+                try_points = scorer_pts - rules.touchdown  # includes inferred tries; may be outside 0-2
             label = "NONE" if nxt is None else (
                 {"touchdown": "TD", "field_goal": "FG", "safety": "SAFETY"}[nxt[2]]
                 + ("_FOR" if nxt[3] == off else "_AGAINST"))
@@ -98,6 +105,9 @@ def game_states(plays: list[dict[str, Any]], rules: ScoringRules,
                 "defense_timeouts": p.get("defenseTimeouts"), "play_type": p.get("playType"),
                 "yards_gained": p.get("yardsGained"), "event": e.kind, "next_score": label,
                 "penalty_in_text": "penalty" in (p.get("playText") or "").lower(),
+                # Net points on this play from the offense's view (including any try), and the
+                # try's points on touchdown plays. Used for EPA rewards and the learned try value.
+                "play_points": off_pts - def_pts, "try_points": try_points,
             })
         if p["id"] in after:
             last = after[p["id"]]

@@ -238,6 +238,78 @@ def reconcile_plays(start: int = typer.Option(2014), end: int = typer.Option(202
     typer.echo("\n".join(lines[4:]))
 
 
+@app.command()
+def ep(workers: int = typer.Option(0, help="Worker processes (0 = the EP default)")) -> None:
+    """P02: fold-specific EP models on the development seasons; calibration and held-out scores."""
+    import pandas as pd
+
+    from cfb.evaluation import p02
+    from cfb.evaluation.backtest import block_bootstrap, parallel_map
+    from cfb.evaluation.protocol import load_protocol
+    from cfb.state.table import LABELS
+
+    spec = load_protocol()
+    seasons = spec["seasons"]["development"]["seasons"]
+    first = spec["seasons"]["warmup"]["seasons"][0]
+    states = REPO_ROOT / "artifacts" / "plays" / "states.parquet"
+    n = workers or p02.EP_WORKERS
+    selection = parallel_map(p02.run_job, p02.plan_selection(states, seasons, first), n)
+    chosen = p02.choose(selection, seasons)
+    final = parallel_map(p02.run_job, p02.plan_final(states, chosen, first), n)
+    by = {(r["job"].eval_season, r["job"].kind): r for r in final}
+    full = pd.concat([by[(s, "full")]["frame"] for s in seasons], ignore_index=True)
+    yard = pd.concat([by[(s, "yardline")]["frame"] for s in seasons], ignore_index=True)
+    full["yardline_log_loss"] = yard["log_loss"].to_numpy()
+    out = REPO_ROOT / "artifacts" / "plays"
+    full.to_parquet(out / "ep-development.parquet", index=False)
+
+    reps, seed = spec["comparison"]["replicates"], spec["monte_carlo"]["root_seed"]
+    blocks = full["season"].astype(str) + "-" + full["season_type"] + "-" + full["week"].astype(str)
+    lines = ["# P02 expected points: development results", "",
+             (f"Reconstructed evaluation on development seasons {seasons}. Each season's EP model is fit only on "
+              f"earlier seasons ({first} onward), with its penalty chosen on the season before it. States are P01 "
+              "exact-tier regulation scrimmage plays. Next-score log loss is per play; lower is better."), "",
+             "## Folds", "", "| Season | Train plays | Penalty (full / yardline) | Learned try value | Converged |",
+             "|---|---|---|---|---|"]
+    for s in seasons:
+        f, y = by[(s, "full")], by[(s, "yardline")]
+        lines.append(f"| {s} | {f['train_rows']:,} | {f['job'].penalty:g} / {y['job'].penalty:g} | "
+                     f"{f['try_value']:.3f} | {f['converged'] and y['converged']} |")
+    lines += ["", "## Held-out next-score log loss", "", "| Season | Plays | Class prior | Yard line only | Full |",
+              "|---|---|---|---|---|"]
+    for s, g in full.groupby("season"):
+        lines.append(f"| {s} | {len(g):,} | {g['prior_log_loss'].mean():.4f} | {g['yardline_log_loss'].mean():.4f} | "
+                     f"{g['log_loss'].mean():.4f} |")
+    lines.append(f"| All | {len(full):,} | {full['prior_log_loss'].mean():.4f} | "
+                 f"{full['yardline_log_loss'].mean():.4f} | {full['log_loss'].mean():.4f} |")
+    lines += ["", "Paired differences (per play, week-block bootstrap, 95% interval):", ""]
+    for name, base in (("yard line only", "yardline_log_loss"), ("class prior", "prior_log_loss")):
+        m, lo, hi = block_bootstrap(full["log_loss"] - full[base], blocks, reps, seed)
+        lines.append(f"- Full minus {name}: {m:+.4f} [{lo:+.4f}, {hi:+.4f}]")
+
+    full["ep_decile"] = pd.qcut(full["ep"], 10, labels=False, duplicates="drop")
+    lines += ["", "## Calibration: EP versus realized next-score points (deciles of EP)", "",
+              "| Decile | Plays | Mean EP | Mean realized | Difference |", "|---|---|---|---|---|"]
+    for d, g in full.groupby("ep_decile"):
+        lines.append(f"| {int(d) + 1} | {len(g):,} | {g['ep'].mean():+.3f} | {g['realized'].mean():+.3f} | "
+                     f"{g['realized'].mean() - g['ep'].mean():+.3f} |")
+    lines += ["", "## Calibration by outcome", "", "| Next score | Mean predicted | Observed |", "|---|---|---|"]
+    for lab in LABELS:
+        lines.append(f"| {lab} | {full[f'p_{lab}'].mean():.4f} | {(full['next_score'] == lab).mean():.4f} |")
+    lines += ["", "## EP at 1st and 10, start of game, tied (by fold)", "",
+              "| Yards to goal | " + " | ".join(str(s) for s in seasons) + " |", "|---|" + "---|" * len(seasons)]
+    for ytg in (5, 15, 25, 35, 50, 65, 75, 85, 95):
+        lines.append(f"| {ytg} | " + " | ".join(f"{by[(s, 'full')]['ep_by_yardline'][ytg]:+.2f}" for s in seasons) + " |")
+    kinds = {"pass": full["play_type"].str.contains("Pass|Sack|Interception", regex=True),
+             "rush": full["play_type"].str.contains("Rush", regex=True)}
+    lines += ["", "## EPA sanity", "", f"- Mean EPA over all plays: {full['epa'].mean():+.4f}"]
+    lines += [f"- Mean EPA, {k} plays: {full.loc[m, 'epa'].mean():+.4f} ({int(m.sum()):,} plays)" for k, m in kinds.items()]
+    rep = REPO_ROOT / "experiments" / "p02"
+    rep.mkdir(parents=True, exist_ok=True)
+    (rep / "ep-development.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    typer.echo("\n".join(lines))
+
+
 @app.command("build-states")
 def build_states(start: int = typer.Option(2014), end: int = typer.Option(2025),
                  workers: int = typer.Option(0, help="Worker processes (0 = CPU count - 1)")) -> None:

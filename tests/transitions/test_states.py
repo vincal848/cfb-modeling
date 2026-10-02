@@ -48,3 +48,10 @@ def test_transition_checks_count_consistent_rows():
     assert checks["kickoff_after_score_ok"] == checks["score_checked"] == 1
     assert checks["half_starts_with_kickoff"] == checks["halves"] == 2
     assert checks["clock_ok"] == checks["clock_checked"]
+
+
+def test_play_points_and_try_points_come_from_score_changes():
+    df, _ = game_states(GAME, RULES)
+    rows = df.set_index("play_id")
+    assert rows.loc["1004", "play_points"] == 7 and rows.loc["1004", "try_points"] == 1
+    assert rows.loc["1009", "play_points"] == 3 and rows.loc["1002", "play_points"] == 0

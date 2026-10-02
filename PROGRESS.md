@@ -17,7 +17,7 @@ This file keeps two things separate:
 | M0 Source audit | 🟡 | n/a | D01, D02, D03 and V01 done |
 | M1 Temporal data foundation | ✅ | n/a | D03–D08 done |
 | M2 Forecasting baseline | ✅ | 🟡 development only | B01, B02, B03 done. Champion decision deferred to the stack/test stages per V01 |
-| M3 EP and skill players | 🟡 | ⬜ | P01 scoring/overtime reconciliation done; P02 EP model next |
+| M3 EP and skill players | 🟡 | 🟡 development only | P01 scoring, overtime and states done; P02 EP/EPA done; P03–P04 player models next |
 | M4–M7 | ⬜ | ⬜ | In dependency order |
 | T1 Tracking / L1 Live | disabled | — | Gated on external data. `tracking_enabled=false`, enforced by config validation |
 
@@ -37,6 +37,7 @@ This file keeps two things separate:
 | B03 Immutable forecast summaries and forced picks | ✅ | 147 runs, 7,029 forecasts with winner_v1 picks, outcomes and evaluations; rerun inserts 0; 50/50 sampled forecasts replay exactly. 4 replay tests. |
 | B02 Dynamic team-only strength | ✅ | Kalman filter, past-only states checked against every fold snapshot; 36-configuration prior/innovation sensitivity reported. See [experiments/b02/b02-development.md](experiments/b02/b02-development.md). |
 | P01 State machine (scoring, overtime) | 🟡 | Scoring and overtime reconciliation under a cited rules registry: 78.3% of games exact, 11.7% events-only, 10.0% failed. 46 tests against independent sources (ESPN, recaps). Down/distance/field-position and clock transitions remain. See [experiments/p01/reconciliation-2014-2025.md](experiments/p01/reconciliation-2014-2025.md). |
+| P02 College EP and EPA | ✅ | Fold-specific multinomial next-score model, all fits converged. Held-out log loss 1.207 vs 1.407 (yard line only) and 1.477 (class prior); calibrated within 0.12 points per EP decile. See [experiments/p02/ep-development.md](experiments/p02/ep-development.md). 4 tests. |
 | B01 Elo and margin/total baselines | ✅ | Both beat the trivial model on every primary metric (development). See [experiments/b01/b01-development.md](experiments/b01/b01-development.md). |
 
 ## Completed work
@@ -169,6 +170,19 @@ Labeling: rows from mocked transports use `provider='SYNTHETIC'`. Live rows use 
 5. **Defensive two-point returns are recorded only in the score**; the try text says the kick was blocked. These reconcile at the events tier, not exactly.
 6. **Fixtures**: 20 games extracted to `tests/fixtures/football/`; official finals, scorers, return touchdowns, safeties, nullified touchdowns, failed tries, overtime counts and the mandatory two-point periods all match ESPN or written recaps.
 
+### P01 states and P02 expected points
+
+- `cfb build-states`: 1,214,836 regulation scrimmage states from exact-tier games, with next-score labels, pre-play margin (from CFBD scores, so inferred tries count), net points per play and try points. Down, yard-line, clock, kickoff-after-score and half-start consistency is reported in [experiments/p01/state-checks-2014-2025.md](experiments/p01/state-checks-2014-2025.md).
+- `cfb ep`: for each development season, penalty chosen on the season before (past-only), then refit on all earlier seasons and scored on the season. Runs in one process with one math thread by default (`cfb` now sets OMP/OPENBLAS/MKL threads to 1 unless the caller sets them).
+
+## P02 findings (development, reconstructed)
+
+1. **The full model beats both baselines on every held-out season**: next-score log loss 1.207 vs 1.407 for yard line only (difference −0.200, 95% interval −0.206 to −0.193) and 1.477 for the class prior.
+2. **Calibrated**: realized next-score points are within 0.12 of mean EP in every decile; each outcome's predicted rate is within 0.004 of its observed rate.
+3. **EP at 1st and 10** runs from −0.5 (own 5) to +5.0 (opponent's 5), nearly identical across folds. The learned try value is 0.96 points per touchdown.
+4. **EPA sanity**: mean EPA ≈ 0 overall; passes +0.042, rushes +0.028.
+5. **Numerical**: an unpenalized fit does not converge (rare outcomes such as safeties let coefficients grow without bound), so the penalty grid starts at 1e-6. The selected penalty is that floor in every fold; all six final fits converged. An earlier run with a 500-iteration cap and a run including a penalty of 0 did not converge; their log loss differed from the final run by less than 0.001.
+
 ## B01 findings (development, reconstructed, tuned on the same games)
 
 Two tuning passes. Pass 1 (commit 7aa513e) selected grid-edge values and gave ridge intervals that were too narrow, so pass 2 widened the grid once and added a ridge covariance scale. No further pass.
@@ -220,7 +234,7 @@ None of these require a spec deviation. Each is a case the blueprint already ant
 
 | Date | Check | Result | Data |
 |---|---|---|---|
-| 2026-10-02 | `uv run pytest` | 169 passed | Synthetic contract rows and mocked transport only |
+| 2026-10-02 | `uv run pytest` | 176 passed | Synthetic contract rows and mocked transport only |
 | 2026-10-01 | `uv run ruff check` | Clean | — |
 | 2026-10-01 | `uv run cfb doctor` | All ok, key present | — |
 | 2026-10-01 | `uv run cfb audit-source --season 2024` | 20/20 endpoints returned 200, none truncated, 19 calls used | **Real CFBD** |
@@ -249,6 +263,6 @@ These checks validate contracts, endpoint access and season coverage. They do no
 ## Next executable step
 
 1. Optional B02 refinement: estimate the observation noise from past one-step innovations instead of tuning it (B02 finding 5).
-2. P01 remainder: down/distance, field position, possession and clock transitions (the scoring layer is done).
-3. P02: fold-specific college EP/EPA on exact-tier games only.
+2. P03: hierarchical opportunity shares (needs player-attributed events, D06 identities).
+3. P04: skill-player effectiveness and development.
 3. P01: possession/clock/scoring state machine, which needs hand-checked football fixtures and a sourced rules registry.
