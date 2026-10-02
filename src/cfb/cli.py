@@ -148,6 +148,51 @@ def canonicalize() -> None:
         typer.echo(f"  {etype}: {n} versions")
 
 
+@app.command()
+def quality(start: int = typer.Option(2014), end: int = typer.Option(2025)) -> None:
+    """D08: per-game score/coverage flags and quarantine per model family (cached data only)."""
+    from collections import Counter
+
+    from cfb.canonical.games import game_id
+    from cfb.canonical.quality import FAMILIES, assess
+
+    conn, ledger = open_store()
+    df = assess(conn, ledger, list(range(start, end + 1)))
+    out = REPO_ROOT / "artifacts" / "quality"
+    out.mkdir(parents=True, exist_ok=True)
+    df.to_parquet(out / "game_quality.parquet", index=False)
+
+    fams = list(FAMILIES)
+    lines = ["# D08 game quality flags", "",
+             f"Population games {start}-{end}: {len(df)}. Flags come from canonical results, cached "
+             "drives and team stats. A game is quarantined for a model family if it has any of that "
+             "family's flags: " + "; ".join(f"`{f}`: {', '.join(FAMILIES[f])}" for f in fams) + ".", "",
+             "| Season | Games | " + " | ".join(f"Quarantined: {f}" for f in fams) + " |",
+             "|---|---|" + "---|" * len(fams)]
+    for season, g in df.groupby("season"):
+        lines.append(f"| {season} | {len(g)} | " + " | ".join(str(int(g[f'quarantine_{f}'].sum())) for f in fams) + " |")
+    lines.append(f"| All | {len(df)} | " + " | ".join(str(int(df[f'quarantine_{f}'].sum())) for f in fams) + " |")
+    counts = Counter(f for fl in df["flags"] for f in fl)
+    lines += ["", "## Flag counts (a game can have several)", "", "| Flag | Games |", "|---|---|"]
+    lines += [f"| `{f}` | {n} |" for f, n in counts.most_common()]
+    checks = {401634301: "2024 California-UC Davis (D02: play-by-play stops in Q3)",
+              401636616: "2024 Tulane-Kansas State (D02: corrupt mid-game drive score)",
+              401628468: "2024 Ohio State-Western Michigan (D02: TD drive +8, final 56-0)"}
+    lines += ["", "## Spot checks from D02", "", "| Game | Flags | Team-score | Play-derived |", "|---|---|---|---|"]
+    by_id = df.set_index("game_id")
+    for cid, label in checks.items():
+        if game_id(cid) in by_id.index:
+            r = by_id.loc[game_id(cid)]
+            lines.append(f"| {label} | {', '.join(r['flags']) or 'none'} | "
+                         f"{'quarantined' if r['quarantine_team_score'] else 'kept'} | "
+                         f"{'quarantined' if r['quarantine_play_derived'] else 'kept'} |")
+    report = REPO_ROOT / "experiments" / "d08"
+    report.mkdir(parents=True, exist_ok=True)
+    (report / f"quality-{start}-{end}.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    typer.echo("\n".join(lines[4:4 + len(df["season"].unique()) + 3]))
+    typer.echo(f"wrote experiments/d08/quality-{start}-{end}.md and artifacts/quality/game_quality.parquet")
+
+
 @app.command("build-snapshot")
 def build_snapshot_cmd(
     cutoff: str = typer.Option(..., help="UTC cutoff, e.g. 2019-09-06T16:00:00Z"),

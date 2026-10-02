@@ -15,7 +15,7 @@ This file keeps two things separate:
 |---|---|---|---|
 | Repo setup | ✅ | n/a | Scaffold, blueprint copy, config/schema loaders, contract tests |
 | M0 Source audit | 🟡 | n/a | D01, D02, D03 and V01 done |
-| M1 Temporal data foundation | 🟡 | n/a | D03, D04, D07 done; D05 done for games/teams (players pending D06); D06, D08 remain |
+| M1 Temporal data foundation | 🟡 | n/a | D03, D04, D07, D08 done; D05 done for games/teams (players pending D06); D06 remains |
 | M2 Forecasting baseline | ✅ | 🟡 development only | B01, B02, B03 done. Champion decision deferred to the stack/test stages per V01 |
 | M3–M7 | ⬜ | ⬜ | In dependency order after M2 |
 | T1 Tracking / L1 Live | disabled | — | Gated on external data. `tracking_enabled=false`, enforced by config validation |
@@ -32,7 +32,7 @@ This file keeps two things separate:
 | D05 Canonical games/teams/players | 🟡 | Games and teams: 10,372 schedule and 10,371 result facts, 12 FBS lists; rerun adds 0. Players wait for D06. |
 | D06 Roster/portal crosswalk | ⬜ | Needed for M3–M4, not for B01 |
 | D07 Snapshot builder | ✅ | Sealed, deterministic cutoff snapshots; strict mode admits no reconstructed history. 6 temporal tests. |
-| D08 Score and coverage quality checks | ⬜ | Needed before P01; D02 already classifies play-by-play mismatches |
+| D08 Score and coverage quality checks | ✅ | `cfb quality`: per-game flags for 10,372 games; quarantine per model family. Team-score models lose 1 game; play-derived models 1,187 (11.4%). See [experiments/d08/quality-2014-2025.md](experiments/d08/quality-2014-2025.md). 13 tests. |
 | B03 Immutable forecast summaries and forced picks | ✅ | 147 runs, 7,029 forecasts with winner_v1 picks, outcomes and evaluations; rerun inserts 0; 50/50 sampled forecasts replay exactly. 4 replay tests. |
 | B02 Dynamic team-only strength | ✅ | Kalman filter, past-only states checked against every fold snapshot; 36-configuration prior/innovation sensitivity reported. See [experiments/b02/b02-development.md](experiments/b02/b02-development.md). |
 | B01 Elo and margin/total baselines | ✅ | Both beat the trivial model on every primary metric (development). See [experiments/b01/b01-development.md](experiments/b01/b01-development.md). |
@@ -134,6 +134,15 @@ Labeling: rows from mocked transports use `provider='SYNTHETIC'`. Live rows use 
 4. **Intervals are slightly wide** (margin 53.4 / 82.1 / 96.1%, total 53.9 / 81.5 / 95.3% at nominal 50 / 80 / 95%). The selected observation noise, sigma = 11, is the smallest value in the grid, so it is probably a little high.
 5. **The tuning surface is flat**: the selected configuration (q_week 0.25, rho 0.9, s0 8, sigma 11) sits at grid edges, but the second best (q_week 1, rho 0.75, s0 5, sigma 11) is 0.005 worse and interior on drift and carryover. No second pass was run: the gap to ridge is small enough that more tuning on these seasons could manufacture a win. A better fix is to estimate sigma from past innovations rather than tune it.
 
+## D08 findings (drive-level checks, all 2014–2025 population games)
+
+1. **The official result is missing for 1 game**, so team-score models lose 1 game.
+2. **Play-derived models lose 1,187 games (11.4%)**, more from 2021 on (123–261 per season vs 25–62 before).
+3. **Most score changes between drives are real, not errors.** 3,189 games have a single valid score between drive records, after punts, interceptions and fumbles: return touchdowns that CFBD does not credit to a drive. These are warnings, not quarantines; the first version of the check counted them as defects and quarantined 37% of games.
+4. **CFBD numbers drives out of game order in 110 games**, mostly 2021+. Checks now order drives by period and clock; misnumbering alone is a warning.
+5. **957 games still have a score decrease between or within drives** (for example a touchdown drive ending at 38 and the next drive starting at 31 at the same clock time). Drive records cannot tell which is right, so these stay quarantined for play models. This is conservative; P01's play-level reconciliation supersedes these drive proxies.
+6. The three D02 spot-check games are kept for team-score models and quarantined for play models.
+
 ## B01 findings (development, reconstructed, tuned on the same games)
 
 Two tuning passes. Pass 1 (commit 7aa513e) selected grid-edge values and gave ridge intervals that were too narrow, so pass 2 widened the grid once and added a ridge covariance scale. No further pass.
@@ -185,7 +194,7 @@ None of these require a spec deviation. Each is a case the blueprint already ant
 
 | Date | Check | Result | Data |
 |---|---|---|---|
-| 2026-10-02 | `uv run pytest` | 83 passed | Synthetic contract rows and mocked transport only |
+| 2026-10-02 | `uv run pytest` | 99 passed | Synthetic contract rows and mocked transport only |
 | 2026-10-01 | `uv run ruff check` | Clean | — |
 | 2026-10-01 | `uv run cfb doctor` | All ok, key present | — |
 | 2026-10-01 | `uv run cfb audit-source --season 2024` | 20/20 endpoints returned 200, none truncated, 19 calls used | **Real CFBD** |
@@ -214,5 +223,5 @@ These checks validate contracts, endpoint access and season coverage. They do no
 ## Next executable step
 
 1. Optional B02 refinement: estimate the observation noise from past one-step innovations instead of tuning it (B02 finding 5).
-2. D06 (roster/portal crosswalk) and D08 (score and coverage quality checks) before the play-level work in M3.
+2. D06 (roster/portal crosswalk) before the player work in M3–M4.
 3. P01: possession/clock/scoring state machine, which needs hand-checked football fixtures and a sourced rules registry.
