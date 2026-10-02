@@ -16,7 +16,7 @@ This file keeps two things separate:
 | Repo setup | ✅ | n/a | Scaffold, blueprint copy, config/schema loaders, contract tests |
 | M0 Source audit | 🟡 | n/a | D01, D02, D03 and V01 done |
 | M1 Temporal data foundation | 🟡 | n/a | D03, D04, D07 done; D05 done for games/teams (players pending D06); D06, D08 remain |
-| M2 Forecasting baseline | 🟡 | 🟡 development only | B01 done; B02 dynamic team model and B03 immutable forecast records remain |
+| M2 Forecasting baseline | 🟡 | 🟡 development only | B01 and B03 done; B02 dynamic team model remains |
 | M3–M7 | ⬜ | ⬜ | In dependency order after M2 |
 | T1 Tracking / L1 Live | disabled | — | Gated on external data. `tracking_enabled=false`, enforced by config validation |
 
@@ -33,6 +33,7 @@ This file keeps two things separate:
 | D06 Roster/portal crosswalk | ⬜ | Needed for M3–M4, not for B01 |
 | D07 Snapshot builder | ✅ | Sealed, deterministic cutoff snapshots; strict mode admits no reconstructed history. 6 temporal tests. |
 | D08 Score and coverage quality checks | ⬜ | Needed before P01; D02 already classifies play-by-play mismatches |
+| B03 Immutable forecast summaries and forced picks | ✅ | 147 runs, 7,029 forecasts with winner_v1 picks, outcomes and evaluations; rerun inserts 0; 50/50 sampled forecasts replay exactly. 4 replay tests. |
 | B01 Elo and margin/total baselines | ✅ | Both beat the trivial model on every primary metric (development). See [experiments/b01/b01-development.md](experiments/b01/b01-development.md). |
 
 ## Completed work
@@ -110,12 +111,21 @@ Labeling: rows from mocked transports use `provider='SYNTHETIC'`. Live rows use 
 - Parallel: snapshots are built in the main process; each fold is one worker task over all 39 configurations. Seeds are per game, so results are identical for any worker count (tested). Workers use one BLAS thread each. Full run: about 40 s on 19 workers.
 - `cfb backtest --stage b01` writes [experiments/b01/b01-development.md](experiments/b01/b01-development.md); per-game rows go to `artifacts/backtests/` (git-ignored).
 
+### B03: immutable forecast records
+
+- `cfb record-forecasts` fits the three selected B01 models per development fold (in parallel), writes hashed artifacts (per-game normal parameters, paired score samples), and inserts `model_runs`, `forecast_summaries`, `decision_records` (winner_v1 forced pick), `outcome_versions` and `evaluation_results`.
+- IDs are content-derived, so rerunning records nothing new. The schema's triggers reject edits, deletes and picks that contradict the stored probability.
+- Replay: a stored forecast's parameters and derived seed regenerate the identical samples hash, probability and pick.
+- Storage: samples are about 69 KB per forecast (483 MB for the 7,029 development forecasts) because random draws barely compress. Since replay regenerates them exactly, storing only parameters and seeds is an option before the stack and test seasons multiply the run count.
+
 ## B01 findings (development, reconstructed, tuned on the same games)
 
+Two tuning passes. Pass 1 (commit 7aa513e) selected grid-edge values and gave ridge intervals that were too narrow, so pass 2 widened the grid once and added a ridge covariance scale. No further pass.
+
 1. **Both baselines beat the trivial model** on energy score, winner log loss and margin/total CRPS, for every bootstrap block choice and without 2020.
-2. **Ridge beats Elo on energy score** (−0.30, 95% interval −0.44 to −0.18), mostly through totals. On winner log loss and margin CRPS the difference is not resolved.
-3. **Ridge intervals are slightly too narrow**: 48.8 / 77.3 / 93.5% coverage at nominal 50 / 80 / 95% for margin, similar for total. Elo's are slightly wide.
-4. **Grid edges**: the selected ridge penalty (2) and Elo home advantage (50) and carryover (0.75) are at the edges of the pre-set grid. The best values may lie outside it.
+2. **Ridge beats Elo on energy score**: −0.34, 95% interval −0.48 to −0.20 (ridge 10.46, Elo 10.80, trivial 12.65).
+3. **Ridge interval coverage is now close to nominal**: margin 50.3 / 78.9 / 94.4%, total 52.0 / 79.3 / 94.2% at 50 / 80 / 95%. This comes from a tuned variance scale of 1.2, which is the top of the grid; B02 should model forecast variance directly instead.
+4. **Selected**: ridge penalty 1, half-life 180 days, covariance scale 1.2; Elo K 30, home advantage 35, carryover 0.75. Elo's values are inside the grid.
 5. **Cohorts**: no cohort reverses the ordering. `missing_team_stats` has 0 games and `no_line` has 8 (descriptive only).
 
 ## D02 findings (real CFBD data, 2014–2025)
@@ -159,7 +169,7 @@ None of these require a spec deviation. Each is a case the blueprint already ant
 
 | Date | Check | Result | Data |
 |---|---|---|---|
-| 2026-10-01 | `uv run pytest` | 73 passed | Synthetic contract rows and mocked transport only |
+| 2026-10-02 | `uv run pytest` | 77 passed | Synthetic contract rows and mocked transport only |
 | 2026-10-01 | `uv run ruff check` | Clean | — |
 | 2026-10-01 | `uv run cfb doctor` | All ok, key present | — |
 | 2026-10-01 | `uv run cfb audit-source --season 2024` | 20/20 endpoints returned 200, none truncated, 19 calls used | **Real CFBD** |
@@ -187,7 +197,5 @@ These checks validate contracts, endpoint access and season coverage. They do no
 
 ## Next executable step
 
-1. Decide whether to widen the B01 grid (finding 4) and how to correct the ridge interval width (finding 3). Both are development-season choices.
-2. B03: store immutable forecast summaries and forced picks in the contract tables.
-3. B02: dynamic team strength (filtered states, past-only).
-4. D06 and D08 before the play-level work in M3.
+1. B02: dynamic team strength (filtered states, past-only).
+2. D06 and D08 before the play-level work in M3.

@@ -144,11 +144,18 @@ def fit_elo(
 
 # ---- ridge -------------------------------------------------------------------
 
-def fit_ridge(frame: GameFrame, *, half_life_days: float = 365.0, penalty: float = 20.0) -> Forecast:
+def fit_ridge(
+    frame: GameFrame, *, half_life_days: float = 365.0, penalty: float = 20.0, cov_scale: float = 1.0
+) -> Forecast:
     """y_home = mu + hfa*site + off[home] - def[away];  y_away = mu + off[away] - def[home].
 
     Non-FBS teams also load on shared non-FBS offense/defense columns, so their own
     effects shrink toward the non-FBS group rather than toward the FBS average.
+
+    `cov_scale` multiplies the residual covariance. In-sample residuals understate
+    forecast error even after the degrees-of-freedom correction (B01 pass 1: intervals
+    covered 48.8 / 77.3 / 93.5% at nominal 50 / 80 / 95%), so the scale is tuned on
+    development folds by energy score, which rewards correct width.
     """
     tr, tg = frame.train, frame.target
     teams = sorted(set(tr["home"]) | set(tr["away"]))
@@ -204,7 +211,7 @@ def fit_ridge(frame: GameFrame, *, half_life_days: float = 365.0, penalty: float
     df_eff = float(np.trace(np.linalg.solve(a, gram)))
     n_obs = len(y)
     inflate = n_obs / max(n_obs - df_eff, 1.0)
-    cov = weighted_cov(resid, w[::2], inflate)
+    cov = weighted_cov(resid, w[::2], inflate) * cov_scale
 
     means = (design(tg) @ beta).reshape(-1, 2)
     return Forecast(list(tg["game_id"]), means, np.repeat(cov[None], len(tg), axis=0))

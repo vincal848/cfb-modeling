@@ -25,7 +25,7 @@ from cfb.evaluation.metrics import score_game
 from cfb.evaluation.protocol import Fold, build_folds
 from cfb.models.baselines import MODELS, GameFrame
 from cfb.models.simulate import derive_seed, sample_scores
-from cfb.snapshots.builder import build_snapshot, fact_as_of, load_facts
+from cfb.snapshots.builder import build_snapshot, load_facts, version_as_of
 
 BLAS_THREAD_VARS = ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS")
 
@@ -38,6 +38,11 @@ class Config:
     @property
     def label(self) -> str:
         return self.model + "".join(f"|{k}={v:g}" for k, v in self.params)
+
+    @classmethod
+    def from_label(cls, label: str) -> Config:
+        model, *pairs = label.split("|")
+        return cls(model, tuple((k, float(v)) for k, v in (p.split("=") for p in pairs)))
 
 
 def latest_facts(conn: sqlite3.Connection, entity_type: str) -> list[dict]:
@@ -85,6 +90,7 @@ class FoldTask:
     protocol_version: str
     horizon: int
     draws: int
+    schedule_versions: tuple[tuple[str, str], ...] = ()  # (game_id, record_version_id) used
 
 
 def run_fold(task: FoldTask) -> list[dict[str, Any]]:
@@ -129,13 +135,14 @@ def prepare_tasks(
             train = to_frame([s for s in snap_sched if s["game_id"] in snap_res], snap_res)
             # Each target game's schedule is the version available at its own cutoff
             # (kickoff minus horizon); parameters still come only from the fold snapshot.
-            target_sched = []
+            target_sched, versions = [], []
             for g in fold.game_ids:
                 game_cutoff = parse_utc(schedules[g]["start_utc"]) - timedelta(minutes=horizon)
-                fact = fact_as_of(conn, "game_schedule", g, game_cutoff, mode)
-                if fact is None:
+                found = version_as_of(conn, "game_schedule", g, game_cutoff, mode)
+                if found is None:
                     raise RuntimeError(f"{g} has no schedule fact available at its own cutoff")
-                target_sched.append(fact)
+                versions.append((g, found[0]))
+                target_sched.append(found[1])
             target = to_frame(target_sched, None)
             leaked = set(target["game_id"]) & set(train["game_id"])
             if leaked:
@@ -143,30 +150,36 @@ def prepare_tasks(
             outcomes = {g: (results[g]["home_points"], results[g]["away_points"]) for g in fold.game_ids}
             tasks.append(FoldTask(fold, snap.snapshot_id, GameFrame(train, target), outcomes,
                                   tuple(configs), protocol["monte_carlo"]["root_seed"],
-                                  protocol["protocol_version"], horizon, draws))
+                                  protocol["protocol_version"], horizon, draws, tuple(versions)))
         log(f"season {season}: {len(folds)} folds, {sum(len(f.game_ids) for f in folds)} games")
     return tasks
 
 
-def run_tasks(tasks: list[FoldTask], workers: int | None = None) -> pd.DataFrame:
+def parallel_map(fn: Callable[[Any], Any], items: list[Any], workers: int | None = None) -> list[Any]:
+    """Map over processes (or inline for one worker), preserving input order.
+
+    Parallelism is across processes, so each worker gets one BLAS/OpenMP thread. Workers
+    inherit the environment at spawn, before they import numpy; without this, every
+    worker starts a thread per core and they oversubscribe the CPU.
+    """
     workers = workers or max(1, (os.cpu_count() or 2) - 1)
     if workers == 1:
-        rows = [r for t in tasks for r in run_fold(t)]
-    else:
-        # Parallelism is across processes, so each worker gets one BLAS/OpenMP thread.
-        # Workers inherit the environment at spawn, before they import numpy; without
-        # this, every worker starts a thread per core and they oversubscribe the CPU.
-        saved = {k: os.environ.get(k) for k in BLAS_THREAD_VARS}
-        os.environ.update(dict.fromkeys(BLAS_THREAD_VARS, "1"))
-        try:
-            with ProcessPoolExecutor(max_workers=workers) as pool:
-                rows = [r for chunk in pool.map(run_fold, tasks) for r in chunk]
-        finally:
-            for k, v in saved.items():
-                if v is None:
-                    os.environ.pop(k, None)
-                else:
-                    os.environ[k] = v
+        return [fn(x) for x in items]
+    saved = {k: os.environ.get(k) for k in BLAS_THREAD_VARS}
+    os.environ.update(dict.fromkeys(BLAS_THREAD_VARS, "1"))
+    try:
+        with ProcessPoolExecutor(max_workers=workers) as pool:
+            return list(pool.map(fn, items))
+    finally:
+        for k, v in saved.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
+
+
+def run_tasks(tasks: list[FoldTask], workers: int | None = None) -> pd.DataFrame:
+    rows = [r for chunk in parallel_map(run_fold, tasks, workers) for r in chunk]
     df = pd.DataFrame(rows)
     return df.sort_values(["config", "game_id"]).reset_index(drop=True)
 

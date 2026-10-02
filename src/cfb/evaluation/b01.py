@@ -19,10 +19,16 @@ import pandas as pd
 
 from cfb.evaluation.backtest import Config, block_bootstrap, mean_scores
 
+# Pass 2 (2026-10-02). Pass 1 (commit 7aa513e) selected grid-edge values: ridge penalty 2
+# (smallest tried), Elo hfa 50 (smallest) and carryover 0.75 (largest), and ridge intervals
+# were too narrow. This grid widens around those edges and adds a ridge covariance scale.
+# It was fixed before pass 2 ran, and no further pass is planned.
+GRID_PASS = 2
 GRID: dict[str, dict[str, list[float]]] = {
     "hfa_only": {"half_life_days": [365.0]},
-    "elo": {"k": [20.0, 30.0, 40.0], "hfa": [50.0, 65.0, 80.0], "carryover": [0.6, 0.75]},
-    "ridge": {"half_life_days": [120.0, 240.0, 480.0, 960.0], "penalty": [2.0, 5.0, 10.0, 20.0, 50.0]},
+    "elo": {"k": [25.0, 30.0, 35.0], "hfa": [20.0, 35.0, 50.0], "carryover": [0.75, 0.85, 0.95]},
+    "ridge": {"half_life_days": [180.0, 240.0, 300.0, 360.0], "penalty": [0.25, 0.5, 1.0, 2.0, 3.0],
+              "cov_scale": [1.0, 1.1, 1.2]},
 }
 CHAMPION_MODEL = "ridge"  # config.models.initial_champion: regularized past-only baseline
 TRIVIAL_MODEL = "hfa_only"
@@ -105,6 +111,7 @@ def report(df: pd.DataFrame, cohorts: pd.DataFrame, protocol: dict[str, Any]) ->
     grid = df.groupby(["model", "config"])["energy_score"].mean().reset_index()
     return {
         "stage": "B01",
+        "grid_pass": GRID_PASS,
         "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
         "protocol_id": protocol["protocol_id"], "protocol_version": protocol["protocol_version"],
         "evaluation_class": protocol["replay"]["historical_class"],
@@ -136,6 +143,9 @@ def render(rep: dict[str, Any]) -> str:
         "",
         ("Each model's configuration was selected on these same games, so these scores are "
          "optimistic. They are development evidence, not test results."),
+        "",
+        (f"Tuning pass {rep['grid_pass']}. Pass 1 (commit 7aa513e) selected values at the edges of "
+         "its grid, so pass 2 widened the grid once; no further pass is planned."),
         "",
         "## Selected configurations",
         "",

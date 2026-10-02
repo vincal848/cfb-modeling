@@ -205,6 +205,47 @@ def backtest(
     typer.echo(f"wrote {m.relative_to(REPO_ROOT)} and {j.name}")
 
 
+@app.command("record-forecasts")
+def record_forecasts(
+    stage: str = typer.Option("b01", help="Stage whose selected models to record (b01)"),
+    workers: int = typer.Option(0, help="Worker processes (0 = CPU count - 1)"),
+    replay_sample: int = typer.Option(50, help="Stored forecasts to replay-check afterwards"),
+) -> None:
+    """B03: immutable forecast, winner-pick, outcome and evaluation records for the
+    development seasons. Rerunning records nothing new."""
+    import json
+    import random
+
+    from cfb.evaluation.backtest import Config, prepare_tasks
+    from cfb.evaluation.protocol import load_protocol
+    from cfb.operations.records import lock_hash, record_runs, replay_check
+
+    if stage != "b01":
+        typer.echo(f"unknown stage {stage!r}", err=True)
+        raise typer.Exit(code=2)
+    spec = load_protocol()
+    report = json.loads((REPO_ROOT / "experiments" / "b01" / "b01-development.json").read_text(encoding="utf-8"))
+    configs = [Config.from_label(label) for label in report["selected"].values()]
+    seasons = spec["seasons"]["development"]["seasons"]
+    conn, _ = open_store()
+    tasks = prepare_tasks(conn, spec, seasons, configs, REPO_ROOT / "artifacts" / "snapshots", log=typer.echo)
+    art = REPO_ROOT / "artifacts"
+    summary = record_runs(conn, tasks, configs, stage="B01", dep_lock=lock_hash(REPO_ROOT / "uv.lock"),
+                          artifact_dir=art, evaluation_class=spec["replay"]["historical_class"],
+                          workers=workers or None)
+    typer.echo(f"runs: {summary}")
+    for table in ("model_runs", "forecast_summaries", "decision_records", "outcome_versions", "evaluation_results"):
+        typer.echo(f"  {table}: {conn.execute(f'SELECT count(*) FROM {table}').fetchone()[0]} rows")
+
+    rows = conn.execute("SELECT forecast_id, model_version FROM forecast_summaries JOIN model_runs USING(run_id)").fetchall()
+    sample = random.Random(spec["monte_carlo"]["root_seed"]).sample(rows, min(replay_sample, len(rows)))
+    ok = sum(replay_check(conn, art, fid, spec["monte_carlo"]["root_seed"], spec["protocol_version"],
+                          mv.split(":")[1].split("|")[0], spec["monte_carlo"]["draws_per_game"])
+             for fid, mv in sample)
+    typer.echo(f"replay check: {ok}/{len(sample)} forecasts reproduce their samples hash and winner pick")
+    raise typer.Exit(code=0 if ok == len(sample) else 1)
+
+
 @app.command()
 def protocol(
     freeze: bool = typer.Option(False, help="Freeze the draft protocol (irreversible for this version)"),

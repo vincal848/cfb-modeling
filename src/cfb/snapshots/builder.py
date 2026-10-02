@@ -114,17 +114,25 @@ def fact_as_of(
     """The version of one fact a forecast at `cutoff` may use, under the same admission rule
     as snapshots. For a forecast's own target game, whose cutoff can be later than the
     fold snapshot's (a postseason fold spans weeks)."""
+    found = version_as_of(conn, entity_type, entity_key, cutoff, mode)
+    return found[1] if found else None
+
+
+def version_as_of(
+    conn: sqlite3.Connection, entity_type: str, entity_key: str, cutoff: datetime, mode: str
+) -> tuple[str, dict] | None:
+    """(record_version_id, payload) of the fact `fact_as_of` returns."""
     evidence = ADMITTED_EVIDENCE[mode]
     marks = ",".join("?" * len(evidence))
     row = conn.execute(
-        f"""SELECT normalized_payload_json FROM source_records
+        f"""SELECT record_version_id, normalized_payload_json FROM source_records
             WHERE entity_type=? AND entity_key=? AND available_at IS NOT NULL
               AND julianday(available_at) <= julianday(?) AND availability_evidence IN ({marks})
             ORDER BY julianday(available_at) DESC, julianday(ingested_at) DESC, record_version_id DESC
             LIMIT 1""",
         (entity_type, entity_key, iso(cutoff), *evidence),
     ).fetchone()
-    return json.loads(row[0]) if row else None
+    return (row[0], json.loads(row[1])) if row else None
 
 
 def load_facts(conn: sqlite3.Connection, snapshot_id: str, entity_type: str) -> list[dict]:
