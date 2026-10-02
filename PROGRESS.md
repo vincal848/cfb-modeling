@@ -17,7 +17,7 @@ This file keeps two things separate:
 | M0 Source audit | 🟡 | n/a | D01, D02, D03 and V01 done |
 | M1 Temporal data foundation | ✅ | n/a | D03–D08 done |
 | M2 Forecasting baseline | ✅ | 🟡 development only | B01, B02, B03 done. Champion decision deferred to the stack/test stages per V01 |
-| M3 EP and skill players | 🟡 | 🟡 development only | P01 scoring, overtime and states done; P02 EP/EPA done; P03–P04 player models next |
+| M3 EP and skill players | ✅ | 🟡 development only | P01–P04 done. Remaining P01 work: down/distance-level state transitions are measured, not modeled |
 | M4–M7 | ⬜ | ⬜ | In dependency order |
 | T1 Tracking / L1 Live | disabled | — | Gated on external data. `tracking_enabled=false`, enforced by config validation |
 
@@ -38,6 +38,8 @@ This file keeps two things separate:
 | B02 Dynamic team-only strength | ✅ | Kalman filter, past-only states checked against every fold snapshot; 36-configuration prior/innovation sensitivity reported. See [experiments/b02/b02-development.md](experiments/b02/b02-development.md). |
 | P01 State machine (scoring, overtime) | 🟡 | Scoring and overtime reconciliation under a cited rules registry: 78.3% of games exact, 11.7% events-only, 10.0% failed. 46 tests against independent sources (ESPN, recaps). Down/distance/field-position and clock transitions remain. See [experiments/p01/reconciliation-2014-2025.md](experiments/p01/reconciliation-2014-2025.md). |
 | P02 College EP and EPA | ✅ | Fold-specific multinomial next-score model, all fits converged. Held-out log loss 1.207 vs 1.407 (yard line only) and 1.477 (class prior); calibrated within 0.12 points per EP decile. See [experiments/p02/ep-development.md](experiments/p02/ep-development.md). 4 tests. |
+| P03 Hierarchical opportunity shares | ✅ | Shares (dropbacks, carries, targets) with explicit unknown/unassigned group; totals conserved to 4e-14. Beats a smoothed last-game copy in every category and season (log score 1.55 vs 1.80); separate participation model beats both alternatives. See [experiments/p03/opportunity-development.md](experiments/p03/opportunity-development.md). 9 tests. |
+| P04 Skill-player effectiveness and development | ✅ | Per-position development model of EPA per opportunity; matches or beats the position mean in every fitted group and beats last season's raw mean everywhere; new players get the pooled (widest) uncertainty. See [experiments/p04/ability-development.md](experiments/p04/ability-development.md). 6 tests incl. parameter recovery. |
 | B01 Elo and margin/total baselines | ✅ | Both beat the trivial model on every primary metric (development). See [experiments/b01/b01-development.md](experiments/b01/b01-development.md). |
 
 ## Completed work
@@ -183,6 +185,22 @@ Labeling: rows from mocked transports use `provider='SYNTHETIC'`. Live rows use 
 4. **EPA sanity**: mean EPA ≈ 0 overall; passes +0.042, rushes +0.028.
 5. **Numerical**: an unpenalized fit does not converge (rare outcomes such as safeties let coefficients grow without bound), so the penalty grid starts at 1e-6. The selected penalty is that floor in every fold; all six final fits converged. An earlier run with a 500-iteration cap and a run including a penalty of 0 did not converge; their log loss differed from the final run by less than 0.001.
 
+## P03 findings (development 2019–2021, reconstructed, tuned on the same games)
+
+1. **Data**: CFBD `/plays/stats` per game (5,844 games, 2015–2021, none truncated) gives athlete IDs per play. CFBD credits no receiver on about 29% of team targets; those, and new players, go to the explicit UNKNOWN group (realized unknown share: targets 0.32, carries 0.12, dropbacks 0.08).
+2. **The first evaluation was unfair**: it charged every player a model did not list to one shared UNKNOWN bucket, which rewarded leaving known players out. Copying last game's split looked better (1.503 vs 1.555). All models are now scored over the same outcomes: every player known before the game plus UNKNOWN, with the baseline smoothed (known players absent last game get a 0.005 floor).
+3. **Scored fairly, the share model wins in every category and season**: per-opportunity log score 1.55 vs 1.80 for the smoothed last-game copy (carries 1.77 vs 2.01, dropbacks 0.72 vs 0.89, targets 2.20 vs 2.52). Expected counts conserve team totals exactly.
+4. **Participation needs its own model.** Deriving P(any opportunity) from shares assumes independent opportunities and badly overstates backups (dropbacks log loss 1.34). A separate past-only beta-binomial participation model (methodology §4's two-part design) wins in every category: carries 0.45, dropbacks 0.39, targets 0.50.
+5. **Tuning**: two grid passes for shares (the second widened past pass-1 edges and selected the same configuration: half-life 2 games, prior weight 0.5, alpha 0.1, kappa 3). The participation model's selected settings (half-life 4, strength 1) are at grid edges; not tuned further.
+
+## P04 findings (development 2019–2021, reconstructed)
+
+1. **EPA comes from fold EP models** fit before each season (saved in `artifacts/models/`), joined to player play stats by play ID. Only P01 exact-tier games contribute.
+2. **Parameters must be per position (methodology §4: mu[p], rho[p]).** A shared fit per category let rare, extreme passers (wide receivers on trick plays, usually one attempt) inflate the quarterback prior spread to 0.53 EPA per dropback and persistence to 0.91; that model predicted quarterbacks worse than their position mean. Fitting each position group separately gives a plausible QB spread of 0.14 and persistence of 0.80–0.83.
+3. **A group gets its own dynamics only with a real role** (at least 100 training player-seasons, 1,000 opportunities and a median of 5 opportunities per player-season). This leaves QB passing, RB/WR/TE receiving and QB/RB rushing; other groups use their training mean. A count-only rule let wide-receiver passing (one-attempt seasons) through and gave a degenerate fit.
+4. **Results**: the model matches or beats the position mean in every fitted group (QB passing MSE 0.0541 vs 0.0549, RB rushing 0.0433 vs 0.0445, WR receiving 0.1718 vs 0.1725) and beats last season's raw mean everywhere (e.g. QB passing 0.150). Gains over the mean are small: season EPA per opportunity is noisy, so strong shrinkage toward the position mean is mostly right.
+5. **Uncertainty**: new players get the pooled prior (widest intervals); 80% intervals cover 77–81%. Some persistence estimates sit at their bounds (RB receiving 1.0, TE receiving near 0), so the data identify them weakly.
+
 ## B01 findings (development, reconstructed, tuned on the same games)
 
 Two tuning passes. Pass 1 (commit 7aa513e) selected grid-edge values and gave ridge intervals that were too narrow, so pass 2 widened the grid once and added a ridge covariance scale. No further pass.
@@ -234,7 +252,7 @@ None of these require a spec deviation. Each is a case the blueprint already ant
 
 | Date | Check | Result | Data |
 |---|---|---|---|
-| 2026-10-02 | `uv run pytest` | 176 passed | Synthetic contract rows and mocked transport only |
+| 2026-10-02 | `uv run pytest` | 191 passed | Synthetic contract rows and mocked transport only |
 | 2026-10-01 | `uv run ruff check` | Clean | — |
 | 2026-10-01 | `uv run cfb doctor` | All ok, key present | — |
 | 2026-10-01 | `uv run cfb audit-source --season 2024` | 20/20 endpoints returned 200, none truncated, 19 calls used | **Real CFBD** |
@@ -263,6 +281,6 @@ These checks validate contracts, endpoint access and season coverage. They do no
 ## Next executable step
 
 1. Optional B02 refinement: estimate the observation noise from past one-step innovations instead of tuning it (B02 finding 5).
-2. P03: hierarchical opportunity shares (needs player-attributed events, D06 identities).
-3. P04: skill-player effectiveness and development.
+2. M4: roster scenario graph (R01) and destination/adaptation models (R02), using D06 identities and P03/P04.
+3. Player play stats exist for 2015–2021 only; stack-fit and test seasons need 2022–2025 (about 3,600 more calls) before those stages.
 3. P01: possession/clock/scoring state machine, which needs hand-checked football fixtures and a sourced rules registry.

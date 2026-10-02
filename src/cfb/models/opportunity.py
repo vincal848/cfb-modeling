@@ -132,3 +132,20 @@ def log_score(shares: dict[str, float], observed: dict[str, int], unassigned: in
         n_total += n
     loss -= unknown_n * np.log(shares[UNKNOWN])
     return loss, n_total + unassigned
+
+
+def participation_probs(history: list[dict[str, int]], prior: dict[str, float], known: set[str],
+                        half_life_games: float, strength: float, p0: float = 0.5) -> dict[str, float]:
+    """P(at least one opportunity) per known player: a past-only beta-binomial on whether the
+    player had any opportunity in each earlier game, recent games weighted more, shrunk toward
+    p0 with weight `strength` (methodology §4 two-part design: participation first).
+
+    Deriving participation from shares, 1 - (1 - s)^N, assumes independent opportunities and
+    overstates it for backups, who usually either enter a game or do not (P03 finding)."""
+    decay = np.power(0.5, np.arange(len(history))[::-1] / half_life_games) if history else np.array([])
+    out = {}
+    for a in known:
+        hits = float(sum(w for w, g in zip(decay, history, strict=True) if g.get(a, 0) > 0))
+        base = p0 if a in prior else p0 / 2
+        out[a] = (hits + strength * base) / (float(decay.sum()) + strength)
+    return out

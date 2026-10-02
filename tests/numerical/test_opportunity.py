@@ -74,3 +74,24 @@ def test_counts_and_totals_from_cfbd_shaped_rows():
                           ("Pass Reception", "Sack", "Rush", "Rushing Touchdown", "Punt")])
     t = team_totals(plays).set_index("category")["total"]
     assert t["dropbacks"] == 2 and t["carries"] == 2 and t["targets"] == 1
+
+
+def test_baseline_is_scored_over_the_same_known_players():
+    from cfb.evaluation.p03 import candidates, on_partition
+
+    history = [{"a": 10, "b": 4}, {"a": 12}]  # b sat out the last game
+    known = candidates(history, {"c": 0.2})
+    assert known == {"a", "b", "c"}
+    s = on_partition(last_game_shares(history, [0, 3], {}), known, 0.005)
+    assert s["b"] == s["c"] == 0.005 and sum(s.values()) == pytest.approx(1.0)
+    # The share model already lists every known player.
+    assert known <= set(forecast_shares(history, [0, 3], {"c": 0.2}, P))
+
+
+def test_participation_model_tracks_recent_appearances_and_shrinks():
+    from cfb.models.opportunity import participation_probs
+
+    history = [{"qb1": 30, "qb2": 2}, {"qb1": 33}, {"qb1": 28}]
+    p = participation_probs(history, {}, {"qb1", "qb2", "qb3"}, half_life_games=2.0, strength=1.0)
+    assert p["qb1"] > 0.75 and p["qb2"] < 0.3 and p["qb3"] < p["qb2"]  # starter, rare backup, unused
+    assert all(0 < v < 1 for v in p.values())

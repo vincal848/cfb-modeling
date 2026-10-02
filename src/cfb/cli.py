@@ -348,6 +348,25 @@ def opportunity() -> None:
         sub = chosen[chosen["season"] == s]
         vals = {c: g["log_score_sum"].sum() / g["opportunities"].sum() for c, g in sub.groupby("config")}
         lines.append(f"| {s} | {vals[best]:.4f} | {vals['last_game']:.4f} |")
+    # Participation: separate two-part model versus deriving it from shares.
+    import itertools
+
+    part = {}
+    for hl, st in itertools.product(*p03.PARTICIPATION_GRID.values()):
+        part[(hl, st)] = pd.DataFrame([r for s in seasons for r in p03.evaluate_participation(series[s], s, hl, st)])
+    base = pd.DataFrame([r for s in seasons for r in p03.evaluate_participation(series[s], s, None, None)])
+    best_part = min(part, key=lambda k: part[k]["loss_sum"].sum() / part[k]["players"].sum())
+    derived = chosen[chosen["config"] == best]
+    lines += ["", "## Participation: P(at least one opportunity), log loss over known players", "",
+              (f"Separate participation model selected: half-life {best_part[0]:g} games, prior strength "
+               f"{best_part[1]:g}. 'From shares' is 1 - (1 - share)^N, which assumes independent opportunities."), "",
+              "| Category | Last-game indicator | From shares | Participation model |", "|---|---|---|---|"]
+    for cat in sorted(base["category"].unique()):
+        b, m = base[base["category"] == cat], part[best_part][part[best_part]["category"] == cat]
+        d = derived[derived["category"] == cat]
+        lines.append(f"| {cat} | {b['loss_sum'].sum() / b['players'].sum():.4f} | "
+                     f"{d['participation_loss_sum'].sum() / d['candidates'].sum():.4f} | "
+                     f"{m['loss_sum'].sum() / m['players'].sum():.4f} |")
     lines += ["", "## Grid (pooled log score)", "", "| Configuration | Log score | Participation log loss |",
               "|---|---|---|"]
     lines += [f"| `{i}` | {r.log_score:.4f} | {r.participation_log_loss:.4f} |" for i, r in summary.iterrows()]
@@ -379,10 +398,9 @@ def ability() -> None:
         epa = p04.play_epa(states[states["season"].between(2015, s)], model)
         rows, sigma2 = p04.player_seasons(stats[stats["season"] <= s], epa, pos)
         for cat, sub in rows.groupby("category"):
-            out, params = p04.evaluate_category(sub, s, sigma2[cat])
+            out, fits = p04.evaluate_category(sub, s, sigma2[cat])
             results.append(out.assign(category=cat))
-            params_rows.append({"season": s, "category": cat, "rho": params.rho, "tau": params.tau2 ** 0.5,
-                                "q_sd": params.q ** 0.5, "sigma": sigma2[cat] ** 0.5, "converged": params.converged})
+            params_rows += [dict(f, season=s, category=cat, sigma=sigma2[cat] ** 0.5) for f in fits]
         typer.echo(f"  season {s} done")
     df = pd.concat(results, ignore_index=True)
     df.to_parquet(REPO_ROOT / "artifacts" / "plays" / "ability-development.parquet", index=False)
@@ -394,11 +412,20 @@ def ability() -> None:
              (f"Seasons {seasons}, reconstructed. Each season's player EPA per opportunity is predicted from earlier "
               "seasons only, with EPA from the EP model fit before that season. Scores are per player-season, "
               "weighted by opportunities; lower is better. Only P01 exact-tier games contribute EPA."), "",
-             "## Fitted parameters by fold", "",
-             "| Season | Category | Persistence rho | Prior sd tau | Season innovation sd | Play sd sigma | Converged |",
-             "|---|---|---|---|---|---|---|"]
-    lines += [f"| {r['season']} | {r['category']} | {r['rho']:.3f} | {r['tau']:.4f} | {r['q_sd']:.4f} | "
-              f"{r['sigma']:.3f} | {r['converged']} |" for r in params_rows]
+             "## Fitted parameters by fold and position group", "",
+             ("Each position group with at least 100 training player-seasons, 1,000 opportunities and a median of 5 "
+              "opportunities per player-season gets its own development model; other groups (one-off trick plays, "
+              "rare roles) are predicted by their training mean."), "",
+             ("| Season | Category | Group | Training player-seasons | Persistence rho | Prior sd tau | "
+              "Season innovation sd | Play sd sigma | Converged |"),
+             "|---|---|---|---|---|---|---|---|---|"]
+    for r in params_rows:
+        if r["fitted"]:
+            lines.append(f"| {r['season']} | {r['category']} | {r['group']} | {r['player_seasons']:,} | {r['rho']:.3f} | "
+                         f"{r['tau']:.4f} | {r['q_sd']:.4f} | {r['sigma']:.3f} | {r['converged']} |")
+        else:
+            lines.append(f"| {r['season']} | {r['category']} | {r['group']} | {r['player_seasons']:,} | "
+                         "mean only | | | | |")
     lines += ["", "## Held-forward scores", "",
               ("| Category | Player-seasons | Opportunities | Log score: model | group mean | last season raw | "
                "MSE: model | group mean | last season raw | 80% coverage |"), "|---|---|---|---|---|---|---|---|---|---|"]
@@ -409,6 +436,13 @@ def ability() -> None:
             f"{wavg(g['ls_last'], w):.4f} | {wavg((g['y'] - g['model_mean']) ** 2, w):.5f} | "
             f"{wavg((g['y'] - g['group_mean']) ** 2, w):.5f} | {wavg((g['y'] - g['last_raw']) ** 2, w):.5f} | "
             f"{wavg(g['covered80'].astype(float), w):.1%} |")
+    lines += ["", "## By position group (MSE weighted by opportunities)", "",
+              "| Category | Group | Player-seasons | Opportunities | MSE: model | group mean | last season raw |",
+              "|---|---|---|---|---|---|---|"]
+    for (cat, grp), g in df.groupby(["category", "group"]):
+        w = g["n"]
+        lines.append(f"| {cat} | {grp} | {len(g):,} | {int(w.sum()):,} | {wavg((g['y'] - g['model_mean']) ** 2, w):.5f} | "
+                     f"{wavg((g['y'] - g['group_mean']) ** 2, w):.5f} | {wavg((g['y'] - g['last_raw']) ** 2, w):.5f} |")
     lines += ["", "## New versus returning players (model)", "",
               "| Category | Group | Player-seasons | Mean predictive sd | 80% coverage |", "|---|---|---|---|---|"]
     for (cat, hist), g in df.groupby(["category", "has_history"]):

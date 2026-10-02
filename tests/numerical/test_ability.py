@@ -75,3 +75,18 @@ def test_vectorized_likelihood_matches_per_player_filter_with_gaps():
     p = _unpack(theta, groups, 1.5)
     per_player = sum(_filter(g.sort_values("season"), p)[0] for _, g in df.groupby("athlete_id"))
     assert _loglik(theta, groups, 1.5, _grid(df, groups)) == pytest.approx(per_player, rel=1e-10)
+
+
+def test_thin_position_groups_fall_back_to_their_mean_and_do_not_distort_others():
+    from cfb.evaluation.p04 import evaluate_category
+
+    qbs = simulate(players=400, seasons=(2015, 2016, 2017, 2018), seed=5).query("group == 'QB'")
+    rng = np.random.default_rng(9)
+    trick = pd.DataFrame([{"athlete_id": f"w{i}", "season": s, "group": "WR", "y": rng.normal(2.0, 1.5), "n": 1}
+                          for i in range(400) for s in (2016, 2017, 2018)])  # many one-attempt seasons
+    out, fits = evaluate_category(pd.concat([qbs, trick], ignore_index=True), 2018, 1.5)
+    fitted = {f["group"]: f for f in fits}
+    assert fitted["QB"]["fitted"] and not fitted["WR"]["fitted"]
+    assert fitted["QB"]["tau"] == pytest.approx(0.2, rel=0.35)  # QB spread is not inflated by trick plays
+    wr = out[out["group"] == "WR"]
+    assert (wr["model_mean"] == wr["group_mean"]).all()

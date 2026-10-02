@@ -99,19 +99,50 @@ def _baseline_var(train: pd.DataFrame, mean: np.ndarray, sigma2: float) -> float
     return max(float(np.average(resid2, weights=train["n"])), 1e-4)
 
 
-def evaluate_category(rows: pd.DataFrame, season: int, sigma2: float) -> tuple[pd.DataFrame, ability.AbilityParams]:
-    train, test = rows[rows["season"] < season], rows[rows["season"] == season]
-    params = ability.fit_ability(train, sigma2)
-    pred = ability.predict(train, test[["athlete_id", "season", "group"]], params)
-    out = test.reset_index(drop=True).copy()
-    out["model_mean"], out["model_var"], out["has_history"] = (
-        pred["pred_mean"].to_numpy(), pred["pred_var"].to_numpy(), pred["has_history"].to_numpy())
+MIN_GROUP_PLAYER_SEASONS = 100  # a position group gets its own dynamics only with this much training data
+MIN_GROUP_OPPORTUNITIES = 1000
+# A group needs a real role in the category, not one-off plays: wide-receiver passing has ~1,000
+# training player-seasons but almost all with one trick-play attempt, and fitting it gave a
+# degenerate model (persistence 1.0, prior sd 1.6) that predicted worse than its mean.
+MIN_GROUP_MEDIAN_OPPORTUNITIES = 5
 
-    # Baseline 1: group mean from training; variance calibrated on training.
+
+def evaluate_category(rows: pd.DataFrame, season: int, sigma2: float) -> tuple[pd.DataFrame, list[dict]]:
+    """Fit the development model separately per position group (methodology §4: mu[p],
+    rho[p] per position). A group too thin to fit, such as non-quarterback passers on
+    trick plays, is predicted by its training mean with a variance calibrated on training
+    data. A shared fit across groups let those rare, extreme passers inflate the prior
+    spread and persistence for quarterbacks (first P04 run)."""
+    train, test = rows[rows["season"] < season], rows[rows["season"] == season]
+    out = test.reset_index(drop=True).copy()
+    out["model_mean"], out["model_var"], out["has_history"] = np.nan, np.nan, False
     gm = train.groupby("group").apply(lambda d: np.average(d["y"], weights=d["n"]), include_groups=False)
     pooled = float(np.average(train["y"], weights=train["n"]))
     out["group_mean"] = out["group"].map(gm).fillna(pooled)
-    v_group = _baseline_var(train, train["group"].map(gm).to_numpy(), sigma2)
+    v_group_by = {}
+    fits = []
+    for group in sorted(set(out["group"]) | set(train["group"])):
+        tr = train[train["group"] == group]
+        mask = (out["group"] == group).to_numpy()
+        g_mean = float(gm.get(group, pooled))
+        v_group_by[group] = _baseline_var(tr, np.full(len(tr), g_mean), sigma2) if len(tr) else 1e-2
+        if (len(tr) >= MIN_GROUP_PLAYER_SEASONS and tr["n"].sum() >= MIN_GROUP_OPPORTUNITIES
+                and tr["n"].median() >= MIN_GROUP_MEDIAN_OPPORTUNITIES):
+            params = ability.fit_ability(tr, sigma2)
+            pred = ability.predict(tr, out.loc[mask, ["athlete_id", "season", "group"]], params)
+            out.loc[mask, "model_mean"] = pred["pred_mean"].to_numpy()
+            out.loc[mask, "model_var"] = pred["pred_var"].to_numpy()
+            out.loc[mask, "has_history"] = pred["has_history"].to_numpy()
+            fits.append({"group": group, "fitted": True, "rho": params.rho, "tau": params.tau2 ** 0.5,
+                         "q_sd": params.q ** 0.5, "converged": params.converged, "player_seasons": len(tr)})
+        else:
+            out.loc[mask, "model_mean"] = g_mean
+            out.loc[mask, "model_var"] = v_group_by[group]
+            fits.append({"group": group, "fitted": False, "player_seasons": len(tr)})
+    out["has_history"] = out["has_history"].astype(bool)
+
+    # Baseline 1: group mean from training; variance calibrated per group on training.
+    v_group = out["group"].map(v_group_by).to_numpy()
     # Baseline 2: last season's raw mean (group mean if none); variance calibrated on training returners.
     last = rows.sort_values("season").groupby("athlete_id")
     prev = {}
@@ -132,4 +163,4 @@ def evaluate_category(rows: pd.DataFrame, season: int, sigma2: float) -> tuple[p
     z80 = 1.2815515655446004
     sd = np.sqrt(out["model_var"] + sigma2 / out["n"])
     out["covered80"] = (out["y"] - out["model_mean"]).abs() <= z80 * sd
-    return out, params
+    return out, fits
