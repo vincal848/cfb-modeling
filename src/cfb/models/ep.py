@@ -156,3 +156,15 @@ def epa(df: pd.DataFrame, ep: np.ndarray) -> np.ndarray:
         else:
             out[i] = -ep[i]
     return out
+
+
+def save(model: EPModel, path) -> None:
+    """Persist a fitted EP model (coefficients, scaling, values) as .npz."""
+    np.savez(path, kind=model.kind, penalty=model.penalty, mean=model.mean, scale=model.scale, coef=model.coef,
+             values=model.values, try_value=model.try_value, train_rows=model.train_rows, converged=model.converged)
+
+
+def load(path) -> EPModel:
+    d = np.load(path, allow_pickle=False)
+    return EPModel(str(d["kind"]), float(d["penalty"]), d["mean"], d["scale"], d["coef"], d["values"],
+                   float(d["try_value"]), int(d["train_rows"]), bool(d["converged"]))

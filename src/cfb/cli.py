@@ -310,6 +310,116 @@ def ep(workers: int = typer.Option(0, help="Worker processes (0 = the EP default
     typer.echo("\n".join(lines))
 
 
+@app.command()
+def opportunity() -> None:
+    """P03: opportunity-share forecasts scored on the development seasons (one process)."""
+    import pandas as pd
+
+    from cfb.evaluation import p03
+    from cfb.evaluation.protocol import load_protocol
+
+    spec = load_protocol()
+    seasons = spec["seasons"]["development"]["seasons"]
+    conn, ledger = open_store()
+    series = {s: p03.season_series(conn, ledger, s) for s in seasons}
+    rows = []
+    for params in [None, *p03.grid()]:
+        for s in seasons:
+            rows += [dict(r, config=p03.label(params)) for r in p03.evaluate(series[s], params, s)]
+    df = pd.DataFrame(rows)
+    summary = p03.summarize(df)
+    best = summary.drop(index="last_game").index[0]
+    chosen = df[df["config"].isin([best, "last_game"])]
+    lines = ["# P03 opportunity shares: development results", "",
+             (f"Seasons {seasons}, reconstructed. Each team-game-category share forecast uses only earlier games "
+              "of the season, the previous season and the season's roster. Log score is per opportunity "
+              "(lower is better); new players and unassigned opportunities count against the UNKNOWN group. "
+              "The configuration was selected on these games, so its scores are optimistic."), "",
+             f"Selected: `{best}`", "",
+             "| Model | Category | Team-games | Opportunities | Log score | Participation log loss | Max conservation error |",
+             "|---|---|---|---|---|---|---|"]
+    for (cfg, cat), g in chosen.groupby(["config", "category"]):
+        lines.append(f"| {'last game' if cfg == 'last_game' else 'shares'} | {cat} | {len(g):,} | "
+                     f"{int(g['opportunities'].sum()):,} | {g['log_score_sum'].sum() / g['opportunities'].sum():.4f} | "
+                     f"{g['participation_loss_sum'].sum() / max(g['candidates'].sum(), 1):.4f} | "
+                     f"{g['conservation_error'].max():.2e} |")
+    lines += ["", "By season (log score, all categories):", "", "| Season | Shares | Last game |", "|---|---|---|"]
+    for s in seasons:
+        sub = chosen[chosen["season"] == s]
+        vals = {c: g["log_score_sum"].sum() / g["opportunities"].sum() for c, g in sub.groupby("config")}
+        lines.append(f"| {s} | {vals[best]:.4f} | {vals['last_game']:.4f} |")
+    lines += ["", "## Grid (pooled log score)", "", "| Configuration | Log score | Participation log loss |",
+              "|---|---|---|"]
+    lines += [f"| `{i}` | {r.log_score:.4f} | {r.participation_log_loss:.4f} |" for i, r in summary.iterrows()]
+    out = REPO_ROOT / "experiments" / "p03"
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "opportunity-development.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    typer.echo("\n".join(lines[:16]))
+
+
+@app.command()
+def ability() -> None:
+    """P04: held-forward skill-player effectiveness on the development seasons (one process)."""
+    import pandas as pd
+
+    from cfb.evaluation import p04
+    from cfb.evaluation.protocol import load_protocol
+
+    spec = load_protocol()
+    seasons = spec["seasons"]["development"]["seasons"]
+    first_ep = spec["seasons"]["warmup"]["seasons"][0]
+    conn, ledger = open_store()
+    states = pd.read_parquet(REPO_ROOT / "artifacts" / "plays" / "states.parquet")
+    stats_seasons = list(range(2015, max(seasons) + 1))
+    stats = p04.load_play_stats(conn, ledger, stats_seasons)
+    pos = p04.positions(ledger, stats_seasons)
+    results, params_rows = [], []
+    for s in seasons:
+        model = p04.fold_ep_model(states, s, first_ep, REPO_ROOT / "artifacts" / "models", log=typer.echo)
+        epa = p04.play_epa(states[states["season"].between(2015, s)], model)
+        rows, sigma2 = p04.player_seasons(stats[stats["season"] <= s], epa, pos)
+        for cat, sub in rows.groupby("category"):
+            out, params = p04.evaluate_category(sub, s, sigma2[cat])
+            results.append(out.assign(category=cat))
+            params_rows.append({"season": s, "category": cat, "rho": params.rho, "tau": params.tau2 ** 0.5,
+                                "q_sd": params.q ** 0.5, "sigma": sigma2[cat] ** 0.5, "converged": params.converged})
+        typer.echo(f"  season {s} done")
+    df = pd.concat(results, ignore_index=True)
+    df.to_parquet(REPO_ROOT / "artifacts" / "plays" / "ability-development.parquet", index=False)
+
+    def wavg(x, w):
+        return float((x * w).sum() / w.sum())
+
+    lines = ["# P04 skill-player effectiveness: development results", "",
+             (f"Seasons {seasons}, reconstructed. Each season's player EPA per opportunity is predicted from earlier "
+              "seasons only, with EPA from the EP model fit before that season. Scores are per player-season, "
+              "weighted by opportunities; lower is better. Only P01 exact-tier games contribute EPA."), "",
+             "## Fitted parameters by fold", "",
+             "| Season | Category | Persistence rho | Prior sd tau | Season innovation sd | Play sd sigma | Converged |",
+             "|---|---|---|---|---|---|---|"]
+    lines += [f"| {r['season']} | {r['category']} | {r['rho']:.3f} | {r['tau']:.4f} | {r['q_sd']:.4f} | "
+              f"{r['sigma']:.3f} | {r['converged']} |" for r in params_rows]
+    lines += ["", "## Held-forward scores", "",
+              ("| Category | Player-seasons | Opportunities | Log score: model | group mean | last season raw | "
+               "MSE: model | group mean | last season raw | 80% coverage |"), "|---|---|---|---|---|---|---|---|---|---|"]
+    for cat, g in df.groupby("category"):
+        w = g["n"]
+        lines.append(
+            f"| {cat} | {len(g):,} | {int(w.sum()):,} | {wavg(g['ls_model'], w):.4f} | {wavg(g['ls_group'], w):.4f} | "
+            f"{wavg(g['ls_last'], w):.4f} | {wavg((g['y'] - g['model_mean']) ** 2, w):.5f} | "
+            f"{wavg((g['y'] - g['group_mean']) ** 2, w):.5f} | {wavg((g['y'] - g['last_raw']) ** 2, w):.5f} | "
+            f"{wavg(g['covered80'].astype(float), w):.1%} |")
+    lines += ["", "## New versus returning players (model)", "",
+              "| Category | Group | Player-seasons | Mean predictive sd | 80% coverage |", "|---|---|---|---|---|"]
+    for (cat, hist), g in df.groupby(["category", "has_history"]):
+        lines.append(f"| {cat} | {'returning' if hist else 'new'} | {len(g):,} | {g['model_var'].pow(0.5).mean():.4f} | "
+                     f"{wavg(g['covered80'].astype(float), g['n']):.1%} |")
+    out = REPO_ROOT / "experiments" / "p04"
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "ability-development.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    typer.echo("\n".join(lines))
+
+
 @app.command("build-states")
 def build_states(start: int = typer.Option(2014), end: int = typer.Option(2025),
                  workers: int = typer.Option(0, help="Worker processes (0 = CPU count - 1)")) -> None:

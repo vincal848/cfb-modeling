@@ -32,6 +32,8 @@ FAMILIES: dict[str, tuple[str, str]] = {
     "rosters": ("/roster", "season"),
     "portal": ("/player/portal", "season"),
     "recruiting": ("/recruiting/players", "season"),
+    # Player-attributed play stats (P03/P04): athlete IDs per play, joinable to EPA by playId.
+    "player_play_stats": ("/plays/stats", "game"),
 }
 CORE_FAMILIES = ("teams_fbs", "calendar", "games", "lines", "team_game_stats", "drives", "plays")
 
@@ -49,6 +51,20 @@ def partitions(fetcher: Fetcher, family: str, season: int, *, refresh: bool = Fa
             raise RuntimeError(f"/calendar {season} unavailable (HTTP {entry.http_status})")
         for wk in fetcher.ledger.load(entry):
             yield {"year": season, "week": wk["week"], "seasonType": wk["seasonType"]}
+    elif scheme == "game":
+        # One partition per completed game with an FBS team (V01 population). Per-game
+        # requests stay far below the endpoint's 2,000-row cap (about 190 rows per game).
+        fbs_entry, _ = fetcher.fetch("/teams/fbs", {"year": season}, refresh=refresh)
+        fbs = {t["id"] for t in fetcher.ledger.load(fbs_entry)} if fbs_entry.http_status == 200 else set()
+        if not fbs:
+            raise RuntimeError(f"/teams/fbs {season} unavailable")
+        for st in SEASON_TYPES:
+            entry, _ = fetcher.fetch("/games", {"year": season, "seasonType": st}, refresh=refresh)
+            if entry.http_status != 200:
+                raise RuntimeError(f"/games {season} {st} unavailable (HTTP {entry.http_status})")
+            for g in fetcher.ledger.load(entry):
+                if g.get("completed") and (g.get("homeId") in fbs or g.get("awayId") in fbs):
+                    yield {"gameId": g["id"]}
     else:
         raise ValueError(f"unknown partition scheme {scheme!r}")
 
