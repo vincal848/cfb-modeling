@@ -285,8 +285,8 @@ def render(rep: dict) -> str:
 
     head = ["| cell | fills | P&L per fill | 95% interval | fair-value drift after fill |", "|---|---|---|---|---|"]
     lines = [f"# Q01 results\n\n**Verdict: {rep['verdict']}**\n",
-             f"Upper bound: queue position is ignored. Ledger family size {rep['m_total']}; protocol sha256 "
-             f"`{rep['protocol_sha256']}`. Games with a home market and a kickoff: {rep['games']} ({rep['counts']}).\n",
+             (f"Upper bound: queue position is ignored. Ledger family size {rep['m_total']}; protocol sha256 "
+              f"`{rep['protocol_sha256']}`. Games with a home market and a kickoff: {rep['games']} ({rep['counts']}).\n"),
              "## Real", "", *head, *[row(k, s) for k, s in rep["real"].items()], "",
              "## Null (anchors permuted within week; Q3 on neighbouring cells 4, 8)", "", *head,
              *[row(k, s) for k, s in rep["null"].items()], "", f"Q3 leg pairing: {rep['q3_legs']}", ""]

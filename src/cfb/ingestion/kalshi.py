@@ -52,11 +52,11 @@ class KalshiReader:
             return ApiResponse(r.status_code, r.content, self._clock(), None, attempt + 1)
         raise AssertionError("unreachable")
 
-    def pages(self, path: str, params: dict[str, Any], key: str) -> list[dict]:
+    def pages(self, path: str, params: dict[str, Any], key: str, fresh: bool = False) -> list[dict]:
         items, cursor = [], None
         while True:
             p = {**params, **({"cursor": cursor} if cursor else {})}
-            entry = self.ledger.latest_success(path, p)
+            entry = None if fresh else self.ledger.latest_success(path, p)
             if entry is None:
                 resp = self._get(path, p)
                 entry = self.ledger.record(path, p, resp, None)
