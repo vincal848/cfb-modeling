@@ -1,0 +1,49 @@
+{
+ "generated_at": "2026-10-08T05:39:06+00:00",
+ "calls": 0,
+ "protocol_sha256": "00d7f9915b865ff573e1c3744acc53d53216f071b144efa8d8abfb74e1efa8a4",
+ "fit": {
+  "h": 3.0,
+  "sd": 15.761366149580212,
+  "kernel_loss": {
+   "0.5": 0.18073196468607045,
+   "1.0": 0.17896949564941259,
+   "2.0": 0.17792896915387807,
+   "3.0": 0.17777024522092794
+  },
+  "gaussian_loss": 0.19280508566139806,
+  "gate_passed": true
+ },
+ "train_games": 11069,
+ "counts": {
+  "spread_events": 766,
+  "unmapped": 13,
+  "mapped": 753,
+  "no_result_or_spread": 0,
+  "no_rungs": 260,
+  "ladder_rows": 1559
+ },
+ "real": {
+  "trades": 0,
+  "games": 0,
+  "passed": false,
+  "underpowered": true
+ },
+ "placebo": {
+  "trades": 0,
+  "games": 0,
+  "passed": false,
+  "underpowered": true
+ },
+ "by_key": {},
+ "diagnostics": {
+  "rows_with_quotes": 1508,
+  "mean_model_q": 0.05709841705537778,
+  "mean_mid_implied": 0.05300066312997348,
+  "mean_cost_ask_minus_bid": 0.10882625994694961,
+  "mean_fees": 0.028578978779840853,
+  "realized_hit_rate": 0.059018567639257294,
+  "best_net_edge": -0.008551746718467146
+ },
+ "verdict": "NO TRADES: the rule never fired (model value never exceeded cost + fees + 1c); the protocol reads fewer than 200 trades as underpowered, but see the diagnostics"
+}

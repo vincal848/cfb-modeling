@@ -5,7 +5,7 @@ from __future__ import annotations
 import typer
 
 from cfb import __version__
-from cfb.config import DEFAULT_CONFIG, REPO_ROOT, ConfigError, load_config
+from cfb.config import DATA_DIR, DEFAULT_CONFIG, REPO_ROOT, ConfigError, load_config
 from cfb.credentials import SETUP_INSTRUCTIONS, MissingCredentialError, get_api_key, require_api_key
 from cfb.db import connect
 from cfb.ingestion.audit import run_audit, write_report
@@ -52,9 +52,6 @@ def doctor() -> None:
         typer.echo(SETUP_INSTRUCTIONS)
 
     raise typer.Exit(code=0 if ok else 1)
-
-
-DATA_DIR = REPO_ROOT / "data"
 
 
 def open_fetcher() -> Fetcher:
@@ -656,6 +653,50 @@ def decomposition_eval() -> None:
     out.mkdir(parents=True, exist_ok=True)
     (out / "decomposition-development.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     typer.echo("\n".join(lines))
+
+
+@app.command("joint-eval")
+def joint_eval() -> None:
+    """G01: joint-score expert (regulation filter + correlated counts + overtime kernel), one process."""
+    import json
+    import time
+
+    import pandas as pd
+
+    from cfb.evaluation import b01, g01
+    from cfb.evaluation.backtest import prepare_tasks
+    from cfb.evaluation.protocol import load_protocol
+
+    spec = load_protocol()
+    seasons = spec["seasons"]["development"]["seasons"]
+    conn, ledger = open_store()
+    t0 = time.perf_counter()
+    tasks = prepare_tasks(conn, spec, seasons, [], REPO_ROOT / "artifacts" / "snapshots", log=typer.echo)
+    reg, ot_games = g01.regulation_and_ot(conn)
+    b02_sel = json.loads((REPO_ROOT / "experiments" / "b02" / "b02-development.json").read_text(encoding="utf-8"))
+    df = g01.run(tasks, reg, ot_games, b02_sel["selected"]["dynamic"],
+                 spec["replay"]["reconstructed_result_available_after_kickoff_hours"])
+    typer.echo(f"{len(g01.grid())} configurations, {len(df)} game forecasts in {time.perf_counter() - t0:.0f}s")
+    art = REPO_ROOT / "artifacts" / "backtests"
+    df.to_parquet(art / "g01-development.parquet", index=False)
+    combined = pd.concat([pd.read_parquet(art / "b01-development.parquet"), pd.read_parquet(art / "b02-development.parquet"),
+                          df.drop(columns="ot_fallback")], ignore_index=True)
+    from cfb.evaluation.backtest import latest_facts, to_frame
+    from cfb.evaluation.cohorts import label_cohorts
+
+    results = {r["game_id"]: r for r in latest_facts(conn, "game_result")}
+    sched = [s for s in latest_facts(conn, "game_schedule") if s["season"] in seasons]
+    games = to_frame(sched, results).rename(columns={"hp": "home_points", "ap": "away_points"})
+    rep = b01.report(combined, label_cohorts(games, ledger), spec, stage="G01", grid_pass=2,
+                     pairs=(("g01", "dynamic"), ("g01", "ridge"), ("g01", "hfa_only")),
+                     sensitivity_pairs=(("g01", "dynamic"),))
+    rep["ot_fallback_seasons"] = sorted(int(s) for s in df.loc[df["ot_fallback"], "season"].unique())
+    _, m = b01.write(rep, REPO_ROOT / "experiments" / "g01")
+    with m.open("a", encoding="utf-8") as fh:
+        fh.write("\nOvertime kernel fell back to all earlier regimes (fewer than 30 same-regime overtime games) "
+                 f"in seasons: {rep['ot_fallback_seasons']}.\n")
+    typer.echo(f"selected: {rep['selected']}")
+    typer.echo(f"wrote {m.relative_to(REPO_ROOT)}")
 
 
 @app.command("build-states")
