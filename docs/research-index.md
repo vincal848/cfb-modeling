@@ -30,6 +30,15 @@ must fail, and a results page. Its status here links to that page.
 | I13 | **Structural-bias sweep**: home-field after 2020, big favorites, two ATS losses (national-TV over not run) | Folklore / JSE-style cells; Winkelmann et al. 2024: such biases did not persist | CFBD lines 2014-2025 | [`s01`](../experiments/protocols/S01-protocol.md): three cells, Holm over the 15-test ledger, 2024-25 sealed | S | 2 | ❌ [no edge](../experiments/s01/s01-results.md): all three cells lose after costs in 2014-2023 (home-field -2.5¢, big favorites -1.4¢, two ATS losses -2.1¢ per bet); none survives Holm at family size 15; 2024-25 sealed |
 | I14 | **One-time-zone travel cell** (late-season away underdogs) | JSE 2017 (cell definition is our reading) | CFBD lines, `/teams` time zones | [`t01`](../experiments/protocols/T01-protocol.md) | S | 2 | ⏸ [underpowered, not run](../experiments/t01/t01-results.md): 643 cell games in 2014-2023 vs 2,240 needed |
 
+## Wave 2 (2026-10-08): outcome and what to test next
+
+Ledger family size 16 (`experiments/trials.csv`). Nothing beat the baseline. K04, S01 found no edge; W01 and T01 are
+underpowered (not run); the Wong-teaser check closed that idea. Next, in order: (1) log the Open-Meteo day-ahead wind
+forecast for every 2026 outdoor game and Kalshi spread/total ladder quotes at T-6h, so W01 and a *total*-ladder version
+of K04 gain a forward sample; (2) the one cell with a mid-price gap, K04's roughly 0.4-point under-pricing of the exact
+margin (5.3% vs 5.9% realized), is not statistically distinguishable from zero (standard error about 0.6 points over 1,508 ladders) and would only be reachable by a maker who earns the spread, which is I4 and needs a fill model
+first; (3) a timestamp-alignment protocol for Kalshi minute candles against play clocks, before I3/I5.
+
 ## Not pursued
 
 - **Wong teasers in CFB** (S01 check, 2014-2025 margins): the four teased legs through 3 and 7 win 70.6% of 1,453
