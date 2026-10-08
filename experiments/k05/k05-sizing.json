@@ -1,0 +1,16 @@
+{
+ "events": {
+  "KXNCAAFTOTAL": 656,
+  "KXNCAAF1HTOTAL": 332,
+  "KXNCAAF2HTOTAL": 146,
+  "KXNCAAFTEAMTOTAL": 331,
+  "KXNCAAF1HSPREAD": 332
+ },
+ "overlap": {
+  "1H+full": 332,
+  "1H+2H+full": 146,
+  "team total+full": 331
+ },
+ "needed": 620,
+ "verdict": "UNDERPOWERED, NOT RUN"
+}
