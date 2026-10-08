@@ -25,8 +25,20 @@ must fail, and a results page. Its status here links to that page.
 | I1b | **Longshot bias pooled across Kalshi sports**: sell sub-10¢ contracts (buy ≥90¢) in game markets for every league, to get enough events to test the tail bias K01 hinted at | K01 calibration tail; Bürgi et al. | Kalshi `/historical/markets` + candles for NFL/NBA/MLB/NHL/CBB game series | Same rule as K01, pooled, one validation split | S | 2 | ❌ [no edge](../experiments/k03/k03-results.md): 14,004 events / 7 leagues; best rule (≥95¢, 6h) +1.3¢ [−0.7, +3.3]¢ on 148 validation trades; at 24h favorites *lose* (−3.2¢ at ≥85¢) |
 | E01/E02 | **EPA/play team rating** (report idea 1), Kalman opponent adjustment, blended with B02 | [CFB modeling report](../reports/College%20football%20modeling%20vs%20betting%20lines.md) | P02 EP folds, exact+events plays | M02 harness | M | — | ❌ [no edge](../experiments/e02/e02-results.md): efficiency alone predicts margins worse than final scores (dev MAE 13.54 vs 13.10) and gets ≈0 blend weight |
 | I10 | **Sizing** under estimation error | Baker & McHale, *Optimal betting under parameter uncertainty* (shrunken Kelly beats Kelly out of sample); Meister, [arXiv 2412.14144](https://arxiv.org/abs/2412.14144) (Kelly in prediction markets) | — | Applied to survivors only | S | — | — |
+| I11 | **Key-number mass in Kalshi CFB spread ladders**: adjacent rungs price the exact-margin probability; are the jumps at 3 and 7 under-weighted? | Football margin pmf has spikes at 3 and 7 (CFBD 2014-2024); Kalshi lists "wins by over k.5" rungs | CFBD margins + Kalshi 2025 spread-ladder candles | [`k04`](../experiments/protocols/K04-protocol.md): kernel P(m=k given spread) vs two-leg range quotes at T-6h, after fees; nulls on simulated ladders and neighbouring cells | M | 2 | ❌ [no edge](../experiments/k04/k04-results.md): 0 trades on 1,508 quoted 2025 ladders, best net edge -0.9¢; mid-implied exact-margin probability 5.3% vs model 5.7% vs realized 5.9%, while spread plus fees cost 8.4¢ above the mid. 2026 holdout unopened |
+| I12 | **Forecast wind on totals** (bet-time information only) | Practitioner 56.6% unders at 13+ mph uses realized wind | Open-Meteo day-ahead forecast (2024+ only), CFBD venues | [`w01`](../experiments/protocols/W01-protocol.md) | S-M | 2 | ⏸ [underpowered, not run](../experiments/w01/w01-results.md): 215 windy outdoor games with a total in 2024-25 vs 860 needed |
+| I13 | **Structural-bias sweep**: home-field after 2020, big favorites, two ATS losses (national-TV over not run) | Folklore / JSE-style cells; Winkelmann et al. 2024: such biases did not persist | CFBD lines 2014-2025 | [`s01`](../experiments/protocols/S01-protocol.md): three cells, Holm over the 15-test ledger, 2024-25 sealed | S | 2 | ❌ [no edge](../experiments/s01/s01-results.md): all three cells lose after costs in 2014-2023 (home-field -2.5¢, big favorites -1.4¢, two ATS losses -2.1¢ per bet); none survives Holm at family size 15; 2024-25 sealed |
+| I14 | **One-time-zone travel cell** (late-season away underdogs) | JSE 2017 (cell definition is our reading) | CFBD lines, `/teams` time zones | [`t01`](../experiments/protocols/T01-protocol.md) | S | 2 | ⏸ [underpowered, not run](../experiments/t01/t01-results.md): 643 cell games in 2014-2023 vs 2,240 needed |
 
 ## Not pursued
+
+- **Wong teasers in CFB** (S01 check, 2014-2025 margins): the four teased legs through 3 and 7 win 70.6% of 1,453
+  games (fav -7.5/-8.5 to -1.5/-2.5: 69.0% / 69.7%; dog +1.5/+2.5 to +7.5/+8.5: 72.8% / 71.0%), against the 73.9%
+  per leg a two-team 6-point teaser at -120 needs. CFB key numbers are thinner than the NFL's.
+- **I3 in-play under-reaction and I4 market making** (wave 2, not started): CFBD plays carry the game clock but no
+  wall-clock time, so Kalshi minute candles cannot be aligned to plays without first building and validating a
+  stoppage model (the protocol's own "main risk"); maker fills would be simulated from trades with unknown queue
+  position, biased in favour of the strategy. Both need a timestamp-alignment protocol before any test.
 
 - **Out-forecasting the closing price** with a team-strength model: M01, no edge.
 - **Plain Kalshi/Polymarket arbitrage bots**: crowded, latency-bound, and every public "arb
@@ -58,3 +70,6 @@ must fail, and a results page. Its status here links to that page.
   sizing K04; no price or outcome was looked at.
 - `CFB_DATA_DIR` points a git worktree at another clone's `data/` so the request ledger is
   shared (default: `<repo>/data`).
+- `experiments/trials.csv` is the ledger of primary market tests registered in this repo (protocol, date, number of
+  tests). Holm families take their size from it. Raw data pulls are logged in the SQLite request ledger
+  (`raw_requests`) as before.

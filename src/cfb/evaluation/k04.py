@@ -74,11 +74,15 @@ def trades(df: pd.DataFrame) -> pd.DataFrame:
     """Rows of `df` (game_id, block, q, bid_hi, ask_lo, hit) that the rule takes, with their P&L."""
     ok = df["ask_lo"].notna() & df["bid_hi"].notna() & (df["ask_lo"] > df["bid_hi"])
     cost = df["ask_lo"] - df["bid_hi"]
-    fees = fee(df["ask_lo"].to_numpy()) + fee((1 - df["bid_hi"]).to_numpy())
+    fees = k04_fees(df)
     take = ok & (df["q"] - cost - fees > EDGE)
     out = df[take].copy()
     out["pnl"] = out["hit"].astype(float) - cost[take] - fees[take]
     return out
+
+
+def k04_fees(df: pd.DataFrame) -> np.ndarray:
+    return fee(df["ask_lo"].to_numpy()) + fee((1 - df["bid_hi"]).to_numpy())
 
 
 def evaluate(df: pd.DataFrame) -> dict:
@@ -220,9 +224,9 @@ def build_frame(events, games2025: dict, spread: pd.Series, candles_of, keys: tu
             if lo is None or hi is None:
                 continue
             got = True
+            q_lo, q_hi = entry_quote(candles_of(lo, *w), t), entry_quote(candles_of(hi, *w), t)
             rows.append({"game_id": gid, "block": f"{s['season_type']}-{s['week']}", "k": k, "mu": -float(spread[gid]),
-                         "ask_lo": entry_quote(candles_of(lo, *w), t)[1], "bid_hi": entry_quote(candles_of(hi, *w), t)[0],
-                         "hit": m == k})
+                         "bid_lo": q_lo[0], "ask_lo": q_lo[1], "bid_hi": q_hi[0], "ask_hi": q_hi[1], "hit": m == k})
         c["no_rungs"] += not got
     return pd.DataFrame(rows), c
 
@@ -249,11 +253,22 @@ def render(rep: dict) -> str:
               f"Gate passed: {f['gate_passed']}.\n")]
     if rep.get("counts"):
         r, p = rep["real"], rep["placebo"]
-        lines += [f"Data: {rep['counts']}\n", f"## 2025 test\n\n{fmt(r)}\n",
+        lines += [f"Data: {rep['counts']}\n", f"Diagnostics (descriptive, not a test): {rep['diagnostics']}\n",
+                  f"## 2025 test\n\n{fmt(r)}\n",
                   f"Underpowered (< {MIN_TRADES} trades): {r['underpowered']}; per-trade sd {r.get('sd')}.\n",
                   f"Placebo (cells 4, -4, 8, -8): {fmt(p)}; passed={p['passed']}.\n",
                   "| key | trades | per trade | hit rate |", "|---|---|---|---|"]
         lines += [f"| {k} | {v['trades']} | {v['per_trade']:+.4f} | {v['hit']:.3f} |" for k, v in rep["by_key"].items()]
+    if rep.get("real") and not rep["real"]["trades"]:
+        d = rep["diagnostics"]
+        over_mid = d["mean_cost_ask_minus_bid"] - d["mean_mid_implied"] + d["mean_fees"]
+        text = (f"Over {d['rows_with_quotes']} quoted key-number ladders the mid-implied exact-margin probability "
+                f"({d['mean_mid_implied']:.3f}) is already close to the model ({d['mean_model_q']:.3f}) and to the realized "
+                f"rate ({d['realized_hit_rate']:.3f}). Buying the range costs the two-leg spread plus fees: {over_mid:.3f} "
+                f"above the mid, {over_mid / (d['mean_model_q'] - d['mean_mid_implied']):.0f} times the model-minus-mid gap. "
+                f"The best row had a net edge of {d['best_net_edge']:+.4f}. The 2026 holdout stays unopened "
+                "(the 2025 test did not pass).")
+        lines += ["", "## Reading", "", text]
     return "\n".join(lines) + "\n"
 
 
@@ -299,8 +314,16 @@ def main(argv: list[str]) -> None:
     rep |= {"counts": {**drops, **c, "ladder_rows": len(df)}, "real": real, "placebo": placebo,
             "by_key": {int(k): {"trades": len(g), "per_trade": float(g["pnl"].mean()), "hit": float(g["hit"].mean())}
                        for k, g in t.groupby("k")}}
+    q = df.dropna(subset=["bid_lo", "ask_lo", "bid_hi", "ask_hi"])
+    rep["diagnostics"] = {"rows_with_quotes": len(q), "mean_model_q": float(q["q"].mean()),
+                          "mean_mid_implied": float(((q["bid_lo"] + q["ask_lo"]) / 2 - (q["bid_hi"] + q["ask_hi"]) / 2).mean()),
+                          "mean_cost_ask_minus_bid": float((q["ask_lo"] - q["bid_hi"]).mean()),
+                          "mean_fees": float((k04_fees(q)).mean()), "realized_hit_rate": float(q["hit"].mean()),
+                          "best_net_edge": float((q["q"] - (q["ask_lo"] - q["bid_hi"]) - k04_fees(q)).max())}
     rep["verdict"] = ("PIPELINE BROKEN: placebo passed, no claim" if placebo["passed"] else
                       "PASS: eligible for the one-time 2026 holdout" if real["passed"] else
+                      "NO TRADES: the rule never fired (model value never exceeded cost + fees + 1c); the protocol reads "
+                      "fewer than 200 trades as underpowered, but see the diagnostics" if not real["trades"] else
                       f"UNDERPOWERED, not a pass: fewer than {MIN_TRADES} trades" if real["underpowered"] else
                       "NO EDGE: 2025 interval lower bound is not > 0")
     (out / "k04-results.json").write_text(json.dumps(rep, indent=1, default=str))
