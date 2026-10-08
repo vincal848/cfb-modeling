@@ -5,7 +5,7 @@ from __future__ import annotations
 import typer
 
 from cfb import __version__
-from cfb.config import DEFAULT_CONFIG, REPO_ROOT, ConfigError, load_config
+from cfb.config import DATA_DIR, DEFAULT_CONFIG, REPO_ROOT, ConfigError, load_config
 from cfb.credentials import SETUP_INSTRUCTIONS, MissingCredentialError, get_api_key, require_api_key
 from cfb.db import connect
 from cfb.ingestion.audit import run_audit, write_report
@@ -52,9 +52,6 @@ def doctor() -> None:
         typer.echo(SETUP_INSTRUCTIONS)
 
     raise typer.Exit(code=0 if ok else 1)
-
-
-DATA_DIR = REPO_ROOT / "data"
 
 
 def open_fetcher() -> Fetcher:

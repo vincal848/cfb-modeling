@@ -146,14 +146,14 @@ def season_states(season: int, tiers: tuple[str, ...] = ("exact",)) -> tuple[pd.
     EP over plays can also use "events" games. Self-contained so seasons run in parallel processes."""
     import sqlite3
 
-    from cfb.config import REPO_ROOT
+    from cfb.config import DATA_DIR
     from cfb.evaluation.backtest import latest_facts
     from cfb.ingestion.ledger import RawLedger
     from cfb.state.machine import reconcile_game
     from cfb.state.rules import overtime_rules, scoring_rules
 
-    conn = sqlite3.connect(f"file:{(REPO_ROOT / 'data' / 'ledger.sqlite').as_posix()}?mode=ro", uri=True)
-    ledger = RawLedger(REPO_ROOT / "data" / "raw", conn)
+    conn = sqlite3.connect(f"file:{(DATA_DIR / 'ledger.sqlite').as_posix()}?mode=ro", uri=True)
+    ledger = RawLedger(DATA_DIR / "raw", conn)
     finals = {r["game_id"]: (r["home_points"], r["away_points"]) for r in latest_facts(conn, "game_result")}
     sched = {s["game_id"]: s for s in latest_facts(conn, "game_schedule") if s["season"] == season}
     by_game: dict[int, list] = {}

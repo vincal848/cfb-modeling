@@ -40,3 +40,21 @@ must fail, and a results page. Its status here links to that page.
   any Kalshi-only test has one season of history plus the live 2026 season.
 - `src/cfb/ingestion/kalshi.py` is read-only, with cached ledger rows under provider
   `KALSHI`. It has no auth and no order calls. Trading stays manual.
+- **CFBD closing lines reach back to 2014** (checked 2026-10-08 on the cached `/lines`
+  payloads, FBS games with a spread: 2014 865, 2015 832, 2016 866, 2017 873, 2018 869,
+  2019 881, 2020 567, 2021 887, 2022 1,459, 2023 1,413, 2024 1,557, 2025 1,597). Before 2021
+  the books are CFBD's `consensus`, `teamrankings`, `numberfire` (+ `Caesars` from 2018,
+  `Bovada` from 2019): the time of the quote is not documented, so "closing" is an
+  assumption. Real sportsbooks with an *opener* appear only from 2021 (Bovada, William Hill,
+  later DraftKings and ESPN Bet). Totals are present for 760-880 games a year from 2014.
+- **The CFBD `/games/weather` endpoint works with the existing key** (HTTP 200 and a full
+  `windSpeed` column for 2015 week 5, 59 games, and 2019 week 5, 53 games; the cached
+  2024 week 5 returned 225/225). It is a record of the conditions at the game, not a
+  forecast, so using it on a bet would be look-ahead. Bet-time wind needs a forecast
+  archive (Open-Meteo, see W01).
+- **Kalshi CFB ladders (2025 season, archive)**: 766 spread events and 769 total events;
+  a spread ladder is "Team wins by over k.5 points" for each side (494 events have both
+  teams' ladders), a total ladder has 5-17 rungs. Only the markets were counted when
+  sizing K04; no price or outcome was looked at.
+- `CFB_DATA_DIR` points a git worktree at another clone's `data/` so the request ledger is
+  shared (default: `<repo>/data`).

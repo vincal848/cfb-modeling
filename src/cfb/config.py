@@ -7,11 +7,14 @@ not tuned values. Changing one is a specification change: log it in docs/deviati
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG = REPO_ROOT / "config" / "config.json"
+# CFB_DATA_DIR lets a git worktree share one data dir (and one request ledger) with the main clone.
+DATA_DIR = Path(os.environ.get("CFB_DATA_DIR") or REPO_ROOT / "data")
 
 # Extensions that need external data or later milestones. They stay off until
 # coverage and rights are demonstrated (blueprint README, "What is ready to build").
