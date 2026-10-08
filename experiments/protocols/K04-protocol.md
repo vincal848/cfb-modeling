@@ -54,9 +54,15 @@ real quotes, when a model fitted on earlier seasons says it is worth more, make 
 
 ## Nulls and checks (must fail / must find)
 
-1. Simulated no-edge ladders (`tests/numerical/test_k04.py`, also run by the module before the real data):
-   true margins drawn from a pmf with key-number spikes, market rungs set to that true pmf plus half-spread
-   noise; the full pipeline must not pass. Planted: market rungs from a smooth Gaussian but outcomes from the
-   spiked pmf; the pipeline must pass.
-2. Real-data placebo: `q` permuted across games within each week, same quotes; must not pass. If it
-   passes the pipeline is broken and nothing is claimed.
+1. Simulated no-edge ladders (`tests/numerical/test_k04.py`): true margins drawn from a pmf with
+   key-number spikes, market rungs set to that same pmf plus a 1c half-spread; the full pipeline
+   must not pass. Planted: market rungs from a smooth pmf, outcomes from the spiked one; the pipeline
+   must pass.
+2. Real-data placebo: the same pipeline on the **neighbouring cells** m = +4, -4, +8, -8 (rungs 3.5/4.5 and
+   7.5/8.5), where there is no key-number mass; it must not pass. If it passes the pipeline is broken
+   and nothing is claimed.
+
+Amendment, same day and before any Kalshi price was read: the first draft's placebo (model probability
+permuted across games within a week) was dropped. A simulation showed it passes whenever the whole
+ladder is mispriced, because permuting `q` only changes which rows are traded, not whether the
+rows earn money, so it cannot tell a real edge from a broken pipeline.
