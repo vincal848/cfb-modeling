@@ -1,0 +1,11 @@
+protocol,registered,tests,note
+M01,2026-10-07,3,one selected rule per market (win/cover/over)
+M02,2026-10-07,1,selected opener rule
+E01,2026-10-07,1,EPA rating blend
+E02,2026-10-08,1,second trial of the efficiency family
+K01,2026-10-07,1,selected Kalshi favorite rule
+K02,2026-10-07,1,selected Kalshi vs book rule
+K03,2026-10-07,1,selected pooled longshot rule
+K04,2026-10-08,1,key-number mass in Kalshi spread ladders
+W01,2026-10-08,1,forecast wind vs totals (gated; counted even though not run)
+S01,2026-10-08,4,home-field 2021+, big favorites, two ATS losses, national-TV over (last one not run)
