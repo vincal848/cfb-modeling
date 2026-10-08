@@ -38,7 +38,7 @@ def games_frame(games: list[dict], lines: list[dict]) -> pd.DataFrame:
             m = g["homePoints"] - g["awayPoints"]
             rows.append({"game_id": gid, "season": g["season"], "week": g["week"], "date": g["startDate"],
                          "season_type": g["seasonType"],
-                         "home": g["homeId"], "away": g["awayId"], "neutral": bool(g.get("neutralSite")),
+                         "home": g["homeId"], "away": g["awayId"], "home_class": g.get("homeClassification"), "away_class": g.get("awayClassification"), "home_conf": g.get("homeConference"), "away_conf": g.get("awayConference"), "neutral": bool(g.get("neutralSite")),
                          "spread": float(cl[gid]), "m": m,
                          "home_cover": float(m + cl[gid] > 0) if m + cl[gid] != 0 else np.nan})
     df = pd.DataFrame(rows).sort_values("date").reset_index(drop=True)
