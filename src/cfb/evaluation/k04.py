@@ -20,6 +20,7 @@ from cfb.evaluation.backtest import block_bootstrap
 from cfb.evaluation.k03 import fee
 
 KEYS = (3, -3, 7, -7)  # signed home-minus-away margins
+PLACEBO_KEYS = (4, -4, 8, -8)  # neighbouring cells with no key-number mass
 H_GRID = (0.5, 1.0, 2.0, 3.0)
 EDGE, LEAD = 0.01, timedelta(hours=6)
 WINDOW = (30, 5)  # candle hours before start
@@ -90,13 +91,6 @@ def evaluate(df: pd.DataFrame) -> dict:
             "underpowered": len(t) < MIN_TRADES}
 
 
-def permuted(df: pd.DataFrame) -> pd.DataFrame:
-    rng = np.random.default_rng(SEED)
-    out = df.copy()
-    out["q"] = out.groupby("block")["q"].transform(lambda s: rng.permutation(s.to_numpy()))
-    return out
-
-
 # -- simulation (signal-free and planted-signal ladders) -------------------------------------------
 
 def spiked_pmf(mu: float, sd: float, boost: float) -> np.ndarray:
@@ -106,7 +100,8 @@ def spiked_pmf(mu: float, sd: float, boost: float) -> np.ndarray:
     return p / p.sum()
 
 
-def simulate(n_train: int, n_test: int, market_boost: float, true_boost: float, seed: int, sd: float = 13.0):
+def simulate(n_train: int, n_test: int, market_boost: float, true_boost: float, seed: int, sd: float = 13.0,
+             keys: tuple[int, ...] = KEYS):
     """(train frame, test ladder frame). Truth has `true_boost` on the key cells, the market quotes a pmf with
     `market_boost` (equal = efficient market; 1 vs larger = a smooth market, key mass planted)."""
     rng = np.random.default_rng(seed)
@@ -121,7 +116,7 @@ def simulate(n_train: int, n_test: int, market_boost: float, true_boost: float, 
     rows = []
     for i in range(n_test):
         pm = spiked_pmf(mu[i], sd, market_boost)
-        for k in KEYS:
+        for k in keys:
             sgn = 1 if k > 0 else -1
             mid_lo, mid_hi = (pm[sgn * MARGINS >= abs(k) + d].sum() for d in (0, 1))
             rows.append({"game_id": f"g{i}", "block": f"w{i % 14}", "k": k, "mu": mu[i],
@@ -130,10 +125,15 @@ def simulate(n_train: int, n_test: int, market_boost: float, true_boost: float, 
 
 
 def run_sim(market_boost: float, true_boost: float, seed: int, n_train=4000, n_test=1500) -> dict:
-    train, test = simulate(n_train, n_test, market_boost, true_boost, seed)
-    model = fit(train, 2024)
-    test["q"] = q_model(model, test["mu"].to_numpy(), test["k"].to_numpy())
-    return {"gate_passed": model["gate_passed"], "real": evaluate(test), "placebo": evaluate(permuted(test))}
+    """Pipeline on the key cells and on the placebo cells of the same simulated season."""
+    out = {}
+    for name, keys in (("real", KEYS), ("placebo", PLACEBO_KEYS)):
+        train, test = simulate(n_train, n_test, market_boost, true_boost, seed, keys=keys)
+        model = fit(train, 2024)
+        test["q"] = q_model(model, test["mu"].to_numpy(), test["k"].to_numpy())
+        out[name] = evaluate(test)
+        out["gate_passed"] = model["gate_passed"] if name == "real" else out["gate_passed"]
+    return out
 
 
 # -- real data -----------------------------------------------------------------------------------
@@ -200,7 +200,7 @@ def load_events(conn, cfbd, reader):
     return out, drops
 
 
-def build_frame(events, games2025: dict, spread: pd.Series, candles_of) -> tuple[pd.DataFrame, dict]:
+def build_frame(events, games2025: dict, spread: pd.Series, candles_of, keys: tuple[int, ...] = KEYS):
     from cfb.ingestion.kalshi import parse_ts
 
     rows, c = [], {"mapped": len(events), "no_result_or_spread": 0, "no_rungs": 0}
@@ -214,7 +214,7 @@ def build_frame(events, games2025: dict, spread: pd.Series, candles_of) -> tuple
         w = (int((start - timedelta(hours=WINDOW[0])).timestamp()), int((start - timedelta(hours=WINDOW[1])).timestamp()))
         m = int(g["homeScore"]) - int(g["awayScore"])
         got = False
-        for k in KEYS:
+        for k in keys:
             side = "home" if k > 0 else "away"
             lo, hi = rungs.get((side, abs(k) - 0.5)), rungs.get((side, abs(k) + 0.5))
             if lo is None or hi is None:
@@ -244,14 +244,14 @@ def render(rep: dict) -> str:
     lines = [f"# K04 results\n\n**Verdict: {rep['verdict']}**\n",
              f"Protocol sha256 `{rep['protocol_sha256']}`; generated {rep['generated_at']}; Kalshi calls {rep['calls']}.\n",
              "## Model gate (CFBD only)\n",
-             f"{rep['train_games']} training games, 2014-2024. Held-out (2023-24) key-number log loss by bandwidth: "
-             f"{f['kernel_loss']}; chosen h={f['h']}. Gaussian benchmark {f['gaussian_loss']:.5f}. "
-             f"Gate passed: {f['gate_passed']}.\n"]
+             (f"{rep['train_games']} training games, 2014-2024. Held-out (2023-24) key-number log loss by "
+              f"bandwidth: {f['kernel_loss']}; chosen h={f['h']}. Gaussian benchmark {f['gaussian_loss']:.5f}. "
+              f"Gate passed: {f['gate_passed']}.\n")]
     if rep.get("counts"):
         r, p = rep["real"], rep["placebo"]
         lines += [f"Data: {rep['counts']}\n", f"## 2025 test\n\n{fmt(r)}\n",
                   f"Underpowered (< {MIN_TRADES} trades): {r['underpowered']}; per-trade sd {r.get('sd')}.\n",
-                  f"Placebo (q permuted within week): {fmt(p)}; passed={p['passed']}.\n",
+                  f"Placebo (cells 4, -4, 8, -8): {fmt(p)}; passed={p['passed']}.\n",
                   "| key | trades | per trade | hit rate |", "|---|---|---|---|"]
         lines += [f"| {k} | {v['trades']} | {v['per_trade']:+.4f} | {v['hit']:.3f} |" for k, v in rep["by_key"].items()]
     return "\n".join(lines) + "\n"
@@ -286,13 +286,16 @@ def main(argv: list[str]) -> None:
     events, drops = load_events(conn, cfbd, reader)
     games25 = {game_id(g["id"]): g for g in lines_of(cfbd, [2025])[2025]}
     spread = consensus_lines(list(games25.values())).set_index("game_id")["spread"].dropna()
-    df, c = build_frame(events, games25, spread, lambda m, a, b: reader.candles(m, 60, a, b))
+    candles = lambda m, a, b: reader.candles(m, 60, a, b)
+    df, c = build_frame(events, games25, spread, candles)
+    pl, _ = build_frame(events, games25, spread, candles, PLACEBO_KEYS)
     if "--fetch" in argv:
         print(f"done: {reader.calls} calls")
         return
     assert reader.calls == 0, "K04 analysis must replay from cache; run --fetch first"
     df["q"] = q_model(model, df["mu"].to_numpy(), df["k"].to_numpy())
-    real, placebo, t = evaluate(df), evaluate(permuted(df)), trades(df)
+    pl["q"] = q_model(model, pl["mu"].to_numpy(), pl["k"].to_numpy())
+    real, placebo, t = evaluate(df), evaluate(pl), trades(df)
     rep |= {"counts": {**drops, **c, "ladder_rows": len(df)}, "real": real, "placebo": placebo,
             "by_key": {int(k): {"trades": len(g), "per_trade": float(g["pnl"].mean()), "hit": float(g["hit"].mean())}
                        for k, g in t.groupby("k")}}
