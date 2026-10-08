@@ -1,0 +1,20 @@
+{
+ "counts": {
+  "2024": {
+   "games_with_weather": 3218,
+   "outdoor_with_wind": 3146,
+   "windy": 274,
+   "windy_with_total": 135
+  },
+  "2025": {
+   "games_with_weather": 3204,
+   "outdoor_with_wind": 3134,
+   "windy": 200,
+   "windy_with_total": 80
+  }
+ },
+ "windy_with_total": 215,
+ "needed": 860,
+ "wind_mph": 15.0,
+ "verdict": "UNDERPOWERED, NOT RUN"
+}
