@@ -1,0 +1,12 @@
+{
+ "generated_at": "2026-10-08T05:17:30+00:00",
+ "protocol_sha256": "2b0a2655250dbcd0f21d84d53e0043db0c8a5c0202e96f9815b17ece2ae8c316",
+ "counts": {
+  "candidates": 2899,
+  "with_both_time_zones": 2898
+ },
+ "cell_games_all": 862,
+ "cell_games_discovery": 643,
+ "needed": 2240,
+ "verdict": "UNDERPOWERED, NOT RUN: fewer cell games than the gate requires; no cover outcome opened"
+}

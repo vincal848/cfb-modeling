@@ -37,6 +37,7 @@ def games_frame(games: list[dict], lines: list[dict]) -> pd.DataFrame:
         if gid in cl.index and g.get("homePoints") is not None and g.get("awayPoints") is not None:
             m = g["homePoints"] - g["awayPoints"]
             rows.append({"game_id": gid, "season": g["season"], "week": g["week"], "date": g["startDate"],
+                         "season_type": g["seasonType"],
                          "home": g["homeId"], "away": g["awayId"], "neutral": bool(g.get("neutralSite")),
                          "spread": float(cl[gid]), "m": m,
                          "home_cover": float(m + cl[gid] > 0) if m + cl[gid] != 0 else np.nan})
