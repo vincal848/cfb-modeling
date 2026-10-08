@@ -140,9 +140,10 @@ def game_states(plays: list[dict[str, Any]], rules: ScoringRules,
     return df, checks
 
 
-def season_states(season: int) -> tuple[pd.DataFrame, dict[str, int]]:
-    """States for every exact-tier game of a season (local cache, read-only).
-    Self-contained so seasons can run in parallel worker processes."""
+def season_states(season: int, tiers: tuple[str, ...] = ("exact",)) -> tuple[pd.DataFrame, dict[str, int]]:
+    """States for every game of a season whose P01 scoring tier is in `tiers` (local cache, read-only).
+    Exact only by default: EP training needs exactly reconciled next-score labels. Rating already-fit
+    EP over plays can also use "events" games. Self-contained so seasons run in parallel processes."""
     import sqlite3
 
     from cfb.config import REPO_ROOT
@@ -168,14 +169,14 @@ def season_states(season: int) -> tuple[pd.DataFrame, dict[str, int]]:
         key = f"cfbd-game-{gid}"
         totals["games"] += 1
         rec = reconcile_game(plays, rules, finals.get(key), ot)
-        if rec.tier != "exact":
+        if rec.tier not in tiers:
             continue
-        totals["exact_games"] += 1
+        totals["exact_games"] += rec.tier == "exact"
         df, checks = game_states(plays, rules, rec.score_columns_swapped)
         for k, v in checks.items():
             totals[k] = totals.get(k, 0) + v
         s = sched[key]
         frames.append(df.assign(game_id=key, season=season, week=s["week"], season_type=s["season_type"],
-                                start_utc=s["start_utc"]))
+                                start_utc=s["start_utc"], tier=rec.tier))
     conn.close()
     return (pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()), totals

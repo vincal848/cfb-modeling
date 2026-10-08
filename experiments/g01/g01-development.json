@@ -1,0 +1,1760 @@
+{
+ "stage": "G01",
+ "grid_pass": 1,
+ "generated_at": "2026-10-02T18:42:16+00:00",
+ "protocol_id": "V01",
+ "protocol_version": "1.0",
+ "evaluation_class": "reconstructed",
+ "role": "development",
+ "seasons": [
+  2019,
+  2020,
+  2021
+ ],
+ "horizon_minutes": 1440,
+ "draws_per_game": 20000,
+ "selected": {
+  "dynamic": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+  "elo": "elo|carryover=0.75|hfa=35|k=30",
+  "g01": "g01|disp_r=10|pace_k=50",
+  "hfa_only": "hfa_only|half_life_days=365",
+  "ridge": "ridge|cov_scale=1.2|half_life_days=180|penalty=1"
+ },
+ "overall": [
+  {
+   "config": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "games": 2343,
+   "energy_score": 10.390651029170805,
+   "winner_log_loss": 0.49683221287915347,
+   "winner_brier": 0.16612485665274646,
+   "margin_crps": 9.227064019116517,
+   "total_crps": 9.471329425384123,
+   "margin_abs_error": 13.08173282116944,
+   "total_abs_error": 13.400128040973112,
+   "margin_50_covered": 0.5335040546308152,
+   "margin_50_width": 23.140738369611608,
+   "total_50_covered": 0.538625693555271,
+   "total_50_width": 22.953051643192488,
+   "margin_80_covered": 0.8211694408877508,
+   "margin_80_width": 43.64041826717884,
+   "total_80_covered": 0.814767392232181,
+   "total_80_width": 43.412761416986775,
+   "margin_95_covered": 0.960734101579172,
+   "margin_95_width": 66.03331199317111,
+   "total_95_covered": 0.9530516431924883,
+   "total_95_width": 65.76206786171572
+  },
+  {
+   "config": "elo|carryover=0.75|hfa=35|k=30",
+   "games": 2343,
+   "energy_score": 10.798690967362337,
+   "winner_log_loss": 0.5105516303130619,
+   "winner_brier": 0.17110262873932042,
+   "margin_crps": 9.567248787681391,
+   "total_crps": 9.861395437822235,
+   "margin_abs_error": 13.54225352112676,
+   "total_abs_error": 13.866197183098592,
+   "margin_50_covered": 0.5224071702944942,
+   "margin_50_width": 23.200704225352112,
+   "total_50_covered": 0.538625693555271,
+   "total_50_width": 24.148100725565513,
+   "margin_80_covered": 0.8079385403329066,
+   "margin_80_width": 43.83909517712336,
+   "total_80_covered": 0.8211694408877508,
+   "total_80_width": 45.673922321809656,
+   "margin_95_covered": 0.9560392658984208,
+   "margin_95_width": 66.37350618864699,
+   "total_95_covered": 0.9568928723858301,
+   "total_95_width": 69.18117797695258
+  },
+  {
+   "config": "g01|disp_r=10|pace_k=50",
+   "games": 2343,
+   "energy_score": 10.4955072075901,
+   "winner_log_loss": 0.5022876199638319,
+   "winner_brier": 0.167081458719555,
+   "margin_crps": 9.30862222884763,
+   "total_crps": 9.48161132027102,
+   "margin_abs_error": 13.125053350405462,
+   "total_abs_error": 13.370038412291933,
+   "margin_50_covered": 0.46350832266325226,
+   "margin_50_width": 19.678403755868544,
+   "total_50_covered": 0.5155783183952198,
+   "total_50_width": 22.4861288945796,
+   "margin_80_covered": 0.7639778062313274,
+   "margin_80_width": 38.138583013230914,
+   "total_80_covered": 0.8066581306017926,
+   "total_80_width": 43.011737089201894,
+   "margin_95_covered": 0.9287238583013231,
+   "margin_95_width": 60.437889457959834,
+   "total_95_covered": 0.9487836107554417,
+   "total_95_width": 66.665674349125
+  },
+  {
+   "config": "hfa_only|half_life_days=365",
+   "games": 2343,
+   "energy_score": 12.645077278007676,
+   "winner_log_loss": 0.6624910163008413,
+   "winner_brier": 0.23482185598721647,
+   "margin_crps": 12.702691363464574,
+   "total_crps": 9.88208090371212,
+   "margin_abs_error": 17.778489116517285,
+   "total_abs_error": 13.890524967989757,
+   "margin_50_covered": 0.5480153649167734,
+   "margin_50_width": 31.135616730687154,
+   "total_50_covered": 0.5335040546308152,
+   "total_50_width": 24.02198036705079,
+   "margin_80_covered": 0.7972684592402902,
+   "margin_80_width": 57.93905249679899,
+   "total_80_covered": 0.8203158344003414,
+   "total_80_width": 45.73141271873667,
+   "margin_95_covered": 0.9466495945369184,
+   "margin_95_width": 86.60093896713612,
+   "total_95_covered": 0.9586000853606488,
+   "total_95_width": 69.2632415706359
+  },
+  {
+   "config": "ridge|cov_scale=1.2|half_life_days=180|penalty=1",
+   "games": 2343,
+   "energy_score": 10.462448593223906,
+   "winner_log_loss": 0.49882067652056383,
+   "winner_brier": 0.1665598879948755,
+   "margin_crps": 9.35136482741784,
+   "total_crps": 9.473612741141698,
+   "margin_abs_error": 13.250106700810926,
+   "total_abs_error": 13.38070849338455,
+   "margin_50_covered": 0.5032010243277849,
+   "margin_50_width": 21.602432778489117,
+   "total_50_covered": 0.5198463508322664,
+   "total_50_width": 22.009923175416134,
+   "margin_80_covered": 0.7887323943661971,
+   "margin_80_width": 40.76572769953052,
+   "total_80_covered": 0.7930004268032437,
+   "total_80_width": 41.66636790439609,
+   "margin_95_covered": 0.9436619718309859,
+   "margin_95_width": 61.80750106700806,
+   "total_95_covered": 0.942381562099872,
+   "total_95_width": 63.20292360221934
+  }
+ ],
+ "by_season": [
+  {
+   "config": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "season": 2019,
+   "games": 888,
+   "energy_score": 10.243149445087475,
+   "winner_log_loss": 0.46435298808616926,
+   "winner_brier": 0.15391140935829467,
+   "margin_crps": 9.06103765796171,
+   "total_crps": 9.373331495202702,
+   "margin_abs_error": 12.718468468468469,
+   "total_abs_error": 13.32882882882883,
+   "margin_50_covered": 0.5563063063063063,
+   "margin_50_width": 23.01801801801802,
+   "total_50_covered": 0.5337837837837838,
+   "total_50_width": 22.850225225225227,
+   "margin_80_covered": 0.8243243243243243,
+   "margin_80_width": 43.44662162162163,
+   "total_80_covered": 0.8265765765765766,
+   "total_80_width": 43.223873873873885,
+   "margin_95_covered": 0.9594594594594594,
+   "margin_95_width": 65.75641891891888,
+   "total_95_covered": 0.956081081081081,
+   "total_95_width": 65.49149774774773
+  },
+  {
+   "config": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "season": 2020,
+   "games": 568,
+   "energy_score": 10.72306166524798,
+   "winner_log_loss": 0.5280227530448764,
+   "winner_brier": 0.1785730578551762,
+   "margin_crps": 9.371278376641726,
+   "total_crps": 9.897385157522008,
+   "margin_abs_error": 13.213908450704226,
+   "total_abs_error": 13.955105633802816,
+   "margin_50_covered": 0.528169014084507,
+   "margin_50_width": 23.314700704225352,
+   "total_50_covered": 0.5264084507042254,
+   "total_50_width": 23.077464788732396,
+   "margin_80_covered": 0.8186619718309859,
+   "margin_80_width": 43.89507042253523,
+   "total_80_covered": 0.7834507042253521,
+   "total_80_width": 43.63468309859156,
+   "margin_95_covered": 0.9595070422535211,
+   "margin_95_width": 66.38824823943658,
+   "total_95_covered": 0.9471830985915493,
+   "total_95_width": 66.09053697183094
+  },
+  {
+   "config": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "season": 2021,
+   "games": 887,
+   "energy_score": 10.325456176154075,
+   "winner_log_loss": 0.5093748563989271,
+   "winner_brier": 0.17038073367021328,
+   "margin_crps": 9.300928341135853,
+   "total_crps": 9.296608462753664,
+   "margin_abs_error": 13.36076662908681,
+   "total_abs_error": 13.116121758737316,
+   "margin_50_covered": 0.5140924464487034,
+   "margin_50_width": 23.152198421646,
+   "total_50_covered": 0.5512965050732808,
+   "total_50_width": 22.976324689966177,
+   "margin_80_covered": 0.8196166854565953,
+   "margin_80_width": 43.671364148816245,
+   "total_80_covered": 0.8229988726042841,
+   "total_80_width": 43.45975197294251,
+   "margin_95_covered": 0.9627959413754228,
+   "margin_95_width": 66.08322998872599,
+   "total_95_covered": 0.9537767756482526,
+   "total_95_width": 65.82260428410368
+  },
+  {
+   "config": "elo|carryover=0.75|hfa=35|k=30",
+   "season": 2019,
+   "games": 888,
+   "energy_score": 10.724404305229923,
+   "winner_log_loss": 0.4797173093984113,
+   "winner_brier": 0.15899751686095526,
+   "margin_crps": 9.431097928429056,
+   "total_crps": 9.864517746936937,
+   "margin_abs_error": 13.238175675675675,
+   "total_abs_error": 13.983108108108109,
+   "margin_50_covered": 0.5405405405405406,
+   "margin_50_width": 23.42511261261261,
+   "total_50_covered": 0.5371621621621622,
+   "total_50_width": 24.5625,
+   "margin_80_covered": 0.8141891891891891,
+   "margin_80_width": 44.261261261261275,
+   "total_80_covered": 0.8220720720720721,
+   "total_80_width": 46.430292792792805,
+   "margin_95_covered": 0.956081081081081,
+   "margin_95_width": 67.03468468468462,
+   "total_95_covered": 0.9684684684684685,
+   "total_95_width": 70.2730574324324
+  },
+  {
+   "config": "elo|carryover=0.75|hfa=35|k=30",
+   "season": 2020,
+   "games": 568,
+   "energy_score": 11.114009496752255,
+   "winner_log_loss": 0.5477278074673255,
+   "winner_brier": 0.18473441555083422,
+   "margin_crps": 9.599468775396128,
+   "total_crps": 10.360086031901409,
+   "margin_abs_error": 13.586267605633802,
+   "total_abs_error": 14.508802816901408,
+   "margin_50_covered": 0.5105633802816901,
+   "margin_50_width": 23.11487676056338,
+   "total_50_covered": 0.5193661971830986,
+   "total_50_width": 24.128521126760564,
+   "margin_80_covered": 0.8133802816901409,
+   "margin_80_width": 43.63802816901409,
+   "total_80_covered": 0.8116197183098591,
+   "total_80_width": 45.803697183098606,
+   "margin_95_covered": 0.9577464788732394,
+   "margin_95_width": 66.04498239436614,
+   "total_95_covered": 0.9383802816901409,
+   "total_95_width": 69.45316901408447
+  },
+  {
+   "config": "elo|carryover=0.75|hfa=35|k=30",
+   "season": 2021,
+   "games": 887,
+   "energy_score": 10.671143764746903,
+   "winner_log_loss": 0.5176145484061714,
+   "winner_brier": 0.1744921264158124,
+   "margin_crps": 9.682920726795379,
+   "total_crps": 9.538927717494362,
+   "margin_abs_error": 13.818489289740699,
+   "total_abs_error": 13.337655016910936,
+   "margin_50_covered": 0.5118376550169109,
+   "margin_50_width": 23.031003382187148,
+   "total_50_covered": 0.552423900789177,
+   "total_50_width": 23.74577226606539,
+   "margin_80_covered": 0.798196166854566,
+   "margin_80_width": 43.54520856820745,
+   "total_80_covered": 0.826381059751973,
+   "total_80_width": 44.83359639233372,
+   "margin_95_covered": 0.9549041713641488,
+   "margin_95_width": 65.92195603156703,
+   "total_95_covered": 0.9571589627959414,
+   "total_95_width": 67.91389515219839
+  },
+  {
+   "config": "g01|disp_r=10|pace_k=50",
+   "season": 2019,
+   "games": 888,
+   "energy_score": 10.351122188796475,
+   "winner_log_loss": 0.46233870357194123,
+   "winner_brier": 0.15425441435310883,
+   "margin_crps": 9.117475110104166,
+   "total_crps": 9.405490118420607,
+   "margin_abs_error": 12.782657657657658,
+   "total_abs_error": 13.320945945945946,
+   "margin_50_covered": 0.49099099099099097,
+   "margin_50_width": 19.789132882882882,
+   "total_50_covered": 0.5112612612612613,
+   "total_50_width": 22.59009009009009,
+   "margin_80_covered": 0.7736486486486487,
+   "margin_80_width": 38.34740990990992,
+   "total_80_covered": 0.8141891891891891,
+   "total_80_width": 43.166666666666686,
+   "margin_95_covered": 0.9346846846846847,
+   "margin_95_width": 60.723845720720675,
+   "total_95_covered": 0.9504504504504504,
+   "total_95_width": 66.98153153153149
+  },
+  {
+   "config": "g01|disp_r=10|pace_k=50",
+   "season": 2020,
+   "games": 568,
+   "energy_score": 10.844706002597153,
+   "winner_log_loss": 0.5355723487063677,
+   "winner_brier": 0.18023043669941594,
+   "margin_crps": 9.458716473340669,
+   "total_crps": 9.930439486456867,
+   "margin_abs_error": 13.232394366197184,
+   "total_abs_error": 14.05105633802817,
+   "margin_50_covered": 0.45598591549295775,
+   "margin_50_width": 19.596830985915492,
+   "total_50_covered": 0.5035211267605634,
+   "total_50_width": 22.528169014084508,
+   "margin_80_covered": 0.7535211267605634,
+   "margin_80_width": 38.02957746478875,
+   "total_80_covered": 0.7887323943661971,
+   "total_80_width": 43.10809859154931,
+   "margin_95_covered": 0.920774647887324,
+   "margin_95_width": 60.33569542253514,
+   "total_95_covered": 0.9471830985915493,
+   "total_95_width": 66.65356514084505
+  },
+  {
+   "config": "g01|disp_r=10|pace_k=50",
+   "season": 2021,
+   "games": 887,
+   "energy_score": 10.416441797358683,
+   "winner_log_loss": 0.5209673401783057,
+   "winner_brier": 0.1715028746212948,
+   "margin_crps": 9.403870380563697,
+   "total_crps": 9.27040639225479,
+   "margin_abs_error": 13.399098083427283,
+   "total_abs_error": 12.983089064261556,
+   "margin_50_covered": 0.44081172491544535,
+   "margin_50_width": 19.61978579481398,
+   "total_50_covered": 0.5276211950394588,
+   "total_50_width": 22.35512965050733,
+   "margin_80_covered": 0.7609921082299888,
+   "margin_80_width": 37.999323562570474,
+   "total_80_covered": 0.8105975197294251,
+   "total_80_width": 42.79492671927848,
+   "margin_95_covered": 0.9278466741826381,
+   "margin_95_width": 60.2170518602029,
+   "total_95_covered": 0.9481397970687712,
+   "total_95_width": 66.35721533258167
+  },
+  {
+   "config": "hfa_only|half_life_days=365",
+   "season": 2019,
+   "games": 888,
+   "energy_score": 12.820454831742369,
+   "winner_log_loss": 0.6501280418602761,
+   "winner_brier": 0.22877412712233444,
+   "margin_crps": 13.01893795436374,
+   "total_crps": 9.891795752291666,
+   "margin_abs_error": 18.214527027027028,
+   "total_abs_error": 14.003378378378379,
+   "margin_50_covered": 0.543918918918919,
+   "margin_50_width": 31.456925675675677,
+   "total_50_covered": 0.5292792792792793,
+   "total_50_width": 24.413006756756758,
+   "margin_80_covered": 0.7894144144144144,
+   "margin_80_width": 58.447860360360366,
+   "total_80_covered": 0.8254504504504504,
+   "total_80_width": 46.52184684684685,
+   "margin_95_covered": 0.9436936936936937,
+   "margin_95_width": 87.35095720720717,
+   "total_95_covered": 0.9684684684684685,
+   "total_95_width": 70.38834459459454
+  },
+  {
+   "config": "hfa_only|half_life_days=365",
+   "season": 2020,
+   "games": 568,
+   "energy_score": 12.644207411963812,
+   "winner_log_loss": 0.6793140839614575,
+   "winner_brier": 0.24307645181754967,
+   "margin_crps": 12.24516693262324,
+   "total_crps": 10.370206981135563,
+   "margin_abs_error": 17.169014084507044,
+   "total_abs_error": 14.540492957746478,
+   "margin_50_covered": 0.5580985915492958,
+   "margin_50_width": 30.955105633802816,
+   "total_50_covered": 0.5176056338028169,
+   "total_50_width": 24.08274647887324,
+   "margin_80_covered": 0.8116197183098591,
+   "margin_80_width": 57.696654929577484,
+   "total_80_covered": 0.8080985915492958,
+   "total_80_width": 45.763204225352126,
+   "margin_95_covered": 0.954225352112676,
+   "margin_95_width": 86.25444542253516,
+   "total_95_covered": 0.9436619718309859,
+   "total_95_width": 69.44973591549291
+  },
+  {
+   "config": "hfa_only|half_life_days=365",
+   "season": 2021,
+   "games": 887,
+   "energy_score": 12.470059032456948,
+   "winner_log_loss": 0.6640950962016214,
+   "winner_brier": 0.23559048372158625,
+   "margin_crps": 12.67906893279876,
+   "total_crps": 9.559778313503383,
+   "margin_abs_error": 17.732243517474632,
+   "total_abs_error": 13.361330326944758,
+   "margin_50_covered": 0.5456595264937993,
+   "margin_50_width": 30.929537767756482,
+   "total_50_covered": 0.5479143179255919,
+   "total_50_width": 23.59160090191657,
+   "margin_80_covered": 0.7959413754227734,
+   "margin_80_width": 57.584892897407,
+   "total_80_covered": 0.8229988726042841,
+   "total_80_width": 44.91972942502819,
+   "margin_95_covered": 0.9447576099210823,
+   "margin_95_width": 86.07195603156704,
+   "total_95_covered": 0.9582863585118376,
+   "total_95_width": 68.01744644870347
+  },
+  {
+   "config": "ridge|cov_scale=1.2|half_life_days=180|penalty=1",
+   "season": 2019,
+   "games": 888,
+   "energy_score": 10.301413061925516,
+   "winner_log_loss": 0.4631268724381679,
+   "winner_brier": 0.1535485807715649,
+   "margin_crps": 9.14111425329955,
+   "total_crps": 9.39245028981982,
+   "margin_abs_error": 12.86936936936937,
+   "total_abs_error": 13.346283783783784,
+   "margin_50_covered": 0.5337837837837838,
+   "margin_50_width": 21.598536036036037,
+   "total_50_covered": 0.5259009009009009,
+   "total_50_width": 22.49239864864865,
+   "margin_80_covered": 0.795045045045045,
+   "margin_80_width": 40.801238738738746,
+   "total_80_covered": 0.8175675675675675,
+   "total_80_width": 42.55540540540542,
+   "margin_95_covered": 0.9436936936936937,
+   "margin_95_width": 61.897438063063014,
+   "total_95_covered": 0.9504504504504504,
+   "total_95_width": 64.52423986486481
+  },
+  {
+   "config": "ridge|cov_scale=1.2|half_life_days=180|penalty=1",
+   "season": 2020,
+   "games": 568,
+   "energy_score": 10.714770862333365,
+   "winner_log_loss": 0.5274365128230185,
+   "winner_brier": 0.1780015268142866,
+   "margin_crps": 9.377074034537852,
+   "total_crps": 9.878915280321303,
+   "margin_abs_error": 13.22887323943662,
+   "total_abs_error": 13.912852112676056,
+   "margin_50_covered": 0.5052816901408451,
+   "margin_50_width": 22.311179577464788,
+   "total_50_covered": 0.5088028169014085,
+   "total_50_width": 22.17913732394366,
+   "margin_80_covered": 0.8063380281690141,
+   "margin_80_width": 41.998239436619734,
+   "total_80_covered": 0.7676056338028169,
+   "total_80_width": 41.95686619718311,
+   "margin_95_covered": 0.9507042253521126,
+   "margin_95_width": 63.61509683098588,
+   "total_95_covered": 0.9366197183098591,
+   "total_95_width": 63.613292253521095
+  },
+  {
+   "config": "ridge|cov_scale=1.2|half_life_days=180|penalty=1",
+   "season": 2021,
+   "games": 887,
+   "energy_score": 10.462088393605864,
+   "winner_log_loss": 0.5162302627723939,
+   "winner_brier": 0.17225908750431662,
+   "margin_crps": 9.54538926955186,
+   "total_crps": 9.295326849957723,
+   "margin_abs_error": 13.644870349492672,
+   "total_abs_error": 13.074408117249154,
+   "margin_50_covered": 0.47125140924464487,
+   "margin_50_width": 21.152480270574973,
+   "total_50_covered": 0.5208568207440811,
+   "total_50_width": 21.418545659526494,
+   "margin_80_covered": 0.7711386696730552,
+   "margin_80_width": 39.94092446448704,
+   "total_80_covered": 0.7846674182638106,
+   "total_80_width": 40.5903043968433,
+   "margin_95_covered": 0.939120631341601,
+   "margin_95_width": 60.55994926719275,
+   "total_95_covered": 0.9379932356257046,
+   "total_95_width": 61.61733370913187
+  }
+ ],
+ "comparisons": [
+  {
+   "challenger": "g01|disp_r=10|pace_k=50",
+   "baseline": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "metric": "energy_score",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": 0.10485617841929501,
+   "ci95": [
+    0.06628784031272221,
+    0.1438272404904402
+   ],
+   "challenger_better": false
+  },
+  {
+   "challenger": "g01|disp_r=10|pace_k=50",
+   "baseline": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "metric": "energy_score",
+   "blocks": "three_week",
+   "games": 2343,
+   "mean_difference": 0.10485617841929501,
+   "ci95": [
+    0.07053638960058795,
+    0.1387759342099885
+   ],
+   "challenger_better": false
+  },
+  {
+   "challenger": "g01|disp_r=10|pace_k=50",
+   "baseline": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "metric": "energy_score",
+   "blocks": "season_half",
+   "games": 2343,
+   "mean_difference": 0.10485617841929501,
+   "ci95": [
+    0.08758170905467376,
+    0.12147421183300383
+   ],
+   "challenger_better": false
+  },
+  {
+   "challenger": "g01|disp_r=10|pace_k=50",
+   "baseline": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "metric": "winner_log_loss",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": 0.005455407084678365,
+   "ci95": [
+    -0.0005582921423304678,
+    0.011872539334729345
+   ],
+   "challenger_better": false
+  },
+  {
+   "challenger": "g01|disp_r=10|pace_k=50",
+   "baseline": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "metric": "margin_crps",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": 0.08155820973111397,
+   "ci95": [
+    0.04795944203677422,
+    0.11425292605018073
+   ],
+   "challenger_better": false
+  },
+  {
+   "challenger": "g01|disp_r=10|pace_k=50",
+   "baseline": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "metric": "total_crps",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": 0.010281894886897127,
+   "ci95": [
+    -0.04295136039502484,
+    0.06342801024368754
+   ],
+   "challenger_better": false
+  },
+  {
+   "challenger": "g01|disp_r=10|pace_k=50",
+   "baseline": "ridge|cov_scale=1.2|half_life_days=180|penalty=1",
+   "metric": "energy_score",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": 0.03305861436619466,
+   "ci95": [
+    -0.04639393372451852,
+    0.10747954776332264
+   ],
+   "challenger_better": false
+  },
+  {
+   "challenger": "g01|disp_r=10|pace_k=50",
+   "baseline": "ridge|cov_scale=1.2|half_life_days=180|penalty=1",
+   "metric": "energy_score",
+   "blocks": "three_week",
+   "games": 2343,
+   "mean_difference": 0.03305861436619465,
+   "ci95": [
+    -0.04181795595684433,
+    0.11323983574082966
+   ],
+   "challenger_better": false
+  },
+  {
+   "challenger": "g01|disp_r=10|pace_k=50",
+   "baseline": "ridge|cov_scale=1.2|half_life_days=180|penalty=1",
+   "metric": "energy_score",
+   "blocks": "season_half",
+   "games": 2343,
+   "mean_difference": 0.03305861436619466,
+   "ci95": [
+    -0.050749058650269595,
+    0.11994884714148292
+   ],
+   "challenger_better": false
+  },
+  {
+   "challenger": "g01|disp_r=10|pace_k=50",
+   "baseline": "ridge|cov_scale=1.2|half_life_days=180|penalty=1",
+   "metric": "winner_log_loss",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": 0.003466943443267951,
+   "ci95": [
+    -0.002651493596985384,
+    0.01048449670432298
+   ],
+   "challenger_better": false
+  },
+  {
+   "challenger": "g01|disp_r=10|pace_k=50",
+   "baseline": "ridge|cov_scale=1.2|half_life_days=180|penalty=1",
+   "metric": "margin_crps",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": -0.042742598570209116,
+   "ci95": [
+    -0.15675870287943708,
+    0.06035810303453796
+   ],
+   "challenger_better": false
+  },
+  {
+   "challenger": "g01|disp_r=10|pace_k=50",
+   "baseline": "ridge|cov_scale=1.2|half_life_days=180|penalty=1",
+   "metric": "total_crps",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": 0.007998579129321342,
+   "ci95": [
+    -0.04756388264885637,
+    0.06851970153834504
+   ],
+   "challenger_better": false
+  },
+  {
+   "challenger": "g01|disp_r=10|pace_k=50",
+   "baseline": "hfa_only|half_life_days=365",
+   "metric": "energy_score",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": -2.1495700704175746,
+   "ci95": [
+    -2.3734513524526197,
+    -1.9311687429813138
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "g01|disp_r=10|pace_k=50",
+   "baseline": "hfa_only|half_life_days=365",
+   "metric": "energy_score",
+   "blocks": "three_week",
+   "games": 2343,
+   "mean_difference": -2.149570070417575,
+   "ci95": [
+    -2.4108335088213306,
+    -1.8692839032673179
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "g01|disp_r=10|pace_k=50",
+   "baseline": "hfa_only|half_life_days=365",
+   "metric": "energy_score",
+   "blocks": "season_half",
+   "games": 2343,
+   "mean_difference": -2.149570070417575,
+   "ci95": [
+    -2.3716339327451608,
+    -1.901248415339838
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "g01|disp_r=10|pace_k=50",
+   "baseline": "hfa_only|half_life_days=365",
+   "metric": "winner_log_loss",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": -0.1602033963370095,
+   "ci95": [
+    -0.18480622746115552,
+    -0.13570913460597103
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "g01|disp_r=10|pace_k=50",
+   "baseline": "hfa_only|half_life_days=365",
+   "metric": "margin_crps",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": -3.3940691346169447,
+   "ci95": [
+    -3.8123165193568083,
+    -2.9737758107184513
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "g01|disp_r=10|pace_k=50",
+   "baseline": "hfa_only|half_life_days=365",
+   "metric": "total_crps",
+   "blocks": "week",
+   "games": 2343,
+   "mean_difference": -0.4004695834411012,
+   "ci95": [
+    -0.6289042528502451,
+    -0.19762242829366025
+   ],
+   "challenger_better": true
+  },
+  {
+   "challenger": "g01|disp_r=10|pace_k=50",
+   "baseline": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "metric": "energy_score",
+   "blocks": "week",
+   "games": 1775,
+   "mean_difference": 0.09948396756173424,
+   "ci95": [
+    0.05463656448909846,
+    0.1438499360245565
+   ],
+   "challenger_better": false,
+   "sensitivity": "exclude 2020"
+  }
+ ],
+ "cohorts": [
+  {
+   "cohort": "early_season",
+   "config": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "games": 780,
+   "energy_score": 10.57215971353796,
+   "winner_log_loss": 0.4130468603017683,
+   "margin_crps": 9.390218930967949
+  },
+  {
+   "cohort": "early_season",
+   "config": "elo|carryover=0.75|hfa=35|k=30",
+   "games": 780,
+   "energy_score": 10.929082129317665,
+   "winner_log_loss": 0.4350000988269012,
+   "margin_crps": 10.02803330889423
+  },
+  {
+   "cohort": "early_season",
+   "config": "g01|disp_r=10|pace_k=50",
+   "games": 780,
+   "energy_score": 10.74659995395385,
+   "winner_log_loss": 0.419085660320046,
+   "margin_crps": 9.504113514025642
+  },
+  {
+   "cohort": "early_season",
+   "config": "hfa_only|half_life_days=365",
+   "games": 780,
+   "energy_score": 13.288636161523138,
+   "winner_log_loss": 0.619401977097363,
+   "margin_crps": 13.994668702708333
+  },
+  {
+   "cohort": "early_season",
+   "config": "ridge|cov_scale=1.2|half_life_days=180|penalty=1",
+   "games": 780,
+   "energy_score": 10.779413725056582,
+   "winner_log_loss": 0.42066940049233814,
+   "margin_crps": 9.77402039413141
+  },
+  {
+   "cohort": "fbs_vs_nonfbs",
+   "config": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "games": 265,
+   "energy_score": 10.52376791689012,
+   "winner_log_loss": 0.20096876725746196,
+   "margin_crps": 9.159214455283019
+  },
+  {
+   "cohort": "fbs_vs_nonfbs",
+   "config": "elo|carryover=0.75|hfa=35|k=30",
+   "games": 265,
+   "energy_score": 10.88909448017983,
+   "winner_log_loss": 0.21871414351550966,
+   "margin_crps": 10.175907162990566
+  },
+  {
+   "cohort": "fbs_vs_nonfbs",
+   "config": "g01|disp_r=10|pace_k=50",
+   "games": 265,
+   "energy_score": 10.784763027925555,
+   "winner_log_loss": 0.20057985043851084,
+   "margin_crps": 9.323601604783018
+  },
+  {
+   "cohort": "fbs_vs_nonfbs",
+   "config": "hfa_only|half_life_days=365",
+   "games": 265,
+   "energy_score": 14.831196487180561,
+   "winner_log_loss": 0.49076733718359417,
+   "margin_crps": 16.700799192764148
+  },
+  {
+   "cohort": "fbs_vs_nonfbs",
+   "config": "ridge|cov_scale=1.2|half_life_days=180|penalty=1",
+   "games": 265,
+   "energy_score": 10.86688891716868,
+   "winner_log_loss": 0.20009646619969554,
+   "margin_crps": 9.719956883264151
+  },
+  {
+   "cohort": "postseason",
+   "config": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "games": 104,
+   "energy_score": 10.369888557422799,
+   "winner_log_loss": 0.6461333650927438,
+   "margin_crps": 9.622104721514422
+  },
+  {
+   "cohort": "postseason",
+   "config": "elo|carryover=0.75|hfa=35|k=30",
+   "games": 104,
+   "energy_score": 10.85371916000523,
+   "winner_log_loss": 0.632322962016892,
+   "margin_crps": 9.568740649350962
+  },
+  {
+   "cohort": "postseason",
+   "config": "g01|disp_r=10|pace_k=50",
+   "games": 104,
+   "energy_score": 10.403699407195047,
+   "winner_log_loss": 0.6455621494866174,
+   "margin_crps": 9.620401461682693
+  },
+  {
+   "cohort": "postseason",
+   "config": "hfa_only|half_life_days=365",
+   "games": 104,
+   "energy_score": 11.174474015467249,
+   "winner_log_loss": 0.6902428397450314,
+   "margin_crps": 10.261698730360575
+  },
+  {
+   "cohort": "postseason",
+   "config": "ridge|cov_scale=1.2|half_life_days=180|penalty=1",
+   "games": 104,
+   "energy_score": 10.265892071309196,
+   "winner_log_loss": 0.6411637608461866,
+   "margin_crps": 9.47525790408654
+  },
+  {
+   "cohort": "neutral_site",
+   "config": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "games": 153,
+   "energy_score": 10.309919190588575,
+   "winner_log_loss": 0.6114696362478944,
+   "margin_crps": 9.516598093006536
+  },
+  {
+   "cohort": "neutral_site",
+   "config": "elo|carryover=0.75|hfa=35|k=30",
+   "games": 153,
+   "energy_score": 10.952717645762258,
+   "winner_log_loss": 0.6081223714352594,
+   "margin_crps": 9.446927811928104
+  },
+  {
+   "cohort": "neutral_site",
+   "config": "g01|disp_r=10|pace_k=50",
+   "games": 153,
+   "energy_score": 10.334087566133253,
+   "winner_log_loss": 0.6104626723974105,
+   "margin_crps": 9.570693598120913
+  },
+  {
+   "cohort": "neutral_site",
+   "config": "hfa_only|half_life_days=365",
+   "games": 153,
+   "energy_score": 11.501766081943417,
+   "winner_log_loss": 0.6925285837338304,
+   "margin_crps": 10.531152086846406
+  },
+  {
+   "cohort": "neutral_site",
+   "config": "ridge|cov_scale=1.2|half_life_days=180|penalty=1",
+   "games": 153,
+   "energy_score": 10.270209227831662,
+   "winner_log_loss": 0.6117667395426173,
+   "margin_crps": 9.439496871356209
+  },
+  {
+   "cohort": "season_2020",
+   "config": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "games": 568,
+   "energy_score": 10.72306166524798,
+   "winner_log_loss": 0.5280227530448764,
+   "margin_crps": 9.371278376641724
+  },
+  {
+   "cohort": "season_2020",
+   "config": "elo|carryover=0.75|hfa=35|k=30",
+   "games": 568,
+   "energy_score": 11.114009496752256,
+   "winner_log_loss": 0.5477278074673255,
+   "margin_crps": 9.599468775396126
+  },
+  {
+   "cohort": "season_2020",
+   "config": "g01|disp_r=10|pace_k=50",
+   "games": 568,
+   "energy_score": 10.844706002597153,
+   "winner_log_loss": 0.5355723487063677,
+   "margin_crps": 9.458716473340669
+  },
+  {
+   "cohort": "season_2020",
+   "config": "hfa_only|half_life_days=365",
+   "games": 568,
+   "energy_score": 12.644207411963812,
+   "winner_log_loss": 0.6793140839614575,
+   "margin_crps": 12.245166932623238
+  },
+  {
+   "cohort": "season_2020",
+   "config": "ridge|cov_scale=1.2|half_life_days=180|penalty=1",
+   "games": 568,
+   "energy_score": 10.714770862333365,
+   "winner_log_loss": 0.5274365128230185,
+   "margin_crps": 9.377074034537852
+  },
+  {
+   "cohort": "pbp_unreconciled",
+   "config": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "games": 86,
+   "energy_score": 9.91657186672007,
+   "winner_log_loss": 0.588376002785475,
+   "margin_crps": 8.129298748343023
+  },
+  {
+   "cohort": "pbp_unreconciled",
+   "config": "elo|carryover=0.75|hfa=35|k=30",
+   "games": 86,
+   "energy_score": 10.360917730320637,
+   "winner_log_loss": 0.6157808754267189,
+   "margin_crps": 8.907466553372096
+  },
+  {
+   "cohort": "pbp_unreconciled",
+   "config": "g01|disp_r=10|pace_k=50",
+   "games": 86,
+   "energy_score": 10.097138235873922,
+   "winner_log_loss": 0.5960136048664532,
+   "margin_crps": 8.075849683226746
+  },
+  {
+   "cohort": "pbp_unreconciled",
+   "config": "hfa_only|half_life_days=365",
+   "games": 86,
+   "energy_score": 11.744086465093659,
+   "winner_log_loss": 0.6798268545256245,
+   "margin_crps": 11.218844779215114
+  },
+  {
+   "cohort": "pbp_unreconciled",
+   "config": "ridge|cov_scale=1.2|half_life_days=180|penalty=1",
+   "games": 86,
+   "energy_score": 10.141626531577351,
+   "winner_log_loss": 0.6077734876058372,
+   "margin_crps": 8.507799458924417
+  },
+  {
+   "cohort": "missing_team_stats",
+   "config": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "games": 0,
+   "energy_score": null,
+   "winner_log_loss": null,
+   "margin_crps": null
+  },
+  {
+   "cohort": "missing_team_stats",
+   "config": "elo|carryover=0.75|hfa=35|k=30",
+   "games": 0,
+   "energy_score": null,
+   "winner_log_loss": null,
+   "margin_crps": null
+  },
+  {
+   "cohort": "missing_team_stats",
+   "config": "g01|disp_r=10|pace_k=50",
+   "games": 0,
+   "energy_score": null,
+   "winner_log_loss": null,
+   "margin_crps": null
+  },
+  {
+   "cohort": "missing_team_stats",
+   "config": "hfa_only|half_life_days=365",
+   "games": 0,
+   "energy_score": null,
+   "winner_log_loss": null,
+   "margin_crps": null
+  },
+  {
+   "cohort": "missing_team_stats",
+   "config": "ridge|cov_scale=1.2|half_life_days=180|penalty=1",
+   "games": 0,
+   "energy_score": null,
+   "winner_log_loss": null,
+   "margin_crps": null
+  },
+  {
+   "cohort": "no_line",
+   "config": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "games": 8,
+   "energy_score": 12.112963830864077,
+   "winner_log_loss": 0.1039398083342166,
+   "margin_crps": 9.972597205625
+  },
+  {
+   "cohort": "no_line",
+   "config": "elo|carryover=0.75|hfa=35|k=30",
+   "games": 8,
+   "energy_score": 12.944320925191619,
+   "winner_log_loss": 0.1361924592499514,
+   "margin_crps": 11.890182991875
+  },
+  {
+   "cohort": "no_line",
+   "config": "g01|disp_r=10|pace_k=50",
+   "games": 8,
+   "energy_score": 12.25467158987758,
+   "winner_log_loss": 0.06140225961035031,
+   "margin_crps": 9.8382070071875
+  },
+  {
+   "cohort": "no_line",
+   "config": "hfa_only|half_life_days=365",
+   "games": 8,
+   "energy_score": 17.938257196638396,
+   "winner_log_loss": 0.44497454170326556,
+   "margin_crps": 20.140401456874997
+  },
+  {
+   "cohort": "no_line",
+   "config": "ridge|cov_scale=1.2|half_life_days=180|penalty=1",
+   "games": 8,
+   "energy_score": 12.083767150599478,
+   "winner_log_loss": 0.0840111263696672,
+   "margin_crps": 9.735145960625001
+  }
+ ],
+ "grid": [
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=0.25|rho=0.6|s0=5|sigma=11",
+   "energy_score": 10.482067320304495
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=0.25|rho=0.6|s0=5|sigma=12",
+   "energy_score": 10.530500011438244
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=0.25|rho=0.6|s0=8|sigma=11",
+   "energy_score": 10.498091440688777
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=0.25|rho=0.6|s0=8|sigma=12",
+   "energy_score": 10.520818399687977
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=0.25|rho=0.75|s0=5|sigma=11",
+   "energy_score": 10.416074347185752
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=0.25|rho=0.75|s0=5|sigma=12",
+   "energy_score": 10.45936196135815
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=0.25|rho=0.75|s0=8|sigma=11",
+   "energy_score": 10.4151212336936
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=0.25|rho=0.75|s0=8|sigma=12",
+   "energy_score": 10.439584371211412
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=0.25|rho=0.9|s0=5|sigma=11",
+   "energy_score": 10.42816280192307
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=0.25|rho=0.9|s0=5|sigma=12",
+   "energy_score": 10.462739232630831
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=11",
+   "energy_score": 10.390651029170805
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=0.25|rho=0.9|s0=8|sigma=12",
+   "energy_score": 10.416225566650702
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=1|rho=0.6|s0=5|sigma=11",
+   "energy_score": 10.45543006933075
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=1|rho=0.6|s0=5|sigma=12",
+   "energy_score": 10.49805081243569
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=1|rho=0.6|s0=8|sigma=11",
+   "energy_score": 10.514868253031073
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=1|rho=0.6|s0=8|sigma=12",
+   "energy_score": 10.537756718591977
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=1|rho=0.75|s0=5|sigma=11",
+   "energy_score": 10.39569315401201
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=1|rho=0.75|s0=5|sigma=12",
+   "energy_score": 10.431500002515339
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=1|rho=0.75|s0=8|sigma=11",
+   "energy_score": 10.441537881579414
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=1|rho=0.75|s0=8|sigma=12",
+   "energy_score": 10.46518297827713
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=1|rho=0.9|s0=5|sigma=11",
+   "energy_score": 10.408439095045367
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=1|rho=0.9|s0=5|sigma=12",
+   "energy_score": 10.434648295273925
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=1|rho=0.9|s0=8|sigma=11",
+   "energy_score": 10.42326526727947
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=1|rho=0.9|s0=8|sigma=12",
+   "energy_score": 10.444291933518373
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=4|rho=0.6|s0=5|sigma=11",
+   "energy_score": 10.54447648819537
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=4|rho=0.6|s0=5|sigma=12",
+   "energy_score": 10.571518136496044
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=4|rho=0.6|s0=8|sigma=11",
+   "energy_score": 10.639014787875013
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=4|rho=0.6|s0=8|sigma=12",
+   "energy_score": 10.655434818619756
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=4|rho=0.75|s0=5|sigma=11",
+   "energy_score": 10.541303574110048
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=4|rho=0.75|s0=5|sigma=12",
+   "energy_score": 10.560370540350716
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=4|rho=0.75|s0=8|sigma=11",
+   "energy_score": 10.610339428974033
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=4|rho=0.75|s0=8|sigma=12",
+   "energy_score": 10.623583528270819
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=4|rho=0.9|s0=5|sigma=11",
+   "energy_score": 10.618888415052142
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=4|rho=0.9|s0=5|sigma=12",
+   "energy_score": 10.627779789932175
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=4|rho=0.9|s0=8|sigma=11",
+   "energy_score": 10.647135534022347
+  },
+  {
+   "model": "dynamic",
+   "config": "dynamic|q_week=4|rho=0.9|s0=8|sigma=12",
+   "energy_score": 10.654958173554162
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.75|hfa=20|k=25",
+   "energy_score": 10.81134274328861
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.75|hfa=20|k=30",
+   "energy_score": 10.813838427527452
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.75|hfa=20|k=35",
+   "energy_score": 10.822600336172636
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.75|hfa=35|k=25",
+   "energy_score": 10.798897437767371
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.75|hfa=35|k=30",
+   "energy_score": 10.798690967362337
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.75|hfa=35|k=35",
+   "energy_score": 10.805874381031716
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.75|hfa=50|k=25",
+   "energy_score": 10.807309559962992
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.75|hfa=50|k=30",
+   "energy_score": 10.802690879628612
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.75|hfa=50|k=35",
+   "energy_score": 10.806579360554469
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.85|hfa=20|k=25",
+   "energy_score": 10.82493935782464
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.85|hfa=20|k=30",
+   "energy_score": 10.82257967768372
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.85|hfa=20|k=35",
+   "energy_score": 10.826578793884162
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.85|hfa=35|k=25",
+   "energy_score": 10.810508455277098
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.85|hfa=35|k=30",
+   "energy_score": 10.807381959864584
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.85|hfa=35|k=35",
+   "energy_score": 10.810173527006025
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.85|hfa=50|k=25",
+   "energy_score": 10.813510995067466
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.85|hfa=50|k=30",
+   "energy_score": 10.807210197477978
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.85|hfa=50|k=35",
+   "energy_score": 10.808103982778627
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.95|hfa=20|k=25",
+   "energy_score": 10.860195824872557
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.95|hfa=20|k=30",
+   "energy_score": 10.850198999615245
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.95|hfa=20|k=35",
+   "energy_score": 10.8470664087756
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.95|hfa=35|k=25",
+   "energy_score": 10.845251904022863
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.95|hfa=35|k=30",
+   "energy_score": 10.835889494999691
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.95|hfa=35|k=35",
+   "energy_score": 10.83219672664283
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.95|hfa=50|k=25",
+   "energy_score": 10.843662405688058
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.95|hfa=50|k=30",
+   "energy_score": 10.833102939250798
+  },
+  {
+   "model": "elo",
+   "config": "elo|carryover=0.95|hfa=50|k=35",
+   "energy_score": 10.828075297328143
+  },
+  {
+   "model": "g01",
+   "config": "g01|disp_r=10|pace_k=15",
+   "energy_score": 10.55538742551453
+  },
+  {
+   "model": "g01",
+   "config": "g01|disp_r=10|pace_k=5",
+   "energy_score": 10.974355828952286
+  },
+  {
+   "model": "g01",
+   "config": "g01|disp_r=10|pace_k=50",
+   "energy_score": 10.4955072075901
+  },
+  {
+   "model": "g01",
+   "config": "g01|disp_r=20|pace_k=15",
+   "energy_score": 10.554138999336548
+  },
+  {
+   "model": "g01",
+   "config": "g01|disp_r=20|pace_k=5",
+   "energy_score": 10.864525149779773
+  },
+  {
+   "model": "g01",
+   "config": "g01|disp_r=20|pace_k=50",
+   "energy_score": 10.605448532349278
+  },
+  {
+   "model": "g01",
+   "config": "g01|disp_r=50|pace_k=15",
+   "energy_score": 10.631793319416467
+  },
+  {
+   "model": "g01",
+   "config": "g01|disp_r=50|pace_k=5",
+   "energy_score": 10.837272904533918
+  },
+  {
+   "model": "g01",
+   "config": "g01|disp_r=50|pace_k=50",
+   "energy_score": 10.810666569025972
+  },
+  {
+   "model": "g01",
+   "config": "g01|disp_r=5|pace_k=15",
+   "energy_score": 10.768049576423923
+  },
+  {
+   "model": "g01",
+   "config": "g01|disp_r=5|pace_k=5",
+   "energy_score": 11.28625230580753
+  },
+  {
+   "model": "g01",
+   "config": "g01|disp_r=5|pace_k=50",
+   "energy_score": 10.615217251614478
+  },
+  {
+   "model": "hfa_only",
+   "config": "hfa_only|half_life_days=365",
+   "energy_score": 12.645077278007676
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=180|penalty=0.25",
+   "energy_score": 10.544022973710945
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=180|penalty=0.5",
+   "energy_score": 10.501185867576325
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=180|penalty=1",
+   "energy_score": 10.475326129140647
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=180|penalty=2",
+   "energy_score": 10.493635265900469
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=180|penalty=3",
+   "energy_score": 10.543017105027413
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=240|penalty=0.25",
+   "energy_score": 10.520536932773341
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=240|penalty=0.5",
+   "energy_score": 10.488341439710503
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=240|penalty=1",
+   "energy_score": 10.469872748402024
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=240|penalty=2",
+   "energy_score": 10.485795298882568
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=240|penalty=3",
+   "energy_score": 10.52370446412083
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=300|penalty=0.25",
+   "energy_score": 10.539517556434443
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=300|penalty=0.5",
+   "energy_score": 10.512482838368491
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=300|penalty=1",
+   "energy_score": 10.497070658736417
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=300|penalty=2",
+   "energy_score": 10.508789558888205
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=300|penalty=3",
+   "energy_score": 10.539257023607842
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=360|penalty=0.25",
+   "energy_score": 10.57321270169661
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=360|penalty=0.5",
+   "energy_score": 10.549446714369422
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=360|penalty=1",
+   "energy_score": 10.534125194066597
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=360|penalty=2",
+   "energy_score": 10.542696285185329
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.1|half_life_days=360|penalty=3",
+   "energy_score": 10.567387421482158
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=180|penalty=0.25",
+   "energy_score": 10.525177375541329
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=180|penalty=0.5",
+   "energy_score": 10.484760801665068
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=180|penalty=1",
+   "energy_score": 10.462448593223906
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=180|penalty=2",
+   "energy_score": 10.485807046461163
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=180|penalty=3",
+   "energy_score": 10.53840403699894
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=240|penalty=0.25",
+   "energy_score": 10.510614278828273
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=240|penalty=0.5",
+   "energy_score": 10.480056053025452
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=240|penalty=1",
+   "energy_score": 10.464548446867664
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=240|penalty=2",
+   "energy_score": 10.483475843767597
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=240|penalty=3",
+   "energy_score": 10.524823034059018
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=300|penalty=0.25",
+   "energy_score": 10.53518451170585
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=300|penalty=0.5",
+   "energy_score": 10.509586180716166
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=300|penalty=1",
+   "energy_score": 10.495850222770692
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=300|penalty=2",
+   "energy_score": 10.51045058499034
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=300|penalty=3",
+   "energy_score": 10.542627086094896
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=360|penalty=0.25",
+   "energy_score": 10.571865796362653
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=360|penalty=0.5",
+   "energy_score": 10.549199197787551
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=360|penalty=1",
+   "energy_score": 10.536721316589283
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=360|penalty=2",
+   "energy_score": 10.547265373617693
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1.2|half_life_days=360|penalty=3",
+   "energy_score": 10.573607972250624
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=180|penalty=0.25",
+   "energy_score": 10.574313429061906
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=180|penalty=0.5",
+   "energy_score": 10.52801071043947
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=180|penalty=1",
+   "energy_score": 10.49859273809406
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=180|penalty=2",
+   "energy_score": 10.512464489180516
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=180|penalty=3",
+   "energy_score": 10.558396804332316
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=240|penalty=0.25",
+   "energy_score": 10.541779701362655
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=240|penalty=0.5",
+   "energy_score": 10.50726395413061
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=240|penalty=1",
+   "energy_score": 10.486052734278294
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=240|penalty=2",
+   "energy_score": 10.498340969221733
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=240|penalty=3",
+   "energy_score": 10.533831562944469
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=300|penalty=0.25",
+   "energy_score": 10.554935027169043
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=300|penalty=0.5",
+   "energy_score": 10.52635604889835
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=300|penalty=1",
+   "energy_score": 10.50826739271339
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=300|penalty=2",
+   "energy_score": 10.517556962612822
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=300|penalty=3",
+   "energy_score": 10.545874278766693
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=360|penalty=0.25",
+   "energy_score": 10.58468330722216
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=360|penalty=0.5",
+   "energy_score": 10.558997530473714
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=360|penalty=1",
+   "energy_score": 10.542598985685654
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=360|penalty=2",
+   "energy_score": 10.549227774299831
+  },
+  {
+   "model": "ridge",
+   "config": "ridge|cov_scale=1|half_life_days=360|penalty=3",
+   "energy_score": 10.571210840821463
+  }
+ ],
+ "ot_fallback_seasons": [
+  2019,
+  2021
+ ]
+}
