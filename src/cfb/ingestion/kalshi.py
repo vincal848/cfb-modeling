@@ -84,6 +84,11 @@ class KalshiReader:
     def trades(self, ticker: str) -> list[dict]:
         return self.pages("/historical/trades", {"ticker": ticker, "limit": PAGE_LIMIT}, "trades")
 
+    def trades_between(self, ticker: str, start: int, end: int) -> list[dict]:
+        """Trades with start <= created < end (unix seconds), newest first."""
+        return self.pages("/historical/trades", {"ticker": ticker, "min_ts": start, "max_ts": end, "limit": PAGE_LIMIT},
+                          "trades")
+
 
 def parse_ts(ts: str) -> datetime:
     return datetime.fromisoformat(ts)

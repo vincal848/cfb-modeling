@@ -226,7 +226,8 @@ def build_frame(events, games2025: dict, spread: pd.Series, candles_of, keys: tu
             got = True
             q_lo, q_hi = entry_quote(candles_of(lo, *w), t), entry_quote(candles_of(hi, *w), t)
             rows.append({"game_id": gid, "block": f"{s['season_type']}-{s['week']}", "k": k, "mu": -float(spread[gid]),
-                         "bid_lo": q_lo[0], "ask_lo": q_lo[1], "bid_hi": q_hi[0], "ask_hi": q_hi[1], "hit": m == k})
+                         "bid_lo": q_lo[0], "ask_lo": q_lo[1], "bid_hi": q_hi[0], "ask_hi": q_hi[1], "hit": m == k, "m": m, "start": start.timestamp(),
+                         "lo_ticker": lo["ticker"], "hi_ticker": hi["ticker"]})
         c["no_rungs"] += not got
     return pd.DataFrame(rows), c
 
